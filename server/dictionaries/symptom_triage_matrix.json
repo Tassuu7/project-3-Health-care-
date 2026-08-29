@@ -1,0 +1,65 @@
+{
+  "ESI_1": {
+    "level": 1,
+    "name": "Resuscitation",
+    "description": "Patient requires immediate life-saving intervention.",
+    "triggers": [
+      "Cardiac arrest / Pulselessness",
+      "Severe respiratory distress / Agonal breathing / SpO2 < 80%",
+      "Unresponsive / GCS < 9",
+      "Severe anaphylaxis with airway compromise",
+      "Massive active arterial hemorrhage"
+    ],
+    "reassessmentMinutes": 5
+  },
+  "ESI_2": {
+    "level": 2,
+    "name": "Emergent / High Risk",
+    "description": "High risk situation, confused/lethargic/disoriented, or severe pain/distress.",
+    "triggers": [
+      "Chest pain with diaphoresis (suspected ACS)",
+      "Acute neurological deficit / Stroke symptoms < 24h",
+      "Severe sepsis (qSOFA >= 2)",
+      "Severe respiratory distress (RR > 30, SpO2 < 90%)",
+      "Severe suicidal or homicidal ideation",
+      "Severe acute abdominal pain (Pain 9-10/10)"
+    ],
+    "reassessmentMinutes": 15
+  },
+  "ESI_3": {
+    "level": 3,
+    "name": "Urgent",
+    "description": "Patient requires multiple resources (labs, imaging, IV medications).",
+    "triggers": [
+      "Moderate abdominal pain with fever",
+      "Suspected fracture requiring X-ray and splinting",
+      "Moderate asthma exacerbation responsive to initial nebulizer",
+      "Dehydration requiring IV fluid administration and blood tests"
+    ],
+    "reassessmentMinutes": 45
+  },
+  "ESI_4": {
+    "level": 4,
+    "name": "Less Urgent",
+    "description": "Patient requires exactly one diagnostic or therapeutic resource.",
+    "triggers": [
+      "Simple laceration requiring suturing",
+      "Uncomplicated urinary tract infection requiring urinalysis",
+      "Mild ankle sprain requiring single X-ray view",
+      "Mild skin rash with stable vitals"
+    ],
+    "reassessmentMinutes": 90
+  },
+  "ESI_5": {
+    "level": 5,
+    "name": "Non-Urgent",
+    "description": "Patient requires no resources beyond physical exam and prescription.",
+    "triggers": [
+      "Medication refill request",
+      "Suture removal",
+      "Mild viral upper respiratory symptoms with normal vitals",
+      "Chronic symptom unchanged for months"
+    ],
+    "reassessmentMinutes": 120
+  }
+}

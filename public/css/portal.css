@@ -1,0 +1,68 @@
+/* Patient Self-Service Portal Styles */
+.patient-hero-banner {
+  background: linear-gradient(135deg, #0c4a6e, #065f46);
+  border-radius: var(--radius-xl);
+  padding: 1.75rem;
+  color: white;
+  margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: var(--shadow-lg), 0 0 25px rgba(20, 184, 166, 0.2);
+}
+
+.patient-action-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.patient-card-btn {
+  background: var(--bg-surface-glass);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  color: var(--text-main);
+  text-decoration: none;
+}
+
+.patient-card-btn:hover {
+  transform: translateY(-4px);
+  border-color: var(--primary-400);
+  box-shadow: var(--shadow-glow);
+}
+
+.quick-login-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.role-login-chip {
+  padding: 0.75rem 1rem;
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-weight: 600;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+}
+
+.role-login-chip:hover {
+  background: var(--primary-900);
+  border-color: var(--primary-400);
+  color: var(--primary-100);
+  transform: translateY(-2px);
+}

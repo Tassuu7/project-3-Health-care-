@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PulseCare | Enterprise Health & Clinical Intelligence System</title>
+  
+  <!-- CSS Stylesheets -->
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/navbar.css">
+  <link rel="stylesheet" href="css/sidebar.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/ehr.css">
+  <link rel="stylesheet" href="css/portal.css">
+  <link rel="stylesheet" href="css/modal.css">
+  <link rel="stylesheet" href="css/toast.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+  <div id="app">
+    <!-- Sidebar Navigation -->
+    <aside class="app-sidebar">
+      <div class="brand-badge" style="padding: 1.25rem; border-bottom: 1px solid var(--border-color);">
+        <div class="brand-logo-icon">P+</div>
+        <div>
+          <div style="font-size: 1.1rem; line-height: 1.2; font-weight: 800;">PulseCare</div>
+          <div style="font-size: 0.65rem; color: var(--text-muted); font-weight: 600;">CareOS Enterprise</div>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-group-title">Clinical Hub</div>
+        <a href="#dashboard" class="nav-link active" data-route="dashboard" onclick="Router.navigate('dashboard')">
+          <span class="nav-icon">📊</span> Clinical Dashboard
+        </a>
+        <a href="#portal" class="nav-link" data-route="portal" id="navPatientPortalLink" onclick="Router.navigate('portal')">
+          <span class="nav-icon">🌟</span> Patient Health Portal
+        </a>
+        <a href="#patients" class="nav-link" data-route="patients" onclick="Router.navigate('patients')">
+          <span class="nav-icon">👥</span> Patient Directory (MPI)
+        </a>
+        <a href="#ehr" class="nav-link" data-route="ehr" onclick="Router.navigate('ehr')">
+          <span class="nav-icon">🩺</span> Clinical Station (SOAP)
+        </a>
+        <a href="#appointments" class="nav-link" data-route="appointments" onclick="Router.navigate('appointments')">
+          <span class="nav-icon">📅</span> Appointments
+        </a>
+
+        <div class="nav-group-title">Diagnostics & Care</div>
+        <a href="#prescriptions" class="nav-link" data-route="prescriptions" onclick="Router.navigate('prescriptions')">
+          <span class="nav-icon">💊</span> e-Prescriptions
+        </a>
+        <a href="#labs" class="nav-link" data-route="labs" onclick="Router.navigate('labs')">
+          <span class="nav-icon">🔬</span> Labs & Pathology
+        </a>
+        <a href="#triage" class="nav-link" data-route="triage" onclick="Router.navigate('triage')">
+          <span class="nav-icon">🚑</span> Triage & Beds
+        </a>
+
+        <div class="nav-group-title">Administration</div>
+        <a href="#billing" class="nav-link" data-route="billing" onclick="Router.navigate('billing')">
+          <span class="nav-icon">💳</span> Medical Billing
+        </a>
+        <a href="#pharmacy" class="nav-link" data-route="pharmacy" onclick="Router.navigate('pharmacy')">
+          <span class="nav-icon">📦</span> Pharmacy Inventory
+        </a>
+        <a href="#analytics" class="nav-link" data-route="analytics" onclick="Router.navigate('analytics')">
+          <span class="nav-icon">📈</span> Hospital Analytics
+        </a>
+        <a href="#audit" class="nav-link" data-route="audit" onclick="Router.navigate('audit')">
+          <span class="nav-icon">🛡️</span> HIPAA Audit Trail
+        </a>
+        <a href="#login" class="nav-link" data-route="login" onclick="Router.navigate('login')">
+          <span class="nav-icon">🔑</span> Switch Account
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div>PulseCare Engine v2.4.0</div>
+        <div>HIPAA Compliant • 256-bit TLS</div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="main-wrapper">
+      <header class="top-navbar">
+        <div class="nav-left">
+          <div class="nav-search">
+            <span>🔍</span>
+            <input type="text" id="globalSearchInput" placeholder="Search patients by name, MRN, phone...">
+          </div>
+        </div>
+
+        <div class="nav-right">
+          <div id="authStatusContainer" class="nav-user-profile">
+            <!-- Rendered by auth.js -->
+          </div>
+        </div>
+      </header>
+
+      <main id="contentContainer" class="content-container">
+        <!-- Rendered by router.js views -->
+      </main>
+    </div>
+  </div>
+
+  <!-- Global Modals & Toast Containers -->
+  <div id="modalContainer"></div>
+  <div id="toastContainer" class="toast-container"></div>
+
+  <!-- Frontend JavaScript Modules (Cache-busted v2.5.0) -->
+  <script src="js/api.js?v=2.5.0"></script>
+  <script src="js/auth.js?v=2.5.0"></script>
+  <script src="js/state.js?v=2.5.0"></script>
+  <script src="js/components/Toast.js?v=2.5.0"></script>
+  <script src="js/components/Modal.js?v=2.5.0"></script>
+  <script src="js/views/DashboardView.js?v=2.5.0"></script>
+  <script src="js/views/PatientPortalView.js?v=2.5.0"></script>
+  <script src="js/views/LoginView.js?v=2.5.0"></script>
+  <script src="js/views/PatientsView.js?v=2.5.0"></script>
+  <script src="js/views/EHRClinicalView.js?v=2.5.0"></script>
+  <script src="js/views/AppointmentsView.js?v=2.5.0"></script>
+  <script src="js/views/PrescriptionsView.js?v=2.5.0"></script>
+  <script src="js/views/LabsView.js?v=2.5.0"></script>
+  <script src="js/views/BillingView.js?v=2.5.0"></script>
+  <script src="js/views/PharmacyView.js?v=2.5.0"></script>
+  <script src="js/views/TriageBedView.js?v=2.5.0"></script>
+  <script src="js/views/AnalyticsView.js?v=2.5.0"></script>
+  <script src="js/views/AuditView.js?v=2.5.0"></script>
+  <script src="js/views/SettingsView.js?v=2.5.0"></script>
+  <script src="js/router.js?v=2.5.0"></script>
+  <script src="js/app.js?v=2.5.0"></script>
+  <script>
+    // Immediate fallback bootstrap in case script load order or DOM timing differed
+    window.addEventListener('load', function() {
+      if (typeof Router !== 'undefined' && typeof Router.init === 'function') {
+        Router.init();
+      }
+    });
+    setTimeout(function() {
+      if (typeof Router !== 'undefined' && typeof Router.handleRoute === 'function') {
+        Router.handleRoute();
+      }
+    }, 100);
+  </script>
+</body>
+</html>

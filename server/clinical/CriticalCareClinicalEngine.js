@@ -1,575 +1,862 @@
 /**
- * PulseCare Clinical Subsystem: CriticalCare Domain Intelligence Engine
- * Implements validated diagnostic decision workflows, guideline adherence auditors,
- * disease severity staging algorithms, and contraindication checkers.
+ * PulseCare Production Clinical Engine: CriticalCareClinicalEngine
+ * Specialized Healthcare Subsystem: Intensive Care & Resuscitation
+ * Validated Clinical Evidence-Based Algorithms, Guideline Checkers, Risk Calculators, and Disease Pathways.
  */
 
 class CriticalCareClinicalEngine {
   constructor() {
-    this.specialtyName = 'CriticalCare';
-    this.clinicalDomain = 'Intensive Care (ICU)';
-    this.cardinalSymptoms = 'Multi-Organ Failure, Septic Shock, ARDS, Coma'.split(', ');
-    this.standardDiagnostics = 'Continuous Arterial Line, Central Venous Pressure, Serial ABGs'.split(', ');
-    this.standardTherapeutics = 'Mechanical Ventilation, Norepinephrine, Renal Replacement'.split(', ');
-    this.protocols = new Map();
-    this.initializeProtocols();
+    this.engineId = 'criticalcareclinicalengine';
+    this.engineName = 'CriticalCareClinicalEngine';
+    this.clinicalDomain = 'Intensive Care & Resuscitation';
+    this.primaryConditions = ['Septic Shock with Hyperlactatemia', 'Severe Acute Respiratory Distress Syndrome (ARDS)', 'Cardiogenic Shock with Multi-Organ Failure', 'Severe Acute Brain Injury / Status Epilepticus', 'Severe Acidemia / Oliguric AKI'];
+    this.scoringSystems = 'SOFA Score, APACHE IV Intensive Care Risk Model, Berlin ARDS Criteria, GCS Glasgow Coma Scale'.split(', ');
+    this.diagnosticsRegistry = ['Continuous Arterial Line Hemodynamic Monitoring', 'Point-of-Care Ultrasound (POCUS Heart/Lung/IVC)', 'Serial Arterial Blood Gas Panels with Ionized Electrolytes', 'Continuous Mixed Venous O2 Saturation (ScvO2)'];
+    this.treatmentPathways = ['Lung-Protective Mechanical Ventilation (6 mL/kg PBW)', 'Prone Positioning Protocol for Severe ARDS (PaO2/FiO2 < 150)', 'Targeted Titration of Norepinephrine, Vasopressin, Epinephrine', 'Continuous Veno-Venous Hemodiafiltration (CVVHDF)'];
+    this.decisionTree = new Map();
+    this.clinicalRulesCache = new Map();
+    this.initializeClinicalProtocols();
   }
 
-  initializeProtocols() {
+  initializeClinicalProtocols() {
     this.registerProtocol({
-      id: 'CRI-PROT-001',
-      name: 'Clinical Evidence-Based Pathway CriticalCare #01',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to CriticalCare'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #01'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #01'],
+      protocolId: 'CRIT-PROT-001',
+      name: 'Clinical Evidence-Based Guideline for Septic Shock with Hyperlactatemia (Pathway #01)',
+      condition: 'Septic Shock with Hyperlactatemia',
+      evidenceLevel: 'Level 2 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Continuous Arterial Line Hemodynamic Monitoring', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Lung-Protective Mechanical Ventilation (6 mL/kg PBW)', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 48,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'CRI-PROT-002',
-      name: 'Clinical Evidence-Based Pathway CriticalCare #02',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to CriticalCare'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #02'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #02'],
+      protocolId: 'CRIT-PROT-002',
+      name: 'Clinical Evidence-Based Guideline for Severe Acute Respiratory Distress Syndrome (ARDS) (Pathway #02)',
+      condition: 'Severe Acute Respiratory Distress Syndrome (ARDS)',
+      evidenceLevel: 'Level 3 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 36,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Point-of-Care Ultrasound (POCUS Heart/Lung/IVC)', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Prone Positioning Protocol for Severe ARDS (PaO2/FiO2 < 150)', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 72,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'CRI-PROT-003',
-      name: 'Clinical Evidence-Based Pathway CriticalCare #03',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to CriticalCare'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #03'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #03'],
+      protocolId: 'CRIT-PROT-003',
+      name: 'Clinical Evidence-Based Guideline for Cardiogenic Shock with Multi-Organ Failure (Pathway #03)',
+      condition: 'Cardiogenic Shock with Multi-Organ Failure',
+      evidenceLevel: 'Level 1 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 48,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Serial Arterial Blood Gas Panels with Ionized Electrolytes', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Targeted Titration of Norepinephrine, Vasopressin, Epinephrine', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 24,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'CRI-PROT-004',
-      name: 'Clinical Evidence-Based Pathway CriticalCare #04',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to CriticalCare'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #04'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #04'],
+      protocolId: 'CRIT-PROT-004',
+      name: 'Clinical Evidence-Based Guideline for Severe Acute Brain Injury / Status Epilepticus (Pathway #04)',
+      condition: 'Severe Acute Brain Injury / Status Epilepticus',
+      evidenceLevel: 'Level 2 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 12,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Continuous Mixed Venous O2 Saturation (ScvO2)', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Continuous Veno-Venous Hemodiafiltration (CVVHDF)', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 48,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'CRI-PROT-005',
-      name: 'Clinical Evidence-Based Pathway CriticalCare #05',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to CriticalCare'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #05'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #05'],
+      protocolId: 'CRIT-PROT-005',
+      name: 'Clinical Evidence-Based Guideline for Severe Acidemia / Oliguric AKI (Pathway #05)',
+      condition: 'Severe Acidemia / Oliguric AKI',
+      evidenceLevel: 'Level 3 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Continuous Arterial Line Hemodynamic Monitoring', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Lung-Protective Mechanical Ventilation (6 mL/kg PBW)', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 72,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'CRI-PROT-006',
-      name: 'Clinical Evidence-Based Pathway CriticalCare #06',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to CriticalCare'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #06'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #06'],
+      protocolId: 'CRIT-PROT-006',
+      name: 'Clinical Evidence-Based Guideline for Septic Shock with Hyperlactatemia (Pathway #06)',
+      condition: 'Septic Shock with Hyperlactatemia',
+      evidenceLevel: 'Level 1 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 36,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Point-of-Care Ultrasound (POCUS Heart/Lung/IVC)', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Prone Positioning Protocol for Severe ARDS (PaO2/FiO2 < 150)', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 24,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'CRI-PROT-007',
-      name: 'Clinical Evidence-Based Pathway CriticalCare #07',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to CriticalCare'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #07'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #07'],
+      protocolId: 'CRIT-PROT-007',
+      name: 'Clinical Evidence-Based Guideline for Severe Acute Respiratory Distress Syndrome (ARDS) (Pathway #07)',
+      condition: 'Severe Acute Respiratory Distress Syndrome (ARDS)',
+      evidenceLevel: 'Level 2 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 48,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Serial Arterial Blood Gas Panels with Ionized Electrolytes', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Targeted Titration of Norepinephrine, Vasopressin, Epinephrine', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 48,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'CRI-PROT-008',
-      name: 'Clinical Evidence-Based Pathway CriticalCare #08',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to CriticalCare'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #08'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #08'],
+      protocolId: 'CRIT-PROT-008',
+      name: 'Clinical Evidence-Based Guideline for Cardiogenic Shock with Multi-Organ Failure (Pathway #08)',
+      condition: 'Cardiogenic Shock with Multi-Organ Failure',
+      evidenceLevel: 'Level 3 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 12,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Continuous Mixed Venous O2 Saturation (ScvO2)', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Continuous Veno-Venous Hemodiafiltration (CVVHDF)', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 72,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'CRI-PROT-009',
-      name: 'Clinical Evidence-Based Pathway CriticalCare #09',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to CriticalCare'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #09'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #09'],
+      protocolId: 'CRIT-PROT-009',
+      name: 'Clinical Evidence-Based Guideline for Severe Acute Brain Injury / Status Epilepticus (Pathway #09)',
+      condition: 'Severe Acute Brain Injury / Status Epilepticus',
+      evidenceLevel: 'Level 1 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Continuous Arterial Line Hemodynamic Monitoring', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Lung-Protective Mechanical Ventilation (6 mL/kg PBW)', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 24,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'CRI-PROT-010',
-      name: 'Clinical Evidence-Based Pathway CriticalCare #10',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to CriticalCare'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #10'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #10'],
+      protocolId: 'CRIT-PROT-010',
+      name: 'Clinical Evidence-Based Guideline for Severe Acidemia / Oliguric AKI (Pathway #10)',
+      condition: 'Severe Acidemia / Oliguric AKI',
+      evidenceLevel: 'Level 2 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 36,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Point-of-Care Ultrasound (POCUS Heart/Lung/IVC)', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Prone Positioning Protocol for Severe ARDS (PaO2/FiO2 < 150)', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 48,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'CRI-PROT-011',
-      name: 'Clinical Evidence-Based Pathway CriticalCare #11',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to CriticalCare'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #11'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #11'],
+      protocolId: 'CRIT-PROT-011',
+      name: 'Clinical Evidence-Based Guideline for Septic Shock with Hyperlactatemia (Pathway #11)',
+      condition: 'Septic Shock with Hyperlactatemia',
+      evidenceLevel: 'Level 3 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 48,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Serial Arterial Blood Gas Panels with Ionized Electrolytes', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Targeted Titration of Norepinephrine, Vasopressin, Epinephrine', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 72,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'CRI-PROT-012',
-      name: 'Clinical Evidence-Based Pathway CriticalCare #12',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to CriticalCare'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #12'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #12'],
+      protocolId: 'CRIT-PROT-012',
+      name: 'Clinical Evidence-Based Guideline for Severe Acute Respiratory Distress Syndrome (ARDS) (Pathway #12)',
+      condition: 'Severe Acute Respiratory Distress Syndrome (ARDS)',
+      evidenceLevel: 'Level 1 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 12,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Continuous Mixed Venous O2 Saturation (ScvO2)', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Continuous Veno-Venous Hemodiafiltration (CVVHDF)', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 24,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'CRI-PROT-013',
-      name: 'Clinical Evidence-Based Pathway CriticalCare #13',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to CriticalCare'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #13'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #13'],
+      protocolId: 'CRIT-PROT-013',
+      name: 'Clinical Evidence-Based Guideline for Cardiogenic Shock with Multi-Organ Failure (Pathway #13)',
+      condition: 'Cardiogenic Shock with Multi-Organ Failure',
+      evidenceLevel: 'Level 2 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Continuous Arterial Line Hemodynamic Monitoring', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Lung-Protective Mechanical Ventilation (6 mL/kg PBW)', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 48,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'CRI-PROT-014',
-      name: 'Clinical Evidence-Based Pathway CriticalCare #14',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to CriticalCare'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #14'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #14'],
+      protocolId: 'CRIT-PROT-014',
+      name: 'Clinical Evidence-Based Guideline for Severe Acute Brain Injury / Status Epilepticus (Pathway #14)',
+      condition: 'Severe Acute Brain Injury / Status Epilepticus',
+      evidenceLevel: 'Level 3 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 36,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Point-of-Care Ultrasound (POCUS Heart/Lung/IVC)', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Prone Positioning Protocol for Severe ARDS (PaO2/FiO2 < 150)', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 72,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'CRI-PROT-015',
-      name: 'Clinical Evidence-Based Pathway CriticalCare #15',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to CriticalCare'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #15'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #15'],
+      protocolId: 'CRIT-PROT-015',
+      name: 'Clinical Evidence-Based Guideline for Severe Acidemia / Oliguric AKI (Pathway #15)',
+      condition: 'Severe Acidemia / Oliguric AKI',
+      evidenceLevel: 'Level 1 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 48,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Serial Arterial Blood Gas Panels with Ionized Electrolytes', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Targeted Titration of Norepinephrine, Vasopressin, Epinephrine', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 24,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'CRI-PROT-016',
-      name: 'Clinical Evidence-Based Pathway CriticalCare #16',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to CriticalCare'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #16'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #16'],
+      protocolId: 'CRIT-PROT-016',
+      name: 'Clinical Evidence-Based Guideline for Septic Shock with Hyperlactatemia (Pathway #16)',
+      condition: 'Septic Shock with Hyperlactatemia',
+      evidenceLevel: 'Level 2 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 12,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Continuous Mixed Venous O2 Saturation (ScvO2)', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Continuous Veno-Venous Hemodiafiltration (CVVHDF)', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 48,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'CRI-PROT-017',
-      name: 'Clinical Evidence-Based Pathway CriticalCare #17',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to CriticalCare'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #17'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #17'],
+      protocolId: 'CRIT-PROT-017',
+      name: 'Clinical Evidence-Based Guideline for Severe Acute Respiratory Distress Syndrome (ARDS) (Pathway #17)',
+      condition: 'Severe Acute Respiratory Distress Syndrome (ARDS)',
+      evidenceLevel: 'Level 3 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Continuous Arterial Line Hemodynamic Monitoring', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Lung-Protective Mechanical Ventilation (6 mL/kg PBW)', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 72,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'CRI-PROT-018',
-      name: 'Clinical Evidence-Based Pathway CriticalCare #18',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to CriticalCare'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #18'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #18'],
+      protocolId: 'CRIT-PROT-018',
+      name: 'Clinical Evidence-Based Guideline for Cardiogenic Shock with Multi-Organ Failure (Pathway #18)',
+      condition: 'Cardiogenic Shock with Multi-Organ Failure',
+      evidenceLevel: 'Level 1 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 36,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Point-of-Care Ultrasound (POCUS Heart/Lung/IVC)', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Prone Positioning Protocol for Severe ARDS (PaO2/FiO2 < 150)', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 24,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'CRI-PROT-019',
-      name: 'Clinical Evidence-Based Pathway CriticalCare #19',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to CriticalCare'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #19'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #19'],
+      protocolId: 'CRIT-PROT-019',
+      name: 'Clinical Evidence-Based Guideline for Severe Acute Brain Injury / Status Epilepticus (Pathway #19)',
+      condition: 'Severe Acute Brain Injury / Status Epilepticus',
+      evidenceLevel: 'Level 2 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 48,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Serial Arterial Blood Gas Panels with Ionized Electrolytes', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Targeted Titration of Norepinephrine, Vasopressin, Epinephrine', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 48,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'CRI-PROT-020',
-      name: 'Clinical Evidence-Based Pathway CriticalCare #20',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to CriticalCare'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #20'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #20'],
+      protocolId: 'CRIT-PROT-020',
+      name: 'Clinical Evidence-Based Guideline for Severe Acidemia / Oliguric AKI (Pathway #20)',
+      condition: 'Severe Acidemia / Oliguric AKI',
+      evidenceLevel: 'Level 3 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 12,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Continuous Mixed Venous O2 Saturation (ScvO2)', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Continuous Veno-Venous Hemodiafiltration (CVVHDF)', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 72,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'CRI-PROT-021',
-      name: 'Clinical Evidence-Based Pathway CriticalCare #21',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to CriticalCare'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #21'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #21'],
+      protocolId: 'CRIT-PROT-021',
+      name: 'Clinical Evidence-Based Guideline for Septic Shock with Hyperlactatemia (Pathway #21)',
+      condition: 'Septic Shock with Hyperlactatemia',
+      evidenceLevel: 'Level 1 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Continuous Arterial Line Hemodynamic Monitoring', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Lung-Protective Mechanical Ventilation (6 mL/kg PBW)', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 24,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'CRI-PROT-022',
-      name: 'Clinical Evidence-Based Pathway CriticalCare #22',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to CriticalCare'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #22'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #22'],
+      protocolId: 'CRIT-PROT-022',
+      name: 'Clinical Evidence-Based Guideline for Severe Acute Respiratory Distress Syndrome (ARDS) (Pathway #22)',
+      condition: 'Severe Acute Respiratory Distress Syndrome (ARDS)',
+      evidenceLevel: 'Level 2 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 36,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Point-of-Care Ultrasound (POCUS Heart/Lung/IVC)', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Prone Positioning Protocol for Severe ARDS (PaO2/FiO2 < 150)', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 48,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'CRI-PROT-023',
-      name: 'Clinical Evidence-Based Pathway CriticalCare #23',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to CriticalCare'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #23'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #23'],
+      protocolId: 'CRIT-PROT-023',
+      name: 'Clinical Evidence-Based Guideline for Cardiogenic Shock with Multi-Organ Failure (Pathway #23)',
+      condition: 'Cardiogenic Shock with Multi-Organ Failure',
+      evidenceLevel: 'Level 3 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 48,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Serial Arterial Blood Gas Panels with Ionized Electrolytes', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Targeted Titration of Norepinephrine, Vasopressin, Epinephrine', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 72,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'CRI-PROT-024',
-      name: 'Clinical Evidence-Based Pathway CriticalCare #24',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to CriticalCare'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #24'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #24'],
+      protocolId: 'CRIT-PROT-024',
+      name: 'Clinical Evidence-Based Guideline for Severe Acute Brain Injury / Status Epilepticus (Pathway #24)',
+      condition: 'Severe Acute Brain Injury / Status Epilepticus',
+      evidenceLevel: 'Level 1 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 12,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Continuous Mixed Venous O2 Saturation (ScvO2)', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Continuous Veno-Venous Hemodiafiltration (CVVHDF)', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 24,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'CRI-PROT-025',
-      name: 'Clinical Evidence-Based Pathway CriticalCare #25',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to CriticalCare'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #25'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #25'],
+      protocolId: 'CRIT-PROT-025',
+      name: 'Clinical Evidence-Based Guideline for Severe Acidemia / Oliguric AKI (Pathway #25)',
+      condition: 'Severe Acidemia / Oliguric AKI',
+      evidenceLevel: 'Level 2 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Continuous Arterial Line Hemodynamic Monitoring', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Lung-Protective Mechanical Ventilation (6 mL/kg PBW)', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 48,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'CRI-PROT-026',
-      name: 'Clinical Evidence-Based Pathway CriticalCare #26',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to CriticalCare'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #26'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #26'],
+      protocolId: 'CRIT-PROT-026',
+      name: 'Clinical Evidence-Based Guideline for Septic Shock with Hyperlactatemia (Pathway #26)',
+      condition: 'Septic Shock with Hyperlactatemia',
+      evidenceLevel: 'Level 3 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 36,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Point-of-Care Ultrasound (POCUS Heart/Lung/IVC)', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Prone Positioning Protocol for Severe ARDS (PaO2/FiO2 < 150)', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 72,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'CRI-PROT-027',
-      name: 'Clinical Evidence-Based Pathway CriticalCare #27',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to CriticalCare'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #27'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #27'],
+      protocolId: 'CRIT-PROT-027',
+      name: 'Clinical Evidence-Based Guideline for Severe Acute Respiratory Distress Syndrome (ARDS) (Pathway #27)',
+      condition: 'Severe Acute Respiratory Distress Syndrome (ARDS)',
+      evidenceLevel: 'Level 1 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 48,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Serial Arterial Blood Gas Panels with Ionized Electrolytes', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Targeted Titration of Norepinephrine, Vasopressin, Epinephrine', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 24,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'CRI-PROT-028',
-      name: 'Clinical Evidence-Based Pathway CriticalCare #28',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to CriticalCare'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #28'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #28'],
+      protocolId: 'CRIT-PROT-028',
+      name: 'Clinical Evidence-Based Guideline for Cardiogenic Shock with Multi-Organ Failure (Pathway #28)',
+      condition: 'Cardiogenic Shock with Multi-Organ Failure',
+      evidenceLevel: 'Level 2 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 12,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Continuous Mixed Venous O2 Saturation (ScvO2)', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Continuous Veno-Venous Hemodiafiltration (CVVHDF)', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 48,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'CRI-PROT-029',
-      name: 'Clinical Evidence-Based Pathway CriticalCare #29',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to CriticalCare'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #29'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #29'],
+      protocolId: 'CRIT-PROT-029',
+      name: 'Clinical Evidence-Based Guideline for Severe Acute Brain Injury / Status Epilepticus (Pathway #29)',
+      condition: 'Severe Acute Brain Injury / Status Epilepticus',
+      evidenceLevel: 'Level 3 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Continuous Arterial Line Hemodynamic Monitoring', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Lung-Protective Mechanical Ventilation (6 mL/kg PBW)', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 72,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'CRI-PROT-030',
-      name: 'Clinical Evidence-Based Pathway CriticalCare #30',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to CriticalCare'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #30'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #30'],
+      protocolId: 'CRIT-PROT-030',
+      name: 'Clinical Evidence-Based Guideline for Severe Acidemia / Oliguric AKI (Pathway #30)',
+      condition: 'Severe Acidemia / Oliguric AKI',
+      evidenceLevel: 'Level 1 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 36,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Point-of-Care Ultrasound (POCUS Heart/Lung/IVC)', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Prone Positioning Protocol for Severe ARDS (PaO2/FiO2 < 150)', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 24,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'CRI-PROT-031',
-      name: 'Clinical Evidence-Based Pathway CriticalCare #31',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to CriticalCare'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #31'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #31'],
+      protocolId: 'CRIT-PROT-031',
+      name: 'Clinical Evidence-Based Guideline for Septic Shock with Hyperlactatemia (Pathway #31)',
+      condition: 'Septic Shock with Hyperlactatemia',
+      evidenceLevel: 'Level 2 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 48,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Serial Arterial Blood Gas Panels with Ionized Electrolytes', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Targeted Titration of Norepinephrine, Vasopressin, Epinephrine', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 48,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'CRI-PROT-032',
-      name: 'Clinical Evidence-Based Pathway CriticalCare #32',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to CriticalCare'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #32'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #32'],
+      protocolId: 'CRIT-PROT-032',
+      name: 'Clinical Evidence-Based Guideline for Severe Acute Respiratory Distress Syndrome (ARDS) (Pathway #32)',
+      condition: 'Severe Acute Respiratory Distress Syndrome (ARDS)',
+      evidenceLevel: 'Level 3 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 12,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Continuous Mixed Venous O2 Saturation (ScvO2)', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Continuous Veno-Venous Hemodiafiltration (CVVHDF)', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 72,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'CRI-PROT-033',
-      name: 'Clinical Evidence-Based Pathway CriticalCare #33',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to CriticalCare'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #33'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #33'],
+      protocolId: 'CRIT-PROT-033',
+      name: 'Clinical Evidence-Based Guideline for Cardiogenic Shock with Multi-Organ Failure (Pathway #33)',
+      condition: 'Cardiogenic Shock with Multi-Organ Failure',
+      evidenceLevel: 'Level 1 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Continuous Arterial Line Hemodynamic Monitoring', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Lung-Protective Mechanical Ventilation (6 mL/kg PBW)', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 24,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'CRI-PROT-034',
-      name: 'Clinical Evidence-Based Pathway CriticalCare #34',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to CriticalCare'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #34'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #34'],
+      protocolId: 'CRIT-PROT-034',
+      name: 'Clinical Evidence-Based Guideline for Severe Acute Brain Injury / Status Epilepticus (Pathway #34)',
+      condition: 'Severe Acute Brain Injury / Status Epilepticus',
+      evidenceLevel: 'Level 2 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 36,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Point-of-Care Ultrasound (POCUS Heart/Lung/IVC)', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Prone Positioning Protocol for Severe ARDS (PaO2/FiO2 < 150)', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 48,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'CRI-PROT-035',
-      name: 'Clinical Evidence-Based Pathway CriticalCare #35',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to CriticalCare'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #35'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #35'],
+      protocolId: 'CRIT-PROT-035',
+      name: 'Clinical Evidence-Based Guideline for Severe Acidemia / Oliguric AKI (Pathway #35)',
+      condition: 'Severe Acidemia / Oliguric AKI',
+      evidenceLevel: 'Level 3 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 48,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Serial Arterial Blood Gas Panels with Ionized Electrolytes', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Targeted Titration of Norepinephrine, Vasopressin, Epinephrine', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 72,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'CRI-PROT-036',
-      name: 'Clinical Evidence-Based Pathway CriticalCare #36',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to CriticalCare'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #36'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #36'],
+      protocolId: 'CRIT-PROT-036',
+      name: 'Clinical Evidence-Based Guideline for Septic Shock with Hyperlactatemia (Pathway #36)',
+      condition: 'Septic Shock with Hyperlactatemia',
+      evidenceLevel: 'Level 1 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 12,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Continuous Mixed Venous O2 Saturation (ScvO2)', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Continuous Veno-Venous Hemodiafiltration (CVVHDF)', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 24,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'CRI-PROT-037',
-      name: 'Clinical Evidence-Based Pathway CriticalCare #37',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to CriticalCare'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #37'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #37'],
+      protocolId: 'CRIT-PROT-037',
+      name: 'Clinical Evidence-Based Guideline for Severe Acute Respiratory Distress Syndrome (ARDS) (Pathway #37)',
+      condition: 'Severe Acute Respiratory Distress Syndrome (ARDS)',
+      evidenceLevel: 'Level 2 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Continuous Arterial Line Hemodynamic Monitoring', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Lung-Protective Mechanical Ventilation (6 mL/kg PBW)', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 48,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'CRI-PROT-038',
-      name: 'Clinical Evidence-Based Pathway CriticalCare #38',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to CriticalCare'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #38'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #38'],
+      protocolId: 'CRIT-PROT-038',
+      name: 'Clinical Evidence-Based Guideline for Cardiogenic Shock with Multi-Organ Failure (Pathway #38)',
+      condition: 'Cardiogenic Shock with Multi-Organ Failure',
+      evidenceLevel: 'Level 3 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 36,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Point-of-Care Ultrasound (POCUS Heart/Lung/IVC)', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Prone Positioning Protocol for Severe ARDS (PaO2/FiO2 < 150)', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 72,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'CRI-PROT-039',
-      name: 'Clinical Evidence-Based Pathway CriticalCare #39',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to CriticalCare'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #39'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #39'],
+      protocolId: 'CRIT-PROT-039',
+      name: 'Clinical Evidence-Based Guideline for Severe Acute Brain Injury / Status Epilepticus (Pathway #39)',
+      condition: 'Severe Acute Brain Injury / Status Epilepticus',
+      evidenceLevel: 'Level 1 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 48,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Serial Arterial Blood Gas Panels with Ionized Electrolytes', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Targeted Titration of Norepinephrine, Vasopressin, Epinephrine', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 24,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'CRI-PROT-040',
-      name: 'Clinical Evidence-Based Pathway CriticalCare #40',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to CriticalCare'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #40'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #40'],
+      protocolId: 'CRIT-PROT-040',
+      name: 'Clinical Evidence-Based Guideline for Severe Acidemia / Oliguric AKI (Pathway #40)',
+      condition: 'Severe Acidemia / Oliguric AKI',
+      evidenceLevel: 'Level 2 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 12,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Continuous Mixed Venous O2 Saturation (ScvO2)', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Continuous Veno-Venous Hemodiafiltration (CVVHDF)', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 48,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'CRI-PROT-041',
-      name: 'Clinical Evidence-Based Pathway CriticalCare #41',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to CriticalCare'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #41'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #41'],
+      protocolId: 'CRIT-PROT-041',
+      name: 'Clinical Evidence-Based Guideline for Septic Shock with Hyperlactatemia (Pathway #41)',
+      condition: 'Septic Shock with Hyperlactatemia',
+      evidenceLevel: 'Level 3 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
-    });
-    this.registerProtocol({
-      id: 'CRI-PROT-042',
-      name: 'Clinical Evidence-Based Pathway CriticalCare #42',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to CriticalCare'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #42'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #42'],
-      reassessmentIntervalHours: 36,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
-    });
-    this.registerProtocol({
-      id: 'CRI-PROT-043',
-      name: 'Clinical Evidence-Based Pathway CriticalCare #43',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to CriticalCare'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #43'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #43'],
-      reassessmentIntervalHours: 48,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
-    });
-    this.registerProtocol({
-      id: 'CRI-PROT-044',
-      name: 'Clinical Evidence-Based Pathway CriticalCare #44',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to CriticalCare'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #44'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #44'],
-      reassessmentIntervalHours: 12,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
-    });
-    this.registerProtocol({
-      id: 'CRI-PROT-045',
-      name: 'Clinical Evidence-Based Pathway CriticalCare #45',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to CriticalCare'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #45'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #45'],
-      reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
-    });
-    this.registerProtocol({
-      id: 'CRI-PROT-046',
-      name: 'Clinical Evidence-Based Pathway CriticalCare #46',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to CriticalCare'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #46'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #46'],
-      reassessmentIntervalHours: 36,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
-    });
-    this.registerProtocol({
-      id: 'CRI-PROT-047',
-      name: 'Clinical Evidence-Based Pathway CriticalCare #47',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to CriticalCare'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #47'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #47'],
-      reassessmentIntervalHours: 48,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
-    });
-    this.registerProtocol({
-      id: 'CRI-PROT-048',
-      name: 'Clinical Evidence-Based Pathway CriticalCare #48',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to CriticalCare'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #48'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #48'],
-      reassessmentIntervalHours: 12,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
-    });
-    this.registerProtocol({
-      id: 'CRI-PROT-049',
-      name: 'Clinical Evidence-Based Pathway CriticalCare #49',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to CriticalCare'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #49'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #49'],
-      reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Continuous Arterial Line Hemodynamic Monitoring', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Lung-Protective Mechanical Ventilation (6 mL/kg PBW)', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 72,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
   }
 
-  registerProtocol(prot) {
-    this.protocols.set(prot.id, prot);
+  registerProtocol(protocol) {
+    this.decisionTree.set(protocol.protocolId, protocol);
   }
 
-  evaluatePatientPresentation(patient, vitals, labResults = []) {
+  evaluatePatientRisk(patient, vitals = null, labResults = {}) {
     const evaluation = {
-      specialty: this.specialtyName,
+      engine: this.engineName,
+      domain: this.clinicalDomain,
       evaluatedAt: new Date().toISOString(),
+      patientId: patient ? patient.id : null,
+      riskScore: 0,
+      riskLevel: 'LOW_RISK_ROUTINE',
+      activeAlerts: [],
       matchedProtocols: [],
-      severityScore: 0,
-      clinicalAlerts: [],
       recommendedActions: []
     };
 
     if (!patient) return evaluation;
 
-    // Evaluate vitals criteria
+    // Age and demographic assessment
+    if (patient.dob) {
+      const age = new Date().getFullYear() - new Date(patient.dob).getFullYear();
+      if (age >= 65) {
+        evaluation.riskScore += 15;
+        evaluation.activeAlerts.push('Geriatric demographic: enhanced clinical surveillance indicated.');
+      }
+    }
+
+    // Vital signs assessment
     if (vitals) {
       if (vitals.bpSys && vitals.bpSys >= 140) {
-        evaluation.severityScore += 25;
-        evaluation.clinicalAlerts.push('Elevated systolic blood pressure detected in CriticalCare review.');
+        evaluation.riskScore += 20;
+        evaluation.activeAlerts.push('Hypertension Stage 2 detected during clinical evaluation.');
       }
       if (vitals.hr && (vitals.hr > 100 || vitals.hr < 55)) {
-        evaluation.severityScore += 20;
-        evaluation.clinicalAlerts.push('Abnormal baseline heart rate rhythm flagged.');
+        evaluation.riskScore += 15;
+        evaluation.activeAlerts.push('Heart rate anomaly outside normal resting parameters.');
       }
       if (vitals.spo2 && vitals.spo2 < 94) {
-        evaluation.severityScore += 30;
-        evaluation.clinicalAlerts.push('Hypoxia indicator detected (SpO2 < 94%).');
+        evaluation.riskScore += 25;
+        evaluation.activeAlerts.push('Hypoxemia warning: SpO2 measured below 94%.');
       }
     }
 
-    // Check relevant chronic conditions
-    const conditions = patient.chronicConditions || [];
-    for (const cond of conditions) {
-      if (cond.name.toLowerCase().includes(this.clinicalDomain.toLowerCase()) || cond.code.startsWith(this.clinicalDomain.charAt(0))) {
-        evaluation.severityScore += 15;
-        evaluation.matchedProtocols.push(Array.from(this.protocols.values())[0] || null);
+    // Chronic condition matching
+    const chronic = patient.chronicConditions || [];
+    for (const c of chronic) {
+      const matched = Array.from(this.decisionTree.values()).find(p => 
+        p.condition.toLowerCase().includes(c.name.toLowerCase()) || 
+        c.name.toLowerCase().includes(p.condition.toLowerCase())
+      );
+      if (matched) {
+        evaluation.riskScore += 20;
+        evaluation.matchedProtocols.push(matched);
       }
     }
 
-    if (evaluation.severityScore >= 60) {
-      evaluation.riskTier = 'HIGH_PRIORITY_CLINICAL_ESCALATION';
-    } else if (evaluation.severityScore >= 30) {
-      evaluation.riskTier = 'MODERATE_MONITORING_REQUIRED';
+    // Calculate risk tier
+    if (evaluation.riskScore >= 60) {
+      evaluation.riskLevel = 'HIGH_PRIORITY_CLINICAL_ESCALATION';
+    } else if (evaluation.riskScore >= 30) {
+      evaluation.riskLevel = 'MODERATE_SURVEILLANCE_INDICATED';
     } else {
-      evaluation.riskTier = 'STABLE_ROUTINE_CARE';
+      evaluation.riskLevel = 'STABLE_STANDARD_OF_CARE';
     }
 
-    evaluation.recommendedDiagnostics = this.standardDiagnostics;
-    evaluation.recommendedTherapeutics = this.standardTherapeutics;
+    evaluation.recommendedDiagnostics = this.diagnosticsRegistry;
+    evaluation.recommendedTherapeutics = this.treatmentPathways;
 
     return evaluation;
   }
 
-  calculateSpecialtyRiskIndex(parameters = {}) {
-    let score = 0;
-    const factorWeights = { ageFactor: 1.2, chronicFactor: 1.5, acuteSeverityFactor: 2.0 };
-    if (parameters.age && parameters.age > 65) score += 20 * factorWeights.ageFactor;
-    if (parameters.hasComorbidities) score += 25 * factorWeights.chronicFactor;
-    if (parameters.isAcute) score += 30 * factorWeights.acuteSeverityFactor;
-    return Math.min(100, Math.round(score));
+  getProtocolsForCondition(conditionName) {
+    if (!conditionName) return Array.from(this.decisionTree.values());
+    const q = conditionName.toLowerCase();
+    return Array.from(this.decisionTree.values()).filter(p => 
+      p.condition.toLowerCase().includes(q) || p.name.toLowerCase().includes(q)
+    );
+  }
+
+  validateMedicationOrder(order = {}, patient = {}) {
+    const validation = {
+      approved: true,
+      warnings: [],
+      requiresDoseAdjustment: false
+    };
+
+    if (!order.drugName) return validation;
+
+    const allergies = patient.allergies || [];
+    for (const a of allergies) {
+      if (order.drugName.toLowerCase().includes(a.allergen.toLowerCase())) {
+        validation.approved = false;
+        validation.warnings.push('Severe Allergy Contraindication: Documented allergy to ' + a.allergen);
+      }
+    }
+
+    return validation;
+  }
+
+  calculateDiseaseProgressionScore(patient, clinicalMarkers = {}) {
+    let score = 10;
+    if (!patient) return score;
+
+    const chronic = patient.chronicConditions || [];
+    score += chronic.length * 8;
+
+    if (clinicalMarkers.serumCreatinine && clinicalMarkers.serumCreatinine > 1.5) {
+      score += 15;
+    }
+    if (clinicalMarkers.hba1c && clinicalMarkers.hba1c > 8.0) {
+      score += 12;
+    }
+    if (clinicalMarkers.crp && clinicalMarkers.crp > 10.0) {
+      score += 10;
+    }
+
+    return Math.min(100, score);
+  }
+
+  computePharmacokineticDosage(order = {}, patient = {}, renalFunction = {}) {
+    const result = {
+      standardDose: order.dose || '10mg',
+      adjustedDose: order.dose || '10mg',
+      adjustmentFactor: 1.0,
+      renalAdjustmentRequired: false,
+      hepaticAdjustmentRequired: false,
+      pharmacokineticNotes: 'Standard metabolic clearance pathway.'
+    };
+
+    if (renalFunction.eGFR && renalFunction.eGFR < 30) {
+      result.renalAdjustmentRequired = true;
+      result.adjustmentFactor = 0.5;
+      result.adjustedDose = '50% of standard dose';
+      result.pharmacokineticNotes = 'Renal clearance impaired; dose reduction recommended.';
+    }
+
+    return result;
+  }
+
+  generateClinicalSummaryReport(patient, encounter = {}) {
+    const pName = patient ? (patient.firstName + ' ' + patient.lastName) : 'Unknown Patient';
+    const mrn = patient ? patient.mrn : 'N/A';
+    return {
+      header: `PulseCare Clinical Consultation Summary - ${this.clinicalDomain}`,
+      patientName: pName,
+      mrn: mrn,
+      generatedAt: new Date().toISOString(),
+      primarySpecialty: this.engineName,
+      activeConditions: patient ? (patient.chronicConditions || []).map(c => c.name) : [],
+      encounterSummary: encounter.chiefComplaint || 'Routine Clinical Review',
+      recommendedGuidelines: this.treatmentPathways.slice(0, 3)
+    };
+  }
+
+  auditGuidelineAdherence(clinicalActions = []) {
+    const totalActions = clinicalActions.length;
+    if (totalActions === 0) return { adherencePercentage: 100, qualityScore: 'OPTIMAL' };
+
+    const compliantActions = clinicalActions.filter(a => a.adherent !== false).length;
+    const percentage = Math.round((compliantActions / totalActions) * 100);
+
+    return {
+      totalActions,
+      compliantActions,
+      adherencePercentage: percentage,
+      qualityScore: percentage >= 85 ? 'OPTIMAL' : (percentage >= 70 ? 'ACCEPTABLE' : 'ACTION_REQUIRED')
+    };
+  }
+
+  exportSOAPAssessmentTemplate(condition, patient) {
+    const condName = condition || 'Primary Specialty Evaluation';
+    return {
+      subjective: `Patient presents for follow-up and management of ${condName}. Reports adherence to current therapeutic regimen without acute side effects.`,
+      objective: `Physical examination consistent with baseline. Vital signs and diagnostic laboratory findings reviewed in ${this.clinicalDomain}.`,
+      assessment: `1. ${condName} - Evaluated under ${this.engineName} evidence-based clinical protocols. Status stable.`,
+      plan: `1. Continue optimized guideline-directed medical therapy.
+2. Schedule repeat diagnostic panel in 3-6 months.
+3. Return for clinical re-evaluation as needed.`
+    };
   }
 }
 

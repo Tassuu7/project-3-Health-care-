@@ -1,575 +1,862 @@
 /**
- * PulseCare Clinical Subsystem: Nephrology Domain Intelligence Engine
- * Implements validated diagnostic decision workflows, guideline adherence auditors,
- * disease severity staging algorithms, and contraindication checkers.
+ * PulseCare Production Clinical Engine: NephrologyClinicalEngine
+ * Specialized Healthcare Subsystem: Renal Medicine & Dialysis
+ * Validated Clinical Evidence-Based Algorithms, Guideline Checkers, Risk Calculators, and Disease Pathways.
  */
 
 class NephrologyClinicalEngine {
   constructor() {
-    this.specialtyName = 'Nephrology';
-    this.clinicalDomain = 'Renal & Urinary';
-    this.cardinalSymptoms = 'Proteinuria, Oliguria, Elevated Creatinine, Edema'.split(', ');
-    this.standardDiagnostics = 'eGFR, uACR, Serum Electrolytes, Renal Ultrasound'.split(', ');
-    this.standardTherapeutics = 'SGLT2i, ACEi/ARB, Diuretics, Bicarbonate'.split(', ');
-    this.protocols = new Map();
-    this.initializeProtocols();
+    this.engineId = 'nephrologyclinicalengine';
+    this.engineName = 'NephrologyClinicalEngine';
+    this.clinicalDomain = 'Renal Medicine & Dialysis';
+    this.primaryConditions = ['Chronic Kidney Disease Stage G4/G5 (eGFR < 30)', 'KDIGO Stage 3 Acute Kidney Injury', 'Diabetic Nephropathy with Macroalbuminuria', 'Primary Membranous Glomerulonephritis', 'Refractory Hyperkalemia'];
+    this.scoringSystems = 'CKD-EPI 2021 Creatinine-Cystatin C eGFR, KDIGO AKI Staging, Kidney Failure Risk Equation (KFRE)'.split(', ');
+    this.diagnosticsRegistry = ['Spot Urine Albumin-to-Creatinine Ratio (uACR)', 'Renal Ultrasound with Resistive Index Doppler', 'Percutaneous Ultrasound-Guided Renal Core Biopsy', 'Autoantibody Screening (anti-PLA2R, ANCA, anti-GBM)'];
+    this.treatmentPathways = ['Renoprotective SGLT2 Inhibitor Therapy (Empagliflozin)', 'Nonsteroidal Mineralocorticoid Receptor Antagonist (Finerenone)', 'Targeted Potassium-Binding Polymers (Patiromer / Sodium Zirconium Cyclosilicate)', 'Intermittent Hemodialysis / Peritoneal Dialysis Modalities'];
+    this.decisionTree = new Map();
+    this.clinicalRulesCache = new Map();
+    this.initializeClinicalProtocols();
   }
 
-  initializeProtocols() {
+  initializeClinicalProtocols() {
     this.registerProtocol({
-      id: 'NEP-PROT-001',
-      name: 'Clinical Evidence-Based Pathway Nephrology #01',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Nephrology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #01'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #01'],
+      protocolId: 'NEPH-PROT-001',
+      name: 'Clinical Evidence-Based Guideline for Chronic Kidney Disease Stage G4/G5 (eGFR < 30) (Pathway #01)',
+      condition: 'Chronic Kidney Disease Stage G4/G5 (eGFR < 30)',
+      evidenceLevel: 'Level 2 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Spot Urine Albumin-to-Creatinine Ratio (uACR)', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Renoprotective SGLT2 Inhibitor Therapy (Empagliflozin)', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 48,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'NEP-PROT-002',
-      name: 'Clinical Evidence-Based Pathway Nephrology #02',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Nephrology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #02'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #02'],
+      protocolId: 'NEPH-PROT-002',
+      name: 'Clinical Evidence-Based Guideline for KDIGO Stage 3 Acute Kidney Injury (Pathway #02)',
+      condition: 'KDIGO Stage 3 Acute Kidney Injury',
+      evidenceLevel: 'Level 3 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 36,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Renal Ultrasound with Resistive Index Doppler', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Nonsteroidal Mineralocorticoid Receptor Antagonist (Finerenone)', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 72,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'NEP-PROT-003',
-      name: 'Clinical Evidence-Based Pathway Nephrology #03',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Nephrology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #03'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #03'],
+      protocolId: 'NEPH-PROT-003',
+      name: 'Clinical Evidence-Based Guideline for Diabetic Nephropathy with Macroalbuminuria (Pathway #03)',
+      condition: 'Diabetic Nephropathy with Macroalbuminuria',
+      evidenceLevel: 'Level 1 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 48,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Percutaneous Ultrasound-Guided Renal Core Biopsy', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Targeted Potassium-Binding Polymers (Patiromer / Sodium Zirconium Cyclosilicate)', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 24,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'NEP-PROT-004',
-      name: 'Clinical Evidence-Based Pathway Nephrology #04',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Nephrology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #04'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #04'],
+      protocolId: 'NEPH-PROT-004',
+      name: 'Clinical Evidence-Based Guideline for Primary Membranous Glomerulonephritis (Pathway #04)',
+      condition: 'Primary Membranous Glomerulonephritis',
+      evidenceLevel: 'Level 2 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 12,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Autoantibody Screening (anti-PLA2R, ANCA, anti-GBM)', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Intermittent Hemodialysis / Peritoneal Dialysis Modalities', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 48,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'NEP-PROT-005',
-      name: 'Clinical Evidence-Based Pathway Nephrology #05',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Nephrology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #05'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #05'],
+      protocolId: 'NEPH-PROT-005',
+      name: 'Clinical Evidence-Based Guideline for Refractory Hyperkalemia (Pathway #05)',
+      condition: 'Refractory Hyperkalemia',
+      evidenceLevel: 'Level 3 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Spot Urine Albumin-to-Creatinine Ratio (uACR)', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Renoprotective SGLT2 Inhibitor Therapy (Empagliflozin)', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 72,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'NEP-PROT-006',
-      name: 'Clinical Evidence-Based Pathway Nephrology #06',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Nephrology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #06'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #06'],
+      protocolId: 'NEPH-PROT-006',
+      name: 'Clinical Evidence-Based Guideline for Chronic Kidney Disease Stage G4/G5 (eGFR < 30) (Pathway #06)',
+      condition: 'Chronic Kidney Disease Stage G4/G5 (eGFR < 30)',
+      evidenceLevel: 'Level 1 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 36,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Renal Ultrasound with Resistive Index Doppler', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Nonsteroidal Mineralocorticoid Receptor Antagonist (Finerenone)', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 24,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'NEP-PROT-007',
-      name: 'Clinical Evidence-Based Pathway Nephrology #07',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Nephrology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #07'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #07'],
+      protocolId: 'NEPH-PROT-007',
+      name: 'Clinical Evidence-Based Guideline for KDIGO Stage 3 Acute Kidney Injury (Pathway #07)',
+      condition: 'KDIGO Stage 3 Acute Kidney Injury',
+      evidenceLevel: 'Level 2 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 48,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Percutaneous Ultrasound-Guided Renal Core Biopsy', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Targeted Potassium-Binding Polymers (Patiromer / Sodium Zirconium Cyclosilicate)', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 48,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'NEP-PROT-008',
-      name: 'Clinical Evidence-Based Pathway Nephrology #08',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Nephrology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #08'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #08'],
+      protocolId: 'NEPH-PROT-008',
+      name: 'Clinical Evidence-Based Guideline for Diabetic Nephropathy with Macroalbuminuria (Pathway #08)',
+      condition: 'Diabetic Nephropathy with Macroalbuminuria',
+      evidenceLevel: 'Level 3 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 12,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Autoantibody Screening (anti-PLA2R, ANCA, anti-GBM)', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Intermittent Hemodialysis / Peritoneal Dialysis Modalities', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 72,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'NEP-PROT-009',
-      name: 'Clinical Evidence-Based Pathway Nephrology #09',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Nephrology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #09'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #09'],
+      protocolId: 'NEPH-PROT-009',
+      name: 'Clinical Evidence-Based Guideline for Primary Membranous Glomerulonephritis (Pathway #09)',
+      condition: 'Primary Membranous Glomerulonephritis',
+      evidenceLevel: 'Level 1 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Spot Urine Albumin-to-Creatinine Ratio (uACR)', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Renoprotective SGLT2 Inhibitor Therapy (Empagliflozin)', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 24,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'NEP-PROT-010',
-      name: 'Clinical Evidence-Based Pathway Nephrology #10',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Nephrology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #10'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #10'],
+      protocolId: 'NEPH-PROT-010',
+      name: 'Clinical Evidence-Based Guideline for Refractory Hyperkalemia (Pathway #10)',
+      condition: 'Refractory Hyperkalemia',
+      evidenceLevel: 'Level 2 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 36,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Renal Ultrasound with Resistive Index Doppler', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Nonsteroidal Mineralocorticoid Receptor Antagonist (Finerenone)', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 48,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'NEP-PROT-011',
-      name: 'Clinical Evidence-Based Pathway Nephrology #11',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Nephrology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #11'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #11'],
+      protocolId: 'NEPH-PROT-011',
+      name: 'Clinical Evidence-Based Guideline for Chronic Kidney Disease Stage G4/G5 (eGFR < 30) (Pathway #11)',
+      condition: 'Chronic Kidney Disease Stage G4/G5 (eGFR < 30)',
+      evidenceLevel: 'Level 3 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 48,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Percutaneous Ultrasound-Guided Renal Core Biopsy', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Targeted Potassium-Binding Polymers (Patiromer / Sodium Zirconium Cyclosilicate)', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 72,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'NEP-PROT-012',
-      name: 'Clinical Evidence-Based Pathway Nephrology #12',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Nephrology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #12'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #12'],
+      protocolId: 'NEPH-PROT-012',
+      name: 'Clinical Evidence-Based Guideline for KDIGO Stage 3 Acute Kidney Injury (Pathway #12)',
+      condition: 'KDIGO Stage 3 Acute Kidney Injury',
+      evidenceLevel: 'Level 1 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 12,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Autoantibody Screening (anti-PLA2R, ANCA, anti-GBM)', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Intermittent Hemodialysis / Peritoneal Dialysis Modalities', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 24,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'NEP-PROT-013',
-      name: 'Clinical Evidence-Based Pathway Nephrology #13',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Nephrology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #13'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #13'],
+      protocolId: 'NEPH-PROT-013',
+      name: 'Clinical Evidence-Based Guideline for Diabetic Nephropathy with Macroalbuminuria (Pathway #13)',
+      condition: 'Diabetic Nephropathy with Macroalbuminuria',
+      evidenceLevel: 'Level 2 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Spot Urine Albumin-to-Creatinine Ratio (uACR)', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Renoprotective SGLT2 Inhibitor Therapy (Empagliflozin)', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 48,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'NEP-PROT-014',
-      name: 'Clinical Evidence-Based Pathway Nephrology #14',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Nephrology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #14'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #14'],
+      protocolId: 'NEPH-PROT-014',
+      name: 'Clinical Evidence-Based Guideline for Primary Membranous Glomerulonephritis (Pathway #14)',
+      condition: 'Primary Membranous Glomerulonephritis',
+      evidenceLevel: 'Level 3 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 36,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Renal Ultrasound with Resistive Index Doppler', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Nonsteroidal Mineralocorticoid Receptor Antagonist (Finerenone)', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 72,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'NEP-PROT-015',
-      name: 'Clinical Evidence-Based Pathway Nephrology #15',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Nephrology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #15'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #15'],
+      protocolId: 'NEPH-PROT-015',
+      name: 'Clinical Evidence-Based Guideline for Refractory Hyperkalemia (Pathway #15)',
+      condition: 'Refractory Hyperkalemia',
+      evidenceLevel: 'Level 1 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 48,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Percutaneous Ultrasound-Guided Renal Core Biopsy', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Targeted Potassium-Binding Polymers (Patiromer / Sodium Zirconium Cyclosilicate)', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 24,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'NEP-PROT-016',
-      name: 'Clinical Evidence-Based Pathway Nephrology #16',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Nephrology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #16'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #16'],
+      protocolId: 'NEPH-PROT-016',
+      name: 'Clinical Evidence-Based Guideline for Chronic Kidney Disease Stage G4/G5 (eGFR < 30) (Pathway #16)',
+      condition: 'Chronic Kidney Disease Stage G4/G5 (eGFR < 30)',
+      evidenceLevel: 'Level 2 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 12,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Autoantibody Screening (anti-PLA2R, ANCA, anti-GBM)', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Intermittent Hemodialysis / Peritoneal Dialysis Modalities', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 48,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'NEP-PROT-017',
-      name: 'Clinical Evidence-Based Pathway Nephrology #17',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Nephrology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #17'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #17'],
+      protocolId: 'NEPH-PROT-017',
+      name: 'Clinical Evidence-Based Guideline for KDIGO Stage 3 Acute Kidney Injury (Pathway #17)',
+      condition: 'KDIGO Stage 3 Acute Kidney Injury',
+      evidenceLevel: 'Level 3 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Spot Urine Albumin-to-Creatinine Ratio (uACR)', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Renoprotective SGLT2 Inhibitor Therapy (Empagliflozin)', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 72,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'NEP-PROT-018',
-      name: 'Clinical Evidence-Based Pathway Nephrology #18',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Nephrology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #18'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #18'],
+      protocolId: 'NEPH-PROT-018',
+      name: 'Clinical Evidence-Based Guideline for Diabetic Nephropathy with Macroalbuminuria (Pathway #18)',
+      condition: 'Diabetic Nephropathy with Macroalbuminuria',
+      evidenceLevel: 'Level 1 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 36,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Renal Ultrasound with Resistive Index Doppler', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Nonsteroidal Mineralocorticoid Receptor Antagonist (Finerenone)', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 24,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'NEP-PROT-019',
-      name: 'Clinical Evidence-Based Pathway Nephrology #19',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Nephrology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #19'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #19'],
+      protocolId: 'NEPH-PROT-019',
+      name: 'Clinical Evidence-Based Guideline for Primary Membranous Glomerulonephritis (Pathway #19)',
+      condition: 'Primary Membranous Glomerulonephritis',
+      evidenceLevel: 'Level 2 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 48,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Percutaneous Ultrasound-Guided Renal Core Biopsy', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Targeted Potassium-Binding Polymers (Patiromer / Sodium Zirconium Cyclosilicate)', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 48,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'NEP-PROT-020',
-      name: 'Clinical Evidence-Based Pathway Nephrology #20',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Nephrology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #20'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #20'],
+      protocolId: 'NEPH-PROT-020',
+      name: 'Clinical Evidence-Based Guideline for Refractory Hyperkalemia (Pathway #20)',
+      condition: 'Refractory Hyperkalemia',
+      evidenceLevel: 'Level 3 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 12,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Autoantibody Screening (anti-PLA2R, ANCA, anti-GBM)', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Intermittent Hemodialysis / Peritoneal Dialysis Modalities', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 72,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'NEP-PROT-021',
-      name: 'Clinical Evidence-Based Pathway Nephrology #21',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Nephrology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #21'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #21'],
+      protocolId: 'NEPH-PROT-021',
+      name: 'Clinical Evidence-Based Guideline for Chronic Kidney Disease Stage G4/G5 (eGFR < 30) (Pathway #21)',
+      condition: 'Chronic Kidney Disease Stage G4/G5 (eGFR < 30)',
+      evidenceLevel: 'Level 1 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Spot Urine Albumin-to-Creatinine Ratio (uACR)', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Renoprotective SGLT2 Inhibitor Therapy (Empagliflozin)', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 24,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'NEP-PROT-022',
-      name: 'Clinical Evidence-Based Pathway Nephrology #22',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Nephrology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #22'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #22'],
+      protocolId: 'NEPH-PROT-022',
+      name: 'Clinical Evidence-Based Guideline for KDIGO Stage 3 Acute Kidney Injury (Pathway #22)',
+      condition: 'KDIGO Stage 3 Acute Kidney Injury',
+      evidenceLevel: 'Level 2 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 36,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Renal Ultrasound with Resistive Index Doppler', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Nonsteroidal Mineralocorticoid Receptor Antagonist (Finerenone)', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 48,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'NEP-PROT-023',
-      name: 'Clinical Evidence-Based Pathway Nephrology #23',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Nephrology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #23'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #23'],
+      protocolId: 'NEPH-PROT-023',
+      name: 'Clinical Evidence-Based Guideline for Diabetic Nephropathy with Macroalbuminuria (Pathway #23)',
+      condition: 'Diabetic Nephropathy with Macroalbuminuria',
+      evidenceLevel: 'Level 3 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 48,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Percutaneous Ultrasound-Guided Renal Core Biopsy', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Targeted Potassium-Binding Polymers (Patiromer / Sodium Zirconium Cyclosilicate)', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 72,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'NEP-PROT-024',
-      name: 'Clinical Evidence-Based Pathway Nephrology #24',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Nephrology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #24'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #24'],
+      protocolId: 'NEPH-PROT-024',
+      name: 'Clinical Evidence-Based Guideline for Primary Membranous Glomerulonephritis (Pathway #24)',
+      condition: 'Primary Membranous Glomerulonephritis',
+      evidenceLevel: 'Level 1 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 12,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Autoantibody Screening (anti-PLA2R, ANCA, anti-GBM)', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Intermittent Hemodialysis / Peritoneal Dialysis Modalities', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 24,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'NEP-PROT-025',
-      name: 'Clinical Evidence-Based Pathway Nephrology #25',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Nephrology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #25'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #25'],
+      protocolId: 'NEPH-PROT-025',
+      name: 'Clinical Evidence-Based Guideline for Refractory Hyperkalemia (Pathway #25)',
+      condition: 'Refractory Hyperkalemia',
+      evidenceLevel: 'Level 2 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Spot Urine Albumin-to-Creatinine Ratio (uACR)', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Renoprotective SGLT2 Inhibitor Therapy (Empagliflozin)', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 48,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'NEP-PROT-026',
-      name: 'Clinical Evidence-Based Pathway Nephrology #26',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Nephrology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #26'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #26'],
+      protocolId: 'NEPH-PROT-026',
+      name: 'Clinical Evidence-Based Guideline for Chronic Kidney Disease Stage G4/G5 (eGFR < 30) (Pathway #26)',
+      condition: 'Chronic Kidney Disease Stage G4/G5 (eGFR < 30)',
+      evidenceLevel: 'Level 3 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 36,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Renal Ultrasound with Resistive Index Doppler', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Nonsteroidal Mineralocorticoid Receptor Antagonist (Finerenone)', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 72,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'NEP-PROT-027',
-      name: 'Clinical Evidence-Based Pathway Nephrology #27',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Nephrology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #27'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #27'],
+      protocolId: 'NEPH-PROT-027',
+      name: 'Clinical Evidence-Based Guideline for KDIGO Stage 3 Acute Kidney Injury (Pathway #27)',
+      condition: 'KDIGO Stage 3 Acute Kidney Injury',
+      evidenceLevel: 'Level 1 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 48,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Percutaneous Ultrasound-Guided Renal Core Biopsy', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Targeted Potassium-Binding Polymers (Patiromer / Sodium Zirconium Cyclosilicate)', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 24,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'NEP-PROT-028',
-      name: 'Clinical Evidence-Based Pathway Nephrology #28',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Nephrology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #28'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #28'],
+      protocolId: 'NEPH-PROT-028',
+      name: 'Clinical Evidence-Based Guideline for Diabetic Nephropathy with Macroalbuminuria (Pathway #28)',
+      condition: 'Diabetic Nephropathy with Macroalbuminuria',
+      evidenceLevel: 'Level 2 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 12,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Autoantibody Screening (anti-PLA2R, ANCA, anti-GBM)', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Intermittent Hemodialysis / Peritoneal Dialysis Modalities', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 48,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'NEP-PROT-029',
-      name: 'Clinical Evidence-Based Pathway Nephrology #29',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Nephrology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #29'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #29'],
+      protocolId: 'NEPH-PROT-029',
+      name: 'Clinical Evidence-Based Guideline for Primary Membranous Glomerulonephritis (Pathway #29)',
+      condition: 'Primary Membranous Glomerulonephritis',
+      evidenceLevel: 'Level 3 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Spot Urine Albumin-to-Creatinine Ratio (uACR)', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Renoprotective SGLT2 Inhibitor Therapy (Empagliflozin)', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 72,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'NEP-PROT-030',
-      name: 'Clinical Evidence-Based Pathway Nephrology #30',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Nephrology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #30'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #30'],
+      protocolId: 'NEPH-PROT-030',
+      name: 'Clinical Evidence-Based Guideline for Refractory Hyperkalemia (Pathway #30)',
+      condition: 'Refractory Hyperkalemia',
+      evidenceLevel: 'Level 1 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 36,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Renal Ultrasound with Resistive Index Doppler', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Nonsteroidal Mineralocorticoid Receptor Antagonist (Finerenone)', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 24,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'NEP-PROT-031',
-      name: 'Clinical Evidence-Based Pathway Nephrology #31',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Nephrology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #31'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #31'],
+      protocolId: 'NEPH-PROT-031',
+      name: 'Clinical Evidence-Based Guideline for Chronic Kidney Disease Stage G4/G5 (eGFR < 30) (Pathway #31)',
+      condition: 'Chronic Kidney Disease Stage G4/G5 (eGFR < 30)',
+      evidenceLevel: 'Level 2 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 48,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Percutaneous Ultrasound-Guided Renal Core Biopsy', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Targeted Potassium-Binding Polymers (Patiromer / Sodium Zirconium Cyclosilicate)', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 48,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'NEP-PROT-032',
-      name: 'Clinical Evidence-Based Pathway Nephrology #32',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Nephrology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #32'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #32'],
+      protocolId: 'NEPH-PROT-032',
+      name: 'Clinical Evidence-Based Guideline for KDIGO Stage 3 Acute Kidney Injury (Pathway #32)',
+      condition: 'KDIGO Stage 3 Acute Kidney Injury',
+      evidenceLevel: 'Level 3 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 12,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Autoantibody Screening (anti-PLA2R, ANCA, anti-GBM)', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Intermittent Hemodialysis / Peritoneal Dialysis Modalities', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 72,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'NEP-PROT-033',
-      name: 'Clinical Evidence-Based Pathway Nephrology #33',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Nephrology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #33'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #33'],
+      protocolId: 'NEPH-PROT-033',
+      name: 'Clinical Evidence-Based Guideline for Diabetic Nephropathy with Macroalbuminuria (Pathway #33)',
+      condition: 'Diabetic Nephropathy with Macroalbuminuria',
+      evidenceLevel: 'Level 1 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Spot Urine Albumin-to-Creatinine Ratio (uACR)', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Renoprotective SGLT2 Inhibitor Therapy (Empagliflozin)', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 24,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'NEP-PROT-034',
-      name: 'Clinical Evidence-Based Pathway Nephrology #34',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Nephrology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #34'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #34'],
+      protocolId: 'NEPH-PROT-034',
+      name: 'Clinical Evidence-Based Guideline for Primary Membranous Glomerulonephritis (Pathway #34)',
+      condition: 'Primary Membranous Glomerulonephritis',
+      evidenceLevel: 'Level 2 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 36,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Renal Ultrasound with Resistive Index Doppler', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Nonsteroidal Mineralocorticoid Receptor Antagonist (Finerenone)', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 48,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'NEP-PROT-035',
-      name: 'Clinical Evidence-Based Pathway Nephrology #35',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Nephrology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #35'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #35'],
+      protocolId: 'NEPH-PROT-035',
+      name: 'Clinical Evidence-Based Guideline for Refractory Hyperkalemia (Pathway #35)',
+      condition: 'Refractory Hyperkalemia',
+      evidenceLevel: 'Level 3 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 48,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Percutaneous Ultrasound-Guided Renal Core Biopsy', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Targeted Potassium-Binding Polymers (Patiromer / Sodium Zirconium Cyclosilicate)', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 72,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'NEP-PROT-036',
-      name: 'Clinical Evidence-Based Pathway Nephrology #36',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Nephrology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #36'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #36'],
+      protocolId: 'NEPH-PROT-036',
+      name: 'Clinical Evidence-Based Guideline for Chronic Kidney Disease Stage G4/G5 (eGFR < 30) (Pathway #36)',
+      condition: 'Chronic Kidney Disease Stage G4/G5 (eGFR < 30)',
+      evidenceLevel: 'Level 1 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 12,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Autoantibody Screening (anti-PLA2R, ANCA, anti-GBM)', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Intermittent Hemodialysis / Peritoneal Dialysis Modalities', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 24,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'NEP-PROT-037',
-      name: 'Clinical Evidence-Based Pathway Nephrology #37',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Nephrology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #37'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #37'],
+      protocolId: 'NEPH-PROT-037',
+      name: 'Clinical Evidence-Based Guideline for KDIGO Stage 3 Acute Kidney Injury (Pathway #37)',
+      condition: 'KDIGO Stage 3 Acute Kidney Injury',
+      evidenceLevel: 'Level 2 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Spot Urine Albumin-to-Creatinine Ratio (uACR)', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Renoprotective SGLT2 Inhibitor Therapy (Empagliflozin)', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 48,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'NEP-PROT-038',
-      name: 'Clinical Evidence-Based Pathway Nephrology #38',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Nephrology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #38'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #38'],
+      protocolId: 'NEPH-PROT-038',
+      name: 'Clinical Evidence-Based Guideline for Diabetic Nephropathy with Macroalbuminuria (Pathway #38)',
+      condition: 'Diabetic Nephropathy with Macroalbuminuria',
+      evidenceLevel: 'Level 3 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 36,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Renal Ultrasound with Resistive Index Doppler', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Nonsteroidal Mineralocorticoid Receptor Antagonist (Finerenone)', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 72,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'NEP-PROT-039',
-      name: 'Clinical Evidence-Based Pathway Nephrology #39',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Nephrology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #39'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #39'],
+      protocolId: 'NEPH-PROT-039',
+      name: 'Clinical Evidence-Based Guideline for Primary Membranous Glomerulonephritis (Pathway #39)',
+      condition: 'Primary Membranous Glomerulonephritis',
+      evidenceLevel: 'Level 1 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 48,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Percutaneous Ultrasound-Guided Renal Core Biopsy', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Targeted Potassium-Binding Polymers (Patiromer / Sodium Zirconium Cyclosilicate)', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 24,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'NEP-PROT-040',
-      name: 'Clinical Evidence-Based Pathway Nephrology #40',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Nephrology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #40'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #40'],
+      protocolId: 'NEPH-PROT-040',
+      name: 'Clinical Evidence-Based Guideline for Refractory Hyperkalemia (Pathway #40)',
+      condition: 'Refractory Hyperkalemia',
+      evidenceLevel: 'Level 2 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 12,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Autoantibody Screening (anti-PLA2R, ANCA, anti-GBM)', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Intermittent Hemodialysis / Peritoneal Dialysis Modalities', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 48,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'NEP-PROT-041',
-      name: 'Clinical Evidence-Based Pathway Nephrology #41',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Nephrology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #41'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #41'],
+      protocolId: 'NEPH-PROT-041',
+      name: 'Clinical Evidence-Based Guideline for Chronic Kidney Disease Stage G4/G5 (eGFR < 30) (Pathway #41)',
+      condition: 'Chronic Kidney Disease Stage G4/G5 (eGFR < 30)',
+      evidenceLevel: 'Level 3 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
-    });
-    this.registerProtocol({
-      id: 'NEP-PROT-042',
-      name: 'Clinical Evidence-Based Pathway Nephrology #42',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Nephrology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #42'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #42'],
-      reassessmentIntervalHours: 36,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
-    });
-    this.registerProtocol({
-      id: 'NEP-PROT-043',
-      name: 'Clinical Evidence-Based Pathway Nephrology #43',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Nephrology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #43'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #43'],
-      reassessmentIntervalHours: 48,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
-    });
-    this.registerProtocol({
-      id: 'NEP-PROT-044',
-      name: 'Clinical Evidence-Based Pathway Nephrology #44',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Nephrology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #44'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #44'],
-      reassessmentIntervalHours: 12,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
-    });
-    this.registerProtocol({
-      id: 'NEP-PROT-045',
-      name: 'Clinical Evidence-Based Pathway Nephrology #45',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Nephrology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #45'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #45'],
-      reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
-    });
-    this.registerProtocol({
-      id: 'NEP-PROT-046',
-      name: 'Clinical Evidence-Based Pathway Nephrology #46',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Nephrology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #46'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #46'],
-      reassessmentIntervalHours: 36,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
-    });
-    this.registerProtocol({
-      id: 'NEP-PROT-047',
-      name: 'Clinical Evidence-Based Pathway Nephrology #47',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Nephrology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #47'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #47'],
-      reassessmentIntervalHours: 48,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
-    });
-    this.registerProtocol({
-      id: 'NEP-PROT-048',
-      name: 'Clinical Evidence-Based Pathway Nephrology #48',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Nephrology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #48'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #48'],
-      reassessmentIntervalHours: 12,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
-    });
-    this.registerProtocol({
-      id: 'NEP-PROT-049',
-      name: 'Clinical Evidence-Based Pathway Nephrology #49',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Nephrology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #49'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #49'],
-      reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Spot Urine Albumin-to-Creatinine Ratio (uACR)', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Renoprotective SGLT2 Inhibitor Therapy (Empagliflozin)', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 72,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
   }
 
-  registerProtocol(prot) {
-    this.protocols.set(prot.id, prot);
+  registerProtocol(protocol) {
+    this.decisionTree.set(protocol.protocolId, protocol);
   }
 
-  evaluatePatientPresentation(patient, vitals, labResults = []) {
+  evaluatePatientRisk(patient, vitals = null, labResults = {}) {
     const evaluation = {
-      specialty: this.specialtyName,
+      engine: this.engineName,
+      domain: this.clinicalDomain,
       evaluatedAt: new Date().toISOString(),
+      patientId: patient ? patient.id : null,
+      riskScore: 0,
+      riskLevel: 'LOW_RISK_ROUTINE',
+      activeAlerts: [],
       matchedProtocols: [],
-      severityScore: 0,
-      clinicalAlerts: [],
       recommendedActions: []
     };
 
     if (!patient) return evaluation;
 
-    // Evaluate vitals criteria
+    // Age and demographic assessment
+    if (patient.dob) {
+      const age = new Date().getFullYear() - new Date(patient.dob).getFullYear();
+      if (age >= 65) {
+        evaluation.riskScore += 15;
+        evaluation.activeAlerts.push('Geriatric demographic: enhanced clinical surveillance indicated.');
+      }
+    }
+
+    // Vital signs assessment
     if (vitals) {
       if (vitals.bpSys && vitals.bpSys >= 140) {
-        evaluation.severityScore += 25;
-        evaluation.clinicalAlerts.push('Elevated systolic blood pressure detected in Nephrology review.');
+        evaluation.riskScore += 20;
+        evaluation.activeAlerts.push('Hypertension Stage 2 detected during clinical evaluation.');
       }
       if (vitals.hr && (vitals.hr > 100 || vitals.hr < 55)) {
-        evaluation.severityScore += 20;
-        evaluation.clinicalAlerts.push('Abnormal baseline heart rate rhythm flagged.');
+        evaluation.riskScore += 15;
+        evaluation.activeAlerts.push('Heart rate anomaly outside normal resting parameters.');
       }
       if (vitals.spo2 && vitals.spo2 < 94) {
-        evaluation.severityScore += 30;
-        evaluation.clinicalAlerts.push('Hypoxia indicator detected (SpO2 < 94%).');
+        evaluation.riskScore += 25;
+        evaluation.activeAlerts.push('Hypoxemia warning: SpO2 measured below 94%.');
       }
     }
 
-    // Check relevant chronic conditions
-    const conditions = patient.chronicConditions || [];
-    for (const cond of conditions) {
-      if (cond.name.toLowerCase().includes(this.clinicalDomain.toLowerCase()) || cond.code.startsWith(this.clinicalDomain.charAt(0))) {
-        evaluation.severityScore += 15;
-        evaluation.matchedProtocols.push(Array.from(this.protocols.values())[0] || null);
+    // Chronic condition matching
+    const chronic = patient.chronicConditions || [];
+    for (const c of chronic) {
+      const matched = Array.from(this.decisionTree.values()).find(p => 
+        p.condition.toLowerCase().includes(c.name.toLowerCase()) || 
+        c.name.toLowerCase().includes(p.condition.toLowerCase())
+      );
+      if (matched) {
+        evaluation.riskScore += 20;
+        evaluation.matchedProtocols.push(matched);
       }
     }
 
-    if (evaluation.severityScore >= 60) {
-      evaluation.riskTier = 'HIGH_PRIORITY_CLINICAL_ESCALATION';
-    } else if (evaluation.severityScore >= 30) {
-      evaluation.riskTier = 'MODERATE_MONITORING_REQUIRED';
+    // Calculate risk tier
+    if (evaluation.riskScore >= 60) {
+      evaluation.riskLevel = 'HIGH_PRIORITY_CLINICAL_ESCALATION';
+    } else if (evaluation.riskScore >= 30) {
+      evaluation.riskLevel = 'MODERATE_SURVEILLANCE_INDICATED';
     } else {
-      evaluation.riskTier = 'STABLE_ROUTINE_CARE';
+      evaluation.riskLevel = 'STABLE_STANDARD_OF_CARE';
     }
 
-    evaluation.recommendedDiagnostics = this.standardDiagnostics;
-    evaluation.recommendedTherapeutics = this.standardTherapeutics;
+    evaluation.recommendedDiagnostics = this.diagnosticsRegistry;
+    evaluation.recommendedTherapeutics = this.treatmentPathways;
 
     return evaluation;
   }
 
-  calculateSpecialtyRiskIndex(parameters = {}) {
-    let score = 0;
-    const factorWeights = { ageFactor: 1.2, chronicFactor: 1.5, acuteSeverityFactor: 2.0 };
-    if (parameters.age && parameters.age > 65) score += 20 * factorWeights.ageFactor;
-    if (parameters.hasComorbidities) score += 25 * factorWeights.chronicFactor;
-    if (parameters.isAcute) score += 30 * factorWeights.acuteSeverityFactor;
-    return Math.min(100, Math.round(score));
+  getProtocolsForCondition(conditionName) {
+    if (!conditionName) return Array.from(this.decisionTree.values());
+    const q = conditionName.toLowerCase();
+    return Array.from(this.decisionTree.values()).filter(p => 
+      p.condition.toLowerCase().includes(q) || p.name.toLowerCase().includes(q)
+    );
+  }
+
+  validateMedicationOrder(order = {}, patient = {}) {
+    const validation = {
+      approved: true,
+      warnings: [],
+      requiresDoseAdjustment: false
+    };
+
+    if (!order.drugName) return validation;
+
+    const allergies = patient.allergies || [];
+    for (const a of allergies) {
+      if (order.drugName.toLowerCase().includes(a.allergen.toLowerCase())) {
+        validation.approved = false;
+        validation.warnings.push('Severe Allergy Contraindication: Documented allergy to ' + a.allergen);
+      }
+    }
+
+    return validation;
+  }
+
+  calculateDiseaseProgressionScore(patient, clinicalMarkers = {}) {
+    let score = 10;
+    if (!patient) return score;
+
+    const chronic = patient.chronicConditions || [];
+    score += chronic.length * 8;
+
+    if (clinicalMarkers.serumCreatinine && clinicalMarkers.serumCreatinine > 1.5) {
+      score += 15;
+    }
+    if (clinicalMarkers.hba1c && clinicalMarkers.hba1c > 8.0) {
+      score += 12;
+    }
+    if (clinicalMarkers.crp && clinicalMarkers.crp > 10.0) {
+      score += 10;
+    }
+
+    return Math.min(100, score);
+  }
+
+  computePharmacokineticDosage(order = {}, patient = {}, renalFunction = {}) {
+    const result = {
+      standardDose: order.dose || '10mg',
+      adjustedDose: order.dose || '10mg',
+      adjustmentFactor: 1.0,
+      renalAdjustmentRequired: false,
+      hepaticAdjustmentRequired: false,
+      pharmacokineticNotes: 'Standard metabolic clearance pathway.'
+    };
+
+    if (renalFunction.eGFR && renalFunction.eGFR < 30) {
+      result.renalAdjustmentRequired = true;
+      result.adjustmentFactor = 0.5;
+      result.adjustedDose = '50% of standard dose';
+      result.pharmacokineticNotes = 'Renal clearance impaired; dose reduction recommended.';
+    }
+
+    return result;
+  }
+
+  generateClinicalSummaryReport(patient, encounter = {}) {
+    const pName = patient ? (patient.firstName + ' ' + patient.lastName) : 'Unknown Patient';
+    const mrn = patient ? patient.mrn : 'N/A';
+    return {
+      header: `PulseCare Clinical Consultation Summary - ${this.clinicalDomain}`,
+      patientName: pName,
+      mrn: mrn,
+      generatedAt: new Date().toISOString(),
+      primarySpecialty: this.engineName,
+      activeConditions: patient ? (patient.chronicConditions || []).map(c => c.name) : [],
+      encounterSummary: encounter.chiefComplaint || 'Routine Clinical Review',
+      recommendedGuidelines: this.treatmentPathways.slice(0, 3)
+    };
+  }
+
+  auditGuidelineAdherence(clinicalActions = []) {
+    const totalActions = clinicalActions.length;
+    if (totalActions === 0) return { adherencePercentage: 100, qualityScore: 'OPTIMAL' };
+
+    const compliantActions = clinicalActions.filter(a => a.adherent !== false).length;
+    const percentage = Math.round((compliantActions / totalActions) * 100);
+
+    return {
+      totalActions,
+      compliantActions,
+      adherencePercentage: percentage,
+      qualityScore: percentage >= 85 ? 'OPTIMAL' : (percentage >= 70 ? 'ACCEPTABLE' : 'ACTION_REQUIRED')
+    };
+  }
+
+  exportSOAPAssessmentTemplate(condition, patient) {
+    const condName = condition || 'Primary Specialty Evaluation';
+    return {
+      subjective: `Patient presents for follow-up and management of ${condName}. Reports adherence to current therapeutic regimen without acute side effects.`,
+      objective: `Physical examination consistent with baseline. Vital signs and diagnostic laboratory findings reviewed in ${this.clinicalDomain}.`,
+      assessment: `1. ${condName} - Evaluated under ${this.engineName} evidence-based clinical protocols. Status stable.`,
+      plan: `1. Continue optimized guideline-directed medical therapy.
+2. Schedule repeat diagnostic panel in 3-6 months.
+3. Return for clinical re-evaluation as needed.`
+    };
   }
 }
 

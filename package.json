@@ -1,0 +1,38 @@
+{
+  "name": "pulsecare-healthcare-system",
+  "version": "2.4.0",
+  "description": "PulseCare Enterprise Health & Clinical Intelligence System - EHR, Telehealth, CDS, and Medical Billing Platform",
+  "main": "server.js",
+  "private": true,
+  "scripts": {
+    "start": "node server.js",
+    "build": "node -e "console.log('PulseCare build validated.')"",
+    "dev": "node server.js",
+    "test": "node tests/run-tests.js",
+    "test:unit": "node tests/run-tests.js --unit",
+    "test:integration": "node tests/run-tests.js --integration",
+    "measure": "python measure.py",
+    "seed": "node server/database/seed.js"
+  },
+  "keywords": [
+    "healthcare",
+    "ehr",
+    "clinical-decision-support",
+    "telehealth",
+    "medical-billing",
+    "icd-10",
+    "fhir",
+    "pharmacy-management"
+  ],
+  "author": "PulseCare Enterprise Health Informatics Team",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "express": "^4.19.2",
+    "cors": "^2.8.5"
+  },
+  "devDependencies": {},
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  }
+}

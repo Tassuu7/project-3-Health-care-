@@ -1,0 +1,61 @@
+{
+  "HTN_2024": {
+    "title": "AHA/ACC Hypertension Clinical Practice Guideline",
+    "categories": {
+      "Normal": {
+        "sbpMax": 119,
+        "dbpMax": 79,
+        "recommendation": "Encourage lifestyle modification and annual screening."
+      },
+      "Elevated": {
+        "sbpMin": 120,
+        "sbpMax": 129,
+        "dbpMax": 79,
+        "recommendation": "Nonpharmacologic therapy, reassess in 3-6 months."
+      },
+      "Stage 1": {
+        "sbpMin": 130,
+        "sbpMax": 139,
+        "dbpMin": 80,
+        "dbpMax": 89,
+        "recommendation": "Calculate 10-yr ASCVD risk; if >=10% initiate monotherapy (ACEi, ARB, CCB, or thiazide)."
+      },
+      "Stage 2": {
+        "sbpMin": 140,
+        "dbpMin": 90,
+        "recommendation": "Initiate 2 first-line agents of different classes. Monthly follow-up until controlled."
+      },
+      "Hypertensive Crisis": {
+        "sbpMin": 180,
+        "dbpMin": 120,
+        "recommendation": "Evaluate for target organ damage. Emergency Department admission if symptomatic."
+      }
+    }
+  },
+  "DIABETES_ADA_2024": {
+    "title": "ADA Standards of Medical Care in Diabetes",
+    "glycemicTargets": {
+      "A1C_General": "< 7.0%",
+      "A1C_Frail_Elderly": "< 8.0%",
+      "Preprandial_Glucose": "80-130 mg/dL",
+      "Peak_Postprandial_Glucose": "< 180 mg/dL"
+    },
+    "firstLineTherapy": "Metformin + Comprehensive Lifestyle Management",
+    "ascvdHeartFailurePriority": "Add SGLT2i or GLP-1 RA with proven CVD benefit."
+  },
+  "SEPSIS_SURVIVING_2024": {
+    "title": "Surviving Sepsis Campaign 1-Hour Bundle",
+    "criteria_qSOFA": [
+      "Respiratory rate >= 22/min",
+      "Altered mentation (GCS < 15)",
+      "Systolic BP <= 100 mmHg"
+    ],
+    "bundleSteps": [
+      "1. Measure blood lactate level. Remeasure if initial lactate > 2 mmol/L.",
+      "2. Obtain blood cultures prior to administration of antibiotics.",
+      "3. Administer broad-spectrum antibiotics within 1 hour.",
+      "4. Rapidly administer 30 mL/kg crystalloid for hypotension or lactate >= 4 mmol/L.",
+      "5. Apply vasopressors (Norepinephrine first line) if hypotensive during or after fluid resuscitation to maintain MAP >= 65 mm Hg."
+    ]
+  }
+}

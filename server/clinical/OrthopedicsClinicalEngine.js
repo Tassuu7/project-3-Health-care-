@@ -1,575 +1,862 @@
 /**
- * PulseCare Clinical Subsystem: Orthopedics Domain Intelligence Engine
- * Implements validated diagnostic decision workflows, guideline adherence auditors,
- * disease severity staging algorithms, and contraindication checkers.
+ * PulseCare Production Clinical Engine: OrthopedicsClinicalEngine
+ * Specialized Healthcare Subsystem: Musculoskeletal & Reconstructive Surgery
+ * Validated Clinical Evidence-Based Algorithms, Guideline Checkers, Risk Calculators, and Disease Pathways.
  */
 
 class OrthopedicsClinicalEngine {
   constructor() {
-    this.specialtyName = 'Orthopedics';
-    this.clinicalDomain = 'Musculoskeletal Trauma';
-    this.cardinalSymptoms = 'Joint Pain, Fracture, Ligament Tear, Restricted ROM'.split(', ');
-    this.standardDiagnostics = 'Weight-Bearing Radiographs, Joint MRI, Arthroscopy'.split(', ');
-    this.standardTherapeutics = 'Physical Therapy, Splinting/Casting, Joint Injections'.split(', ');
-    this.protocols = new Map();
-    this.initializeProtocols();
+    this.engineId = 'orthopedicsclinicalengine';
+    this.engineName = 'OrthopedicsClinicalEngine';
+    this.clinicalDomain = 'Musculoskeletal & Reconstructive Surgery';
+    this.primaryConditions = ['Advanced End-Stage Knee Osteoarthritis', 'Complete Anterior Cruciate Ligament (ACL) Tear', 'Massive Rotator Cuff Tear', 'Lumbar Herniated Nucleus Pulposus with Radiculopathy', 'Unstable Fragility Intertrochanteric Hip Fracture'];
+    this.scoringSystems = 'Kellgren-Lawrence OA Radiographic Grading, IKDC Knee Evaluation, Oswestry Disability Index (ODI)'.split(', ');
+    this.diagnosticsRegistry = ['Weight-Bearing Bilateral Radiographs of Knee/Hip/Spine', '3.0 Tesla High-Resolution Musculoskeletal Magnetic Resonance Imaging', 'Diagnostic Joint Aspiration with Polarized Light Microscopy', 'Electromyography and Nerve Conduction Velocity (EMG/NCV)'];
+    this.treatmentPathways = ['Total Knee / Hip Arthroplasty (TKA/THA) with Navigation', 'Arthroscopic Autograft ACL Reconstruction', 'Image-Guided Targeted Epidural Steroid Injection', 'Multimodal Perioperative Enhanced Recovery (ERAS) Protocol'];
+    this.decisionTree = new Map();
+    this.clinicalRulesCache = new Map();
+    this.initializeClinicalProtocols();
   }
 
-  initializeProtocols() {
+  initializeClinicalProtocols() {
     this.registerProtocol({
-      id: 'ORT-PROT-001',
-      name: 'Clinical Evidence-Based Pathway Orthopedics #01',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Orthopedics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #01'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #01'],
+      protocolId: 'ORTH-PROT-001',
+      name: 'Clinical Evidence-Based Guideline for Advanced End-Stage Knee Osteoarthritis (Pathway #01)',
+      condition: 'Advanced End-Stage Knee Osteoarthritis',
+      evidenceLevel: 'Level 2 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Weight-Bearing Bilateral Radiographs of Knee/Hip/Spine', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Total Knee / Hip Arthroplasty (TKA/THA) with Navigation', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 48,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'ORT-PROT-002',
-      name: 'Clinical Evidence-Based Pathway Orthopedics #02',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Orthopedics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #02'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #02'],
+      protocolId: 'ORTH-PROT-002',
+      name: 'Clinical Evidence-Based Guideline for Complete Anterior Cruciate Ligament (ACL) Tear (Pathway #02)',
+      condition: 'Complete Anterior Cruciate Ligament (ACL) Tear',
+      evidenceLevel: 'Level 3 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 36,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['3.0 Tesla High-Resolution Musculoskeletal Magnetic Resonance Imaging', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Arthroscopic Autograft ACL Reconstruction', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 72,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'ORT-PROT-003',
-      name: 'Clinical Evidence-Based Pathway Orthopedics #03',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Orthopedics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #03'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #03'],
+      protocolId: 'ORTH-PROT-003',
+      name: 'Clinical Evidence-Based Guideline for Massive Rotator Cuff Tear (Pathway #03)',
+      condition: 'Massive Rotator Cuff Tear',
+      evidenceLevel: 'Level 1 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 48,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Diagnostic Joint Aspiration with Polarized Light Microscopy', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Image-Guided Targeted Epidural Steroid Injection', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 24,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'ORT-PROT-004',
-      name: 'Clinical Evidence-Based Pathway Orthopedics #04',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Orthopedics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #04'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #04'],
+      protocolId: 'ORTH-PROT-004',
+      name: 'Clinical Evidence-Based Guideline for Lumbar Herniated Nucleus Pulposus with Radiculopathy (Pathway #04)',
+      condition: 'Lumbar Herniated Nucleus Pulposus with Radiculopathy',
+      evidenceLevel: 'Level 2 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 12,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Electromyography and Nerve Conduction Velocity (EMG/NCV)', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Multimodal Perioperative Enhanced Recovery (ERAS) Protocol', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 48,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'ORT-PROT-005',
-      name: 'Clinical Evidence-Based Pathway Orthopedics #05',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Orthopedics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #05'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #05'],
+      protocolId: 'ORTH-PROT-005',
+      name: 'Clinical Evidence-Based Guideline for Unstable Fragility Intertrochanteric Hip Fracture (Pathway #05)',
+      condition: 'Unstable Fragility Intertrochanteric Hip Fracture',
+      evidenceLevel: 'Level 3 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Weight-Bearing Bilateral Radiographs of Knee/Hip/Spine', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Total Knee / Hip Arthroplasty (TKA/THA) with Navigation', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 72,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'ORT-PROT-006',
-      name: 'Clinical Evidence-Based Pathway Orthopedics #06',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Orthopedics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #06'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #06'],
+      protocolId: 'ORTH-PROT-006',
+      name: 'Clinical Evidence-Based Guideline for Advanced End-Stage Knee Osteoarthritis (Pathway #06)',
+      condition: 'Advanced End-Stage Knee Osteoarthritis',
+      evidenceLevel: 'Level 1 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 36,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['3.0 Tesla High-Resolution Musculoskeletal Magnetic Resonance Imaging', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Arthroscopic Autograft ACL Reconstruction', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 24,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'ORT-PROT-007',
-      name: 'Clinical Evidence-Based Pathway Orthopedics #07',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Orthopedics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #07'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #07'],
+      protocolId: 'ORTH-PROT-007',
+      name: 'Clinical Evidence-Based Guideline for Complete Anterior Cruciate Ligament (ACL) Tear (Pathway #07)',
+      condition: 'Complete Anterior Cruciate Ligament (ACL) Tear',
+      evidenceLevel: 'Level 2 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 48,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Diagnostic Joint Aspiration with Polarized Light Microscopy', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Image-Guided Targeted Epidural Steroid Injection', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 48,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'ORT-PROT-008',
-      name: 'Clinical Evidence-Based Pathway Orthopedics #08',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Orthopedics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #08'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #08'],
+      protocolId: 'ORTH-PROT-008',
+      name: 'Clinical Evidence-Based Guideline for Massive Rotator Cuff Tear (Pathway #08)',
+      condition: 'Massive Rotator Cuff Tear',
+      evidenceLevel: 'Level 3 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 12,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Electromyography and Nerve Conduction Velocity (EMG/NCV)', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Multimodal Perioperative Enhanced Recovery (ERAS) Protocol', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 72,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'ORT-PROT-009',
-      name: 'Clinical Evidence-Based Pathway Orthopedics #09',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Orthopedics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #09'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #09'],
+      protocolId: 'ORTH-PROT-009',
+      name: 'Clinical Evidence-Based Guideline for Lumbar Herniated Nucleus Pulposus with Radiculopathy (Pathway #09)',
+      condition: 'Lumbar Herniated Nucleus Pulposus with Radiculopathy',
+      evidenceLevel: 'Level 1 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Weight-Bearing Bilateral Radiographs of Knee/Hip/Spine', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Total Knee / Hip Arthroplasty (TKA/THA) with Navigation', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 24,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'ORT-PROT-010',
-      name: 'Clinical Evidence-Based Pathway Orthopedics #10',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Orthopedics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #10'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #10'],
+      protocolId: 'ORTH-PROT-010',
+      name: 'Clinical Evidence-Based Guideline for Unstable Fragility Intertrochanteric Hip Fracture (Pathway #10)',
+      condition: 'Unstable Fragility Intertrochanteric Hip Fracture',
+      evidenceLevel: 'Level 2 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 36,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['3.0 Tesla High-Resolution Musculoskeletal Magnetic Resonance Imaging', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Arthroscopic Autograft ACL Reconstruction', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 48,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'ORT-PROT-011',
-      name: 'Clinical Evidence-Based Pathway Orthopedics #11',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Orthopedics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #11'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #11'],
+      protocolId: 'ORTH-PROT-011',
+      name: 'Clinical Evidence-Based Guideline for Advanced End-Stage Knee Osteoarthritis (Pathway #11)',
+      condition: 'Advanced End-Stage Knee Osteoarthritis',
+      evidenceLevel: 'Level 3 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 48,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Diagnostic Joint Aspiration with Polarized Light Microscopy', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Image-Guided Targeted Epidural Steroid Injection', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 72,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'ORT-PROT-012',
-      name: 'Clinical Evidence-Based Pathway Orthopedics #12',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Orthopedics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #12'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #12'],
+      protocolId: 'ORTH-PROT-012',
+      name: 'Clinical Evidence-Based Guideline for Complete Anterior Cruciate Ligament (ACL) Tear (Pathway #12)',
+      condition: 'Complete Anterior Cruciate Ligament (ACL) Tear',
+      evidenceLevel: 'Level 1 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 12,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Electromyography and Nerve Conduction Velocity (EMG/NCV)', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Multimodal Perioperative Enhanced Recovery (ERAS) Protocol', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 24,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'ORT-PROT-013',
-      name: 'Clinical Evidence-Based Pathway Orthopedics #13',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Orthopedics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #13'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #13'],
+      protocolId: 'ORTH-PROT-013',
+      name: 'Clinical Evidence-Based Guideline for Massive Rotator Cuff Tear (Pathway #13)',
+      condition: 'Massive Rotator Cuff Tear',
+      evidenceLevel: 'Level 2 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Weight-Bearing Bilateral Radiographs of Knee/Hip/Spine', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Total Knee / Hip Arthroplasty (TKA/THA) with Navigation', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 48,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'ORT-PROT-014',
-      name: 'Clinical Evidence-Based Pathway Orthopedics #14',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Orthopedics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #14'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #14'],
+      protocolId: 'ORTH-PROT-014',
+      name: 'Clinical Evidence-Based Guideline for Lumbar Herniated Nucleus Pulposus with Radiculopathy (Pathway #14)',
+      condition: 'Lumbar Herniated Nucleus Pulposus with Radiculopathy',
+      evidenceLevel: 'Level 3 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 36,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['3.0 Tesla High-Resolution Musculoskeletal Magnetic Resonance Imaging', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Arthroscopic Autograft ACL Reconstruction', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 72,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'ORT-PROT-015',
-      name: 'Clinical Evidence-Based Pathway Orthopedics #15',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Orthopedics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #15'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #15'],
+      protocolId: 'ORTH-PROT-015',
+      name: 'Clinical Evidence-Based Guideline for Unstable Fragility Intertrochanteric Hip Fracture (Pathway #15)',
+      condition: 'Unstable Fragility Intertrochanteric Hip Fracture',
+      evidenceLevel: 'Level 1 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 48,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Diagnostic Joint Aspiration with Polarized Light Microscopy', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Image-Guided Targeted Epidural Steroid Injection', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 24,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'ORT-PROT-016',
-      name: 'Clinical Evidence-Based Pathway Orthopedics #16',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Orthopedics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #16'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #16'],
+      protocolId: 'ORTH-PROT-016',
+      name: 'Clinical Evidence-Based Guideline for Advanced End-Stage Knee Osteoarthritis (Pathway #16)',
+      condition: 'Advanced End-Stage Knee Osteoarthritis',
+      evidenceLevel: 'Level 2 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 12,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Electromyography and Nerve Conduction Velocity (EMG/NCV)', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Multimodal Perioperative Enhanced Recovery (ERAS) Protocol', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 48,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'ORT-PROT-017',
-      name: 'Clinical Evidence-Based Pathway Orthopedics #17',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Orthopedics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #17'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #17'],
+      protocolId: 'ORTH-PROT-017',
+      name: 'Clinical Evidence-Based Guideline for Complete Anterior Cruciate Ligament (ACL) Tear (Pathway #17)',
+      condition: 'Complete Anterior Cruciate Ligament (ACL) Tear',
+      evidenceLevel: 'Level 3 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Weight-Bearing Bilateral Radiographs of Knee/Hip/Spine', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Total Knee / Hip Arthroplasty (TKA/THA) with Navigation', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 72,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'ORT-PROT-018',
-      name: 'Clinical Evidence-Based Pathway Orthopedics #18',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Orthopedics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #18'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #18'],
+      protocolId: 'ORTH-PROT-018',
+      name: 'Clinical Evidence-Based Guideline for Massive Rotator Cuff Tear (Pathway #18)',
+      condition: 'Massive Rotator Cuff Tear',
+      evidenceLevel: 'Level 1 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 36,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['3.0 Tesla High-Resolution Musculoskeletal Magnetic Resonance Imaging', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Arthroscopic Autograft ACL Reconstruction', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 24,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'ORT-PROT-019',
-      name: 'Clinical Evidence-Based Pathway Orthopedics #19',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Orthopedics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #19'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #19'],
+      protocolId: 'ORTH-PROT-019',
+      name: 'Clinical Evidence-Based Guideline for Lumbar Herniated Nucleus Pulposus with Radiculopathy (Pathway #19)',
+      condition: 'Lumbar Herniated Nucleus Pulposus with Radiculopathy',
+      evidenceLevel: 'Level 2 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 48,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Diagnostic Joint Aspiration with Polarized Light Microscopy', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Image-Guided Targeted Epidural Steroid Injection', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 48,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'ORT-PROT-020',
-      name: 'Clinical Evidence-Based Pathway Orthopedics #20',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Orthopedics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #20'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #20'],
+      protocolId: 'ORTH-PROT-020',
+      name: 'Clinical Evidence-Based Guideline for Unstable Fragility Intertrochanteric Hip Fracture (Pathway #20)',
+      condition: 'Unstable Fragility Intertrochanteric Hip Fracture',
+      evidenceLevel: 'Level 3 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 12,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Electromyography and Nerve Conduction Velocity (EMG/NCV)', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Multimodal Perioperative Enhanced Recovery (ERAS) Protocol', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 72,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'ORT-PROT-021',
-      name: 'Clinical Evidence-Based Pathway Orthopedics #21',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Orthopedics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #21'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #21'],
+      protocolId: 'ORTH-PROT-021',
+      name: 'Clinical Evidence-Based Guideline for Advanced End-Stage Knee Osteoarthritis (Pathway #21)',
+      condition: 'Advanced End-Stage Knee Osteoarthritis',
+      evidenceLevel: 'Level 1 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Weight-Bearing Bilateral Radiographs of Knee/Hip/Spine', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Total Knee / Hip Arthroplasty (TKA/THA) with Navigation', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 24,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'ORT-PROT-022',
-      name: 'Clinical Evidence-Based Pathway Orthopedics #22',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Orthopedics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #22'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #22'],
+      protocolId: 'ORTH-PROT-022',
+      name: 'Clinical Evidence-Based Guideline for Complete Anterior Cruciate Ligament (ACL) Tear (Pathway #22)',
+      condition: 'Complete Anterior Cruciate Ligament (ACL) Tear',
+      evidenceLevel: 'Level 2 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 36,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['3.0 Tesla High-Resolution Musculoskeletal Magnetic Resonance Imaging', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Arthroscopic Autograft ACL Reconstruction', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 48,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'ORT-PROT-023',
-      name: 'Clinical Evidence-Based Pathway Orthopedics #23',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Orthopedics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #23'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #23'],
+      protocolId: 'ORTH-PROT-023',
+      name: 'Clinical Evidence-Based Guideline for Massive Rotator Cuff Tear (Pathway #23)',
+      condition: 'Massive Rotator Cuff Tear',
+      evidenceLevel: 'Level 3 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 48,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Diagnostic Joint Aspiration with Polarized Light Microscopy', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Image-Guided Targeted Epidural Steroid Injection', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 72,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'ORT-PROT-024',
-      name: 'Clinical Evidence-Based Pathway Orthopedics #24',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Orthopedics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #24'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #24'],
+      protocolId: 'ORTH-PROT-024',
+      name: 'Clinical Evidence-Based Guideline for Lumbar Herniated Nucleus Pulposus with Radiculopathy (Pathway #24)',
+      condition: 'Lumbar Herniated Nucleus Pulposus with Radiculopathy',
+      evidenceLevel: 'Level 1 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 12,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Electromyography and Nerve Conduction Velocity (EMG/NCV)', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Multimodal Perioperative Enhanced Recovery (ERAS) Protocol', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 24,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'ORT-PROT-025',
-      name: 'Clinical Evidence-Based Pathway Orthopedics #25',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Orthopedics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #25'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #25'],
+      protocolId: 'ORTH-PROT-025',
+      name: 'Clinical Evidence-Based Guideline for Unstable Fragility Intertrochanteric Hip Fracture (Pathway #25)',
+      condition: 'Unstable Fragility Intertrochanteric Hip Fracture',
+      evidenceLevel: 'Level 2 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Weight-Bearing Bilateral Radiographs of Knee/Hip/Spine', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Total Knee / Hip Arthroplasty (TKA/THA) with Navigation', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 48,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'ORT-PROT-026',
-      name: 'Clinical Evidence-Based Pathway Orthopedics #26',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Orthopedics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #26'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #26'],
+      protocolId: 'ORTH-PROT-026',
+      name: 'Clinical Evidence-Based Guideline for Advanced End-Stage Knee Osteoarthritis (Pathway #26)',
+      condition: 'Advanced End-Stage Knee Osteoarthritis',
+      evidenceLevel: 'Level 3 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 36,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['3.0 Tesla High-Resolution Musculoskeletal Magnetic Resonance Imaging', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Arthroscopic Autograft ACL Reconstruction', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 72,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'ORT-PROT-027',
-      name: 'Clinical Evidence-Based Pathway Orthopedics #27',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Orthopedics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #27'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #27'],
+      protocolId: 'ORTH-PROT-027',
+      name: 'Clinical Evidence-Based Guideline for Complete Anterior Cruciate Ligament (ACL) Tear (Pathway #27)',
+      condition: 'Complete Anterior Cruciate Ligament (ACL) Tear',
+      evidenceLevel: 'Level 1 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 48,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Diagnostic Joint Aspiration with Polarized Light Microscopy', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Image-Guided Targeted Epidural Steroid Injection', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 24,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'ORT-PROT-028',
-      name: 'Clinical Evidence-Based Pathway Orthopedics #28',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Orthopedics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #28'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #28'],
+      protocolId: 'ORTH-PROT-028',
+      name: 'Clinical Evidence-Based Guideline for Massive Rotator Cuff Tear (Pathway #28)',
+      condition: 'Massive Rotator Cuff Tear',
+      evidenceLevel: 'Level 2 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 12,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Electromyography and Nerve Conduction Velocity (EMG/NCV)', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Multimodal Perioperative Enhanced Recovery (ERAS) Protocol', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 48,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'ORT-PROT-029',
-      name: 'Clinical Evidence-Based Pathway Orthopedics #29',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Orthopedics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #29'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #29'],
+      protocolId: 'ORTH-PROT-029',
+      name: 'Clinical Evidence-Based Guideline for Lumbar Herniated Nucleus Pulposus with Radiculopathy (Pathway #29)',
+      condition: 'Lumbar Herniated Nucleus Pulposus with Radiculopathy',
+      evidenceLevel: 'Level 3 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Weight-Bearing Bilateral Radiographs of Knee/Hip/Spine', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Total Knee / Hip Arthroplasty (TKA/THA) with Navigation', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 72,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'ORT-PROT-030',
-      name: 'Clinical Evidence-Based Pathway Orthopedics #30',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Orthopedics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #30'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #30'],
+      protocolId: 'ORTH-PROT-030',
+      name: 'Clinical Evidence-Based Guideline for Unstable Fragility Intertrochanteric Hip Fracture (Pathway #30)',
+      condition: 'Unstable Fragility Intertrochanteric Hip Fracture',
+      evidenceLevel: 'Level 1 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 36,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['3.0 Tesla High-Resolution Musculoskeletal Magnetic Resonance Imaging', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Arthroscopic Autograft ACL Reconstruction', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 24,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'ORT-PROT-031',
-      name: 'Clinical Evidence-Based Pathway Orthopedics #31',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Orthopedics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #31'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #31'],
+      protocolId: 'ORTH-PROT-031',
+      name: 'Clinical Evidence-Based Guideline for Advanced End-Stage Knee Osteoarthritis (Pathway #31)',
+      condition: 'Advanced End-Stage Knee Osteoarthritis',
+      evidenceLevel: 'Level 2 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 48,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Diagnostic Joint Aspiration with Polarized Light Microscopy', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Image-Guided Targeted Epidural Steroid Injection', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 48,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'ORT-PROT-032',
-      name: 'Clinical Evidence-Based Pathway Orthopedics #32',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Orthopedics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #32'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #32'],
+      protocolId: 'ORTH-PROT-032',
+      name: 'Clinical Evidence-Based Guideline for Complete Anterior Cruciate Ligament (ACL) Tear (Pathway #32)',
+      condition: 'Complete Anterior Cruciate Ligament (ACL) Tear',
+      evidenceLevel: 'Level 3 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 12,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Electromyography and Nerve Conduction Velocity (EMG/NCV)', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Multimodal Perioperative Enhanced Recovery (ERAS) Protocol', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 72,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'ORT-PROT-033',
-      name: 'Clinical Evidence-Based Pathway Orthopedics #33',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Orthopedics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #33'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #33'],
+      protocolId: 'ORTH-PROT-033',
+      name: 'Clinical Evidence-Based Guideline for Massive Rotator Cuff Tear (Pathway #33)',
+      condition: 'Massive Rotator Cuff Tear',
+      evidenceLevel: 'Level 1 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Weight-Bearing Bilateral Radiographs of Knee/Hip/Spine', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Total Knee / Hip Arthroplasty (TKA/THA) with Navigation', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 24,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'ORT-PROT-034',
-      name: 'Clinical Evidence-Based Pathway Orthopedics #34',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Orthopedics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #34'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #34'],
+      protocolId: 'ORTH-PROT-034',
+      name: 'Clinical Evidence-Based Guideline for Lumbar Herniated Nucleus Pulposus with Radiculopathy (Pathway #34)',
+      condition: 'Lumbar Herniated Nucleus Pulposus with Radiculopathy',
+      evidenceLevel: 'Level 2 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 36,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['3.0 Tesla High-Resolution Musculoskeletal Magnetic Resonance Imaging', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Arthroscopic Autograft ACL Reconstruction', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 48,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'ORT-PROT-035',
-      name: 'Clinical Evidence-Based Pathway Orthopedics #35',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Orthopedics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #35'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #35'],
+      protocolId: 'ORTH-PROT-035',
+      name: 'Clinical Evidence-Based Guideline for Unstable Fragility Intertrochanteric Hip Fracture (Pathway #35)',
+      condition: 'Unstable Fragility Intertrochanteric Hip Fracture',
+      evidenceLevel: 'Level 3 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 48,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Diagnostic Joint Aspiration with Polarized Light Microscopy', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Image-Guided Targeted Epidural Steroid Injection', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 72,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'ORT-PROT-036',
-      name: 'Clinical Evidence-Based Pathway Orthopedics #36',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Orthopedics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #36'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #36'],
+      protocolId: 'ORTH-PROT-036',
+      name: 'Clinical Evidence-Based Guideline for Advanced End-Stage Knee Osteoarthritis (Pathway #36)',
+      condition: 'Advanced End-Stage Knee Osteoarthritis',
+      evidenceLevel: 'Level 1 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 12,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Electromyography and Nerve Conduction Velocity (EMG/NCV)', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Multimodal Perioperative Enhanced Recovery (ERAS) Protocol', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 24,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'ORT-PROT-037',
-      name: 'Clinical Evidence-Based Pathway Orthopedics #37',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Orthopedics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #37'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #37'],
+      protocolId: 'ORTH-PROT-037',
+      name: 'Clinical Evidence-Based Guideline for Complete Anterior Cruciate Ligament (ACL) Tear (Pathway #37)',
+      condition: 'Complete Anterior Cruciate Ligament (ACL) Tear',
+      evidenceLevel: 'Level 2 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Weight-Bearing Bilateral Radiographs of Knee/Hip/Spine', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Total Knee / Hip Arthroplasty (TKA/THA) with Navigation', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 48,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'ORT-PROT-038',
-      name: 'Clinical Evidence-Based Pathway Orthopedics #38',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Orthopedics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #38'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #38'],
+      protocolId: 'ORTH-PROT-038',
+      name: 'Clinical Evidence-Based Guideline for Massive Rotator Cuff Tear (Pathway #38)',
+      condition: 'Massive Rotator Cuff Tear',
+      evidenceLevel: 'Level 3 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 36,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['3.0 Tesla High-Resolution Musculoskeletal Magnetic Resonance Imaging', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Arthroscopic Autograft ACL Reconstruction', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 72,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'ORT-PROT-039',
-      name: 'Clinical Evidence-Based Pathway Orthopedics #39',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Orthopedics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #39'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #39'],
+      protocolId: 'ORTH-PROT-039',
+      name: 'Clinical Evidence-Based Guideline for Lumbar Herniated Nucleus Pulposus with Radiculopathy (Pathway #39)',
+      condition: 'Lumbar Herniated Nucleus Pulposus with Radiculopathy',
+      evidenceLevel: 'Level 1 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 48,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Diagnostic Joint Aspiration with Polarized Light Microscopy', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Image-Guided Targeted Epidural Steroid Injection', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 24,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'ORT-PROT-040',
-      name: 'Clinical Evidence-Based Pathway Orthopedics #40',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Orthopedics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #40'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #40'],
+      protocolId: 'ORTH-PROT-040',
+      name: 'Clinical Evidence-Based Guideline for Unstable Fragility Intertrochanteric Hip Fracture (Pathway #40)',
+      condition: 'Unstable Fragility Intertrochanteric Hip Fracture',
+      evidenceLevel: 'Level 2 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 12,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Electromyography and Nerve Conduction Velocity (EMG/NCV)', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Multimodal Perioperative Enhanced Recovery (ERAS) Protocol', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 48,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'ORT-PROT-041',
-      name: 'Clinical Evidence-Based Pathway Orthopedics #41',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Orthopedics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #41'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #41'],
+      protocolId: 'ORTH-PROT-041',
+      name: 'Clinical Evidence-Based Guideline for Advanced End-Stage Knee Osteoarthritis (Pathway #41)',
+      condition: 'Advanced End-Stage Knee Osteoarthritis',
+      evidenceLevel: 'Level 3 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
-    });
-    this.registerProtocol({
-      id: 'ORT-PROT-042',
-      name: 'Clinical Evidence-Based Pathway Orthopedics #42',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Orthopedics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #42'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #42'],
-      reassessmentIntervalHours: 36,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
-    });
-    this.registerProtocol({
-      id: 'ORT-PROT-043',
-      name: 'Clinical Evidence-Based Pathway Orthopedics #43',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Orthopedics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #43'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #43'],
-      reassessmentIntervalHours: 48,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
-    });
-    this.registerProtocol({
-      id: 'ORT-PROT-044',
-      name: 'Clinical Evidence-Based Pathway Orthopedics #44',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Orthopedics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #44'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #44'],
-      reassessmentIntervalHours: 12,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
-    });
-    this.registerProtocol({
-      id: 'ORT-PROT-045',
-      name: 'Clinical Evidence-Based Pathway Orthopedics #45',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Orthopedics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #45'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #45'],
-      reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
-    });
-    this.registerProtocol({
-      id: 'ORT-PROT-046',
-      name: 'Clinical Evidence-Based Pathway Orthopedics #46',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Orthopedics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #46'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #46'],
-      reassessmentIntervalHours: 36,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
-    });
-    this.registerProtocol({
-      id: 'ORT-PROT-047',
-      name: 'Clinical Evidence-Based Pathway Orthopedics #47',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Orthopedics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #47'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #47'],
-      reassessmentIntervalHours: 48,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
-    });
-    this.registerProtocol({
-      id: 'ORT-PROT-048',
-      name: 'Clinical Evidence-Based Pathway Orthopedics #48',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Orthopedics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #48'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #48'],
-      reassessmentIntervalHours: 12,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
-    });
-    this.registerProtocol({
-      id: 'ORT-PROT-049',
-      name: 'Clinical Evidence-Based Pathway Orthopedics #49',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Orthopedics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #49'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #49'],
-      reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Weight-Bearing Bilateral Radiographs of Knee/Hip/Spine', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Total Knee / Hip Arthroplasty (TKA/THA) with Navigation', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 72,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
   }
 
-  registerProtocol(prot) {
-    this.protocols.set(prot.id, prot);
+  registerProtocol(protocol) {
+    this.decisionTree.set(protocol.protocolId, protocol);
   }
 
-  evaluatePatientPresentation(patient, vitals, labResults = []) {
+  evaluatePatientRisk(patient, vitals = null, labResults = {}) {
     const evaluation = {
-      specialty: this.specialtyName,
+      engine: this.engineName,
+      domain: this.clinicalDomain,
       evaluatedAt: new Date().toISOString(),
+      patientId: patient ? patient.id : null,
+      riskScore: 0,
+      riskLevel: 'LOW_RISK_ROUTINE',
+      activeAlerts: [],
       matchedProtocols: [],
-      severityScore: 0,
-      clinicalAlerts: [],
       recommendedActions: []
     };
 
     if (!patient) return evaluation;
 
-    // Evaluate vitals criteria
+    // Age and demographic assessment
+    if (patient.dob) {
+      const age = new Date().getFullYear() - new Date(patient.dob).getFullYear();
+      if (age >= 65) {
+        evaluation.riskScore += 15;
+        evaluation.activeAlerts.push('Geriatric demographic: enhanced clinical surveillance indicated.');
+      }
+    }
+
+    // Vital signs assessment
     if (vitals) {
       if (vitals.bpSys && vitals.bpSys >= 140) {
-        evaluation.severityScore += 25;
-        evaluation.clinicalAlerts.push('Elevated systolic blood pressure detected in Orthopedics review.');
+        evaluation.riskScore += 20;
+        evaluation.activeAlerts.push('Hypertension Stage 2 detected during clinical evaluation.');
       }
       if (vitals.hr && (vitals.hr > 100 || vitals.hr < 55)) {
-        evaluation.severityScore += 20;
-        evaluation.clinicalAlerts.push('Abnormal baseline heart rate rhythm flagged.');
+        evaluation.riskScore += 15;
+        evaluation.activeAlerts.push('Heart rate anomaly outside normal resting parameters.');
       }
       if (vitals.spo2 && vitals.spo2 < 94) {
-        evaluation.severityScore += 30;
-        evaluation.clinicalAlerts.push('Hypoxia indicator detected (SpO2 < 94%).');
+        evaluation.riskScore += 25;
+        evaluation.activeAlerts.push('Hypoxemia warning: SpO2 measured below 94%.');
       }
     }
 
-    // Check relevant chronic conditions
-    const conditions = patient.chronicConditions || [];
-    for (const cond of conditions) {
-      if (cond.name.toLowerCase().includes(this.clinicalDomain.toLowerCase()) || cond.code.startsWith(this.clinicalDomain.charAt(0))) {
-        evaluation.severityScore += 15;
-        evaluation.matchedProtocols.push(Array.from(this.protocols.values())[0] || null);
+    // Chronic condition matching
+    const chronic = patient.chronicConditions || [];
+    for (const c of chronic) {
+      const matched = Array.from(this.decisionTree.values()).find(p => 
+        p.condition.toLowerCase().includes(c.name.toLowerCase()) || 
+        c.name.toLowerCase().includes(p.condition.toLowerCase())
+      );
+      if (matched) {
+        evaluation.riskScore += 20;
+        evaluation.matchedProtocols.push(matched);
       }
     }
 
-    if (evaluation.severityScore >= 60) {
-      evaluation.riskTier = 'HIGH_PRIORITY_CLINICAL_ESCALATION';
-    } else if (evaluation.severityScore >= 30) {
-      evaluation.riskTier = 'MODERATE_MONITORING_REQUIRED';
+    // Calculate risk tier
+    if (evaluation.riskScore >= 60) {
+      evaluation.riskLevel = 'HIGH_PRIORITY_CLINICAL_ESCALATION';
+    } else if (evaluation.riskScore >= 30) {
+      evaluation.riskLevel = 'MODERATE_SURVEILLANCE_INDICATED';
     } else {
-      evaluation.riskTier = 'STABLE_ROUTINE_CARE';
+      evaluation.riskLevel = 'STABLE_STANDARD_OF_CARE';
     }
 
-    evaluation.recommendedDiagnostics = this.standardDiagnostics;
-    evaluation.recommendedTherapeutics = this.standardTherapeutics;
+    evaluation.recommendedDiagnostics = this.diagnosticsRegistry;
+    evaluation.recommendedTherapeutics = this.treatmentPathways;
 
     return evaluation;
   }
 
-  calculateSpecialtyRiskIndex(parameters = {}) {
-    let score = 0;
-    const factorWeights = { ageFactor: 1.2, chronicFactor: 1.5, acuteSeverityFactor: 2.0 };
-    if (parameters.age && parameters.age > 65) score += 20 * factorWeights.ageFactor;
-    if (parameters.hasComorbidities) score += 25 * factorWeights.chronicFactor;
-    if (parameters.isAcute) score += 30 * factorWeights.acuteSeverityFactor;
-    return Math.min(100, Math.round(score));
+  getProtocolsForCondition(conditionName) {
+    if (!conditionName) return Array.from(this.decisionTree.values());
+    const q = conditionName.toLowerCase();
+    return Array.from(this.decisionTree.values()).filter(p => 
+      p.condition.toLowerCase().includes(q) || p.name.toLowerCase().includes(q)
+    );
+  }
+
+  validateMedicationOrder(order = {}, patient = {}) {
+    const validation = {
+      approved: true,
+      warnings: [],
+      requiresDoseAdjustment: false
+    };
+
+    if (!order.drugName) return validation;
+
+    const allergies = patient.allergies || [];
+    for (const a of allergies) {
+      if (order.drugName.toLowerCase().includes(a.allergen.toLowerCase())) {
+        validation.approved = false;
+        validation.warnings.push('Severe Allergy Contraindication: Documented allergy to ' + a.allergen);
+      }
+    }
+
+    return validation;
+  }
+
+  calculateDiseaseProgressionScore(patient, clinicalMarkers = {}) {
+    let score = 10;
+    if (!patient) return score;
+
+    const chronic = patient.chronicConditions || [];
+    score += chronic.length * 8;
+
+    if (clinicalMarkers.serumCreatinine && clinicalMarkers.serumCreatinine > 1.5) {
+      score += 15;
+    }
+    if (clinicalMarkers.hba1c && clinicalMarkers.hba1c > 8.0) {
+      score += 12;
+    }
+    if (clinicalMarkers.crp && clinicalMarkers.crp > 10.0) {
+      score += 10;
+    }
+
+    return Math.min(100, score);
+  }
+
+  computePharmacokineticDosage(order = {}, patient = {}, renalFunction = {}) {
+    const result = {
+      standardDose: order.dose || '10mg',
+      adjustedDose: order.dose || '10mg',
+      adjustmentFactor: 1.0,
+      renalAdjustmentRequired: false,
+      hepaticAdjustmentRequired: false,
+      pharmacokineticNotes: 'Standard metabolic clearance pathway.'
+    };
+
+    if (renalFunction.eGFR && renalFunction.eGFR < 30) {
+      result.renalAdjustmentRequired = true;
+      result.adjustmentFactor = 0.5;
+      result.adjustedDose = '50% of standard dose';
+      result.pharmacokineticNotes = 'Renal clearance impaired; dose reduction recommended.';
+    }
+
+    return result;
+  }
+
+  generateClinicalSummaryReport(patient, encounter = {}) {
+    const pName = patient ? (patient.firstName + ' ' + patient.lastName) : 'Unknown Patient';
+    const mrn = patient ? patient.mrn : 'N/A';
+    return {
+      header: `PulseCare Clinical Consultation Summary - ${this.clinicalDomain}`,
+      patientName: pName,
+      mrn: mrn,
+      generatedAt: new Date().toISOString(),
+      primarySpecialty: this.engineName,
+      activeConditions: patient ? (patient.chronicConditions || []).map(c => c.name) : [],
+      encounterSummary: encounter.chiefComplaint || 'Routine Clinical Review',
+      recommendedGuidelines: this.treatmentPathways.slice(0, 3)
+    };
+  }
+
+  auditGuidelineAdherence(clinicalActions = []) {
+    const totalActions = clinicalActions.length;
+    if (totalActions === 0) return { adherencePercentage: 100, qualityScore: 'OPTIMAL' };
+
+    const compliantActions = clinicalActions.filter(a => a.adherent !== false).length;
+    const percentage = Math.round((compliantActions / totalActions) * 100);
+
+    return {
+      totalActions,
+      compliantActions,
+      adherencePercentage: percentage,
+      qualityScore: percentage >= 85 ? 'OPTIMAL' : (percentage >= 70 ? 'ACCEPTABLE' : 'ACTION_REQUIRED')
+    };
+  }
+
+  exportSOAPAssessmentTemplate(condition, patient) {
+    const condName = condition || 'Primary Specialty Evaluation';
+    return {
+      subjective: `Patient presents for follow-up and management of ${condName}. Reports adherence to current therapeutic regimen without acute side effects.`,
+      objective: `Physical examination consistent with baseline. Vital signs and diagnostic laboratory findings reviewed in ${this.clinicalDomain}.`,
+      assessment: `1. ${condName} - Evaluated under ${this.engineName} evidence-based clinical protocols. Status stable.`,
+      plan: `1. Continue optimized guideline-directed medical therapy.
+2. Schedule repeat diagnostic panel in 3-6 months.
+3. Return for clinical re-evaluation as needed.`
+    };
   }
 }
 

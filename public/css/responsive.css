@@ -1,0 +1,21 @@
+/* Mobile & Responsive Breakpoints */
+@media (max-width: 1024px) {
+  .ehr-layout {
+    grid-template-columns: 1fr;
+  }
+  .telehealth-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .app-sidebar {
+    display: none;
+  }
+  .soap-editor-section {
+    grid-template-columns: 1fr;
+  }
+  .nav-search {
+    display: none;
+  }
+}

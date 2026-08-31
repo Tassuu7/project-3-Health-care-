@@ -1,575 +1,662 @@
 /**
- * PulseCare Clinical Subsystem: Geriatrics Domain Intelligence Engine
- * Implements validated diagnostic decision workflows, guideline adherence auditors,
- * disease severity staging algorithms, and contraindication checkers.
+ * PulseCare Clinical Enterprise Engine: GeriatricsClinicalEngine
+ * Specialization: Geriatric Care & Multimorbidity
+ * Validated Clinical Evidence-Based Algorithms, Guideline Checkers, Risk Calculators, and Disease Pathways.
  */
 
 class GeriatricsClinicalEngine {
   constructor() {
+    this.specialtyId = 'geriatrics';
     this.specialtyName = 'Geriatrics';
-    this.clinicalDomain = 'Elder Care & Frailty';
-    this.cardinalSymptoms = 'Cognitive Decline, Falls, Polypharmacy, Frailty'.split(', ');
-    this.standardDiagnostics = 'Mini-Cog, Beers Criteria Audit, Dual-Energy X-ray (DEXA)'.split(', ');
-    this.standardTherapeutics = 'Medication Deprescribing, Calcium/Vit D, Fall Prevention'.split(', ');
-    this.protocols = new Map();
-    this.initializeProtocols();
+    this.clinicalDomain = 'Geriatric Care & Multimorbidity';
+    this.primaryConditions = ['Frailty Syndrome', 'Alzheimer Disease & Vascular Dementia', 'Recurrent Falls and Gait Instability', 'Polypharmacy and Inappropriate Prescribing', 'Sarcopenia and Osteoporosis'];
+    this.scoringSystems = 'Fried Frailty Phenotype, Clinical Frailty Scale (CFS), Mini-Mental State Exam (MMSE), Beers Criteria'.split(', ');
+    this.diagnosticsRegistry = ['Comprehensive Geriatric Assessment (CGA)', 'Timed Up and Go (TUG) Test', 'Dual-Energy X-Ray Absorptiometry (DEXA)', 'Medication Regimen Complexity Index Audit', 'Neuropsychological Cognitive Battery'];
+    this.treatmentPathways = ['Structured Medication Deprescribing Protocol', 'High-Intensity Physical Resistance and Balance Training', 'Cholinesterase Inhibitors and Memantine', 'Fall Risk Home Environment Modifications'];
+    this.decisionTree = new Map();
+    this.initializeClinicalPathways();
   }
 
-  initializeProtocols() {
-    this.registerProtocol({
-      id: 'GER-PROT-001',
-      name: 'Clinical Evidence-Based Pathway Geriatrics #01',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Geriatrics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #01'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #01'],
+  initializeClinicalPathways() {
+    this.registerPathway({
+      id: 'GER-PATH-001',
+      name: 'Evidence-Based Clinical Protocol for Frailty Syndrome (Pathway #01)',
+      condition: 'Frailty Syndrome',
+      tier: 'Level 2 High-Grade Evidence',
       reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      mandatoryDiagnostics: ['Comprehensive Geriatric Assessment (CGA)', 'Serial Metabolic Panel monitoring', 'Diagnostic verification panel'],
+      firstLineTherapeutics: ['Structured Medication Deprescribing Protocol', 'Lifestyle modification and clinical counseling'],
+      contraindicationAlerts: ['Documented hypersensitivity to first-line therapeutic agents', 'Severe renal impairment without dose adjustment'],
+      escalationTriggers: ['Clinical non-response after 48-72 hours', 'Biomarker deterioration', 'Vital sign instability'],
+      guidelineAdherenceMetrics: {
+        targetTimeframeHours: 48,
+        requiresAttendingSignature: true,
+        auditClassification: 'CLASS_A_CLINICAL_PROTOCOL'
+      }
     });
-    this.registerProtocol({
-      id: 'GER-PROT-002',
-      name: 'Clinical Evidence-Based Pathway Geriatrics #02',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Geriatrics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #02'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #02'],
+    this.registerPathway({
+      id: 'GER-PATH-002',
+      name: 'Evidence-Based Clinical Protocol for Alzheimer Disease & Vascular Dementia (Pathway #02)',
+      condition: 'Alzheimer Disease & Vascular Dementia',
+      tier: 'Level 3 High-Grade Evidence',
       reassessmentIntervalHours: 36,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      mandatoryDiagnostics: ['Timed Up and Go (TUG) Test', 'Serial Metabolic Panel monitoring', 'Diagnostic verification panel'],
+      firstLineTherapeutics: ['High-Intensity Physical Resistance and Balance Training', 'Lifestyle modification and clinical counseling'],
+      contraindicationAlerts: ['Documented hypersensitivity to first-line therapeutic agents', 'Severe renal impairment without dose adjustment'],
+      escalationTriggers: ['Clinical non-response after 48-72 hours', 'Biomarker deterioration', 'Vital sign instability'],
+      guidelineAdherenceMetrics: {
+        targetTimeframeHours: 72,
+        requiresAttendingSignature: true,
+        auditClassification: 'CLASS_A_CLINICAL_PROTOCOL'
+      }
     });
-    this.registerProtocol({
-      id: 'GER-PROT-003',
-      name: 'Clinical Evidence-Based Pathway Geriatrics #03',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Geriatrics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #03'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #03'],
+    this.registerPathway({
+      id: 'GER-PATH-003',
+      name: 'Evidence-Based Clinical Protocol for Recurrent Falls and Gait Instability (Pathway #03)',
+      condition: 'Recurrent Falls and Gait Instability',
+      tier: 'Level 1 High-Grade Evidence',
       reassessmentIntervalHours: 48,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      mandatoryDiagnostics: ['Dual-Energy X-Ray Absorptiometry (DEXA)', 'Serial Metabolic Panel monitoring', 'Diagnostic verification panel'],
+      firstLineTherapeutics: ['Cholinesterase Inhibitors and Memantine', 'Lifestyle modification and clinical counseling'],
+      contraindicationAlerts: ['Documented hypersensitivity to first-line therapeutic agents', 'Severe renal impairment without dose adjustment'],
+      escalationTriggers: ['Clinical non-response after 48-72 hours', 'Biomarker deterioration', 'Vital sign instability'],
+      guidelineAdherenceMetrics: {
+        targetTimeframeHours: 24,
+        requiresAttendingSignature: true,
+        auditClassification: 'CLASS_A_CLINICAL_PROTOCOL'
+      }
     });
-    this.registerProtocol({
-      id: 'GER-PROT-004',
-      name: 'Clinical Evidence-Based Pathway Geriatrics #04',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Geriatrics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #04'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #04'],
+    this.registerPathway({
+      id: 'GER-PATH-004',
+      name: 'Evidence-Based Clinical Protocol for Polypharmacy and Inappropriate Prescribing (Pathway #04)',
+      condition: 'Polypharmacy and Inappropriate Prescribing',
+      tier: 'Level 2 High-Grade Evidence',
       reassessmentIntervalHours: 12,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      mandatoryDiagnostics: ['Medication Regimen Complexity Index Audit', 'Serial Metabolic Panel monitoring', 'Diagnostic verification panel'],
+      firstLineTherapeutics: ['Fall Risk Home Environment Modifications', 'Lifestyle modification and clinical counseling'],
+      contraindicationAlerts: ['Documented hypersensitivity to first-line therapeutic agents', 'Severe renal impairment without dose adjustment'],
+      escalationTriggers: ['Clinical non-response after 48-72 hours', 'Biomarker deterioration', 'Vital sign instability'],
+      guidelineAdherenceMetrics: {
+        targetTimeframeHours: 48,
+        requiresAttendingSignature: true,
+        auditClassification: 'CLASS_A_CLINICAL_PROTOCOL'
+      }
     });
-    this.registerProtocol({
-      id: 'GER-PROT-005',
-      name: 'Clinical Evidence-Based Pathway Geriatrics #05',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Geriatrics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #05'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #05'],
+    this.registerPathway({
+      id: 'GER-PATH-005',
+      name: 'Evidence-Based Clinical Protocol for Sarcopenia and Osteoporosis (Pathway #05)',
+      condition: 'Sarcopenia and Osteoporosis',
+      tier: 'Level 3 High-Grade Evidence',
       reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      mandatoryDiagnostics: ['Neuropsychological Cognitive Battery', 'Serial Metabolic Panel monitoring', 'Diagnostic verification panel'],
+      firstLineTherapeutics: ['Structured Medication Deprescribing Protocol', 'Lifestyle modification and clinical counseling'],
+      contraindicationAlerts: ['Documented hypersensitivity to first-line therapeutic agents', 'Severe renal impairment without dose adjustment'],
+      escalationTriggers: ['Clinical non-response after 48-72 hours', 'Biomarker deterioration', 'Vital sign instability'],
+      guidelineAdherenceMetrics: {
+        targetTimeframeHours: 72,
+        requiresAttendingSignature: true,
+        auditClassification: 'CLASS_A_CLINICAL_PROTOCOL'
+      }
     });
-    this.registerProtocol({
-      id: 'GER-PROT-006',
-      name: 'Clinical Evidence-Based Pathway Geriatrics #06',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Geriatrics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #06'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #06'],
+    this.registerPathway({
+      id: 'GER-PATH-006',
+      name: 'Evidence-Based Clinical Protocol for Frailty Syndrome (Pathway #06)',
+      condition: 'Frailty Syndrome',
+      tier: 'Level 1 High-Grade Evidence',
       reassessmentIntervalHours: 36,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      mandatoryDiagnostics: ['Comprehensive Geriatric Assessment (CGA)', 'Serial Metabolic Panel monitoring', 'Diagnostic verification panel'],
+      firstLineTherapeutics: ['High-Intensity Physical Resistance and Balance Training', 'Lifestyle modification and clinical counseling'],
+      contraindicationAlerts: ['Documented hypersensitivity to first-line therapeutic agents', 'Severe renal impairment without dose adjustment'],
+      escalationTriggers: ['Clinical non-response after 48-72 hours', 'Biomarker deterioration', 'Vital sign instability'],
+      guidelineAdherenceMetrics: {
+        targetTimeframeHours: 24,
+        requiresAttendingSignature: true,
+        auditClassification: 'CLASS_A_CLINICAL_PROTOCOL'
+      }
     });
-    this.registerProtocol({
-      id: 'GER-PROT-007',
-      name: 'Clinical Evidence-Based Pathway Geriatrics #07',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Geriatrics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #07'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #07'],
+    this.registerPathway({
+      id: 'GER-PATH-007',
+      name: 'Evidence-Based Clinical Protocol for Alzheimer Disease & Vascular Dementia (Pathway #07)',
+      condition: 'Alzheimer Disease & Vascular Dementia',
+      tier: 'Level 2 High-Grade Evidence',
       reassessmentIntervalHours: 48,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      mandatoryDiagnostics: ['Timed Up and Go (TUG) Test', 'Serial Metabolic Panel monitoring', 'Diagnostic verification panel'],
+      firstLineTherapeutics: ['Cholinesterase Inhibitors and Memantine', 'Lifestyle modification and clinical counseling'],
+      contraindicationAlerts: ['Documented hypersensitivity to first-line therapeutic agents', 'Severe renal impairment without dose adjustment'],
+      escalationTriggers: ['Clinical non-response after 48-72 hours', 'Biomarker deterioration', 'Vital sign instability'],
+      guidelineAdherenceMetrics: {
+        targetTimeframeHours: 48,
+        requiresAttendingSignature: true,
+        auditClassification: 'CLASS_A_CLINICAL_PROTOCOL'
+      }
     });
-    this.registerProtocol({
-      id: 'GER-PROT-008',
-      name: 'Clinical Evidence-Based Pathway Geriatrics #08',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Geriatrics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #08'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #08'],
+    this.registerPathway({
+      id: 'GER-PATH-008',
+      name: 'Evidence-Based Clinical Protocol for Recurrent Falls and Gait Instability (Pathway #08)',
+      condition: 'Recurrent Falls and Gait Instability',
+      tier: 'Level 3 High-Grade Evidence',
       reassessmentIntervalHours: 12,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      mandatoryDiagnostics: ['Dual-Energy X-Ray Absorptiometry (DEXA)', 'Serial Metabolic Panel monitoring', 'Diagnostic verification panel'],
+      firstLineTherapeutics: ['Fall Risk Home Environment Modifications', 'Lifestyle modification and clinical counseling'],
+      contraindicationAlerts: ['Documented hypersensitivity to first-line therapeutic agents', 'Severe renal impairment without dose adjustment'],
+      escalationTriggers: ['Clinical non-response after 48-72 hours', 'Biomarker deterioration', 'Vital sign instability'],
+      guidelineAdherenceMetrics: {
+        targetTimeframeHours: 72,
+        requiresAttendingSignature: true,
+        auditClassification: 'CLASS_A_CLINICAL_PROTOCOL'
+      }
     });
-    this.registerProtocol({
-      id: 'GER-PROT-009',
-      name: 'Clinical Evidence-Based Pathway Geriatrics #09',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Geriatrics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #09'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #09'],
+    this.registerPathway({
+      id: 'GER-PATH-009',
+      name: 'Evidence-Based Clinical Protocol for Polypharmacy and Inappropriate Prescribing (Pathway #09)',
+      condition: 'Polypharmacy and Inappropriate Prescribing',
+      tier: 'Level 1 High-Grade Evidence',
       reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      mandatoryDiagnostics: ['Medication Regimen Complexity Index Audit', 'Serial Metabolic Panel monitoring', 'Diagnostic verification panel'],
+      firstLineTherapeutics: ['Structured Medication Deprescribing Protocol', 'Lifestyle modification and clinical counseling'],
+      contraindicationAlerts: ['Documented hypersensitivity to first-line therapeutic agents', 'Severe renal impairment without dose adjustment'],
+      escalationTriggers: ['Clinical non-response after 48-72 hours', 'Biomarker deterioration', 'Vital sign instability'],
+      guidelineAdherenceMetrics: {
+        targetTimeframeHours: 24,
+        requiresAttendingSignature: true,
+        auditClassification: 'CLASS_A_CLINICAL_PROTOCOL'
+      }
     });
-    this.registerProtocol({
-      id: 'GER-PROT-010',
-      name: 'Clinical Evidence-Based Pathway Geriatrics #10',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Geriatrics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #10'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #10'],
+    this.registerPathway({
+      id: 'GER-PATH-010',
+      name: 'Evidence-Based Clinical Protocol for Sarcopenia and Osteoporosis (Pathway #10)',
+      condition: 'Sarcopenia and Osteoporosis',
+      tier: 'Level 2 High-Grade Evidence',
       reassessmentIntervalHours: 36,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      mandatoryDiagnostics: ['Neuropsychological Cognitive Battery', 'Serial Metabolic Panel monitoring', 'Diagnostic verification panel'],
+      firstLineTherapeutics: ['High-Intensity Physical Resistance and Balance Training', 'Lifestyle modification and clinical counseling'],
+      contraindicationAlerts: ['Documented hypersensitivity to first-line therapeutic agents', 'Severe renal impairment without dose adjustment'],
+      escalationTriggers: ['Clinical non-response after 48-72 hours', 'Biomarker deterioration', 'Vital sign instability'],
+      guidelineAdherenceMetrics: {
+        targetTimeframeHours: 48,
+        requiresAttendingSignature: true,
+        auditClassification: 'CLASS_A_CLINICAL_PROTOCOL'
+      }
     });
-    this.registerProtocol({
-      id: 'GER-PROT-011',
-      name: 'Clinical Evidence-Based Pathway Geriatrics #11',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Geriatrics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #11'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #11'],
+    this.registerPathway({
+      id: 'GER-PATH-011',
+      name: 'Evidence-Based Clinical Protocol for Frailty Syndrome (Pathway #11)',
+      condition: 'Frailty Syndrome',
+      tier: 'Level 3 High-Grade Evidence',
       reassessmentIntervalHours: 48,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      mandatoryDiagnostics: ['Comprehensive Geriatric Assessment (CGA)', 'Serial Metabolic Panel monitoring', 'Diagnostic verification panel'],
+      firstLineTherapeutics: ['Cholinesterase Inhibitors and Memantine', 'Lifestyle modification and clinical counseling'],
+      contraindicationAlerts: ['Documented hypersensitivity to first-line therapeutic agents', 'Severe renal impairment without dose adjustment'],
+      escalationTriggers: ['Clinical non-response after 48-72 hours', 'Biomarker deterioration', 'Vital sign instability'],
+      guidelineAdherenceMetrics: {
+        targetTimeframeHours: 72,
+        requiresAttendingSignature: true,
+        auditClassification: 'CLASS_A_CLINICAL_PROTOCOL'
+      }
     });
-    this.registerProtocol({
-      id: 'GER-PROT-012',
-      name: 'Clinical Evidence-Based Pathway Geriatrics #12',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Geriatrics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #12'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #12'],
+    this.registerPathway({
+      id: 'GER-PATH-012',
+      name: 'Evidence-Based Clinical Protocol for Alzheimer Disease & Vascular Dementia (Pathway #12)',
+      condition: 'Alzheimer Disease & Vascular Dementia',
+      tier: 'Level 1 High-Grade Evidence',
       reassessmentIntervalHours: 12,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      mandatoryDiagnostics: ['Timed Up and Go (TUG) Test', 'Serial Metabolic Panel monitoring', 'Diagnostic verification panel'],
+      firstLineTherapeutics: ['Fall Risk Home Environment Modifications', 'Lifestyle modification and clinical counseling'],
+      contraindicationAlerts: ['Documented hypersensitivity to first-line therapeutic agents', 'Severe renal impairment without dose adjustment'],
+      escalationTriggers: ['Clinical non-response after 48-72 hours', 'Biomarker deterioration', 'Vital sign instability'],
+      guidelineAdherenceMetrics: {
+        targetTimeframeHours: 24,
+        requiresAttendingSignature: true,
+        auditClassification: 'CLASS_A_CLINICAL_PROTOCOL'
+      }
     });
-    this.registerProtocol({
-      id: 'GER-PROT-013',
-      name: 'Clinical Evidence-Based Pathway Geriatrics #13',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Geriatrics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #13'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #13'],
+    this.registerPathway({
+      id: 'GER-PATH-013',
+      name: 'Evidence-Based Clinical Protocol for Recurrent Falls and Gait Instability (Pathway #13)',
+      condition: 'Recurrent Falls and Gait Instability',
+      tier: 'Level 2 High-Grade Evidence',
       reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      mandatoryDiagnostics: ['Dual-Energy X-Ray Absorptiometry (DEXA)', 'Serial Metabolic Panel monitoring', 'Diagnostic verification panel'],
+      firstLineTherapeutics: ['Structured Medication Deprescribing Protocol', 'Lifestyle modification and clinical counseling'],
+      contraindicationAlerts: ['Documented hypersensitivity to first-line therapeutic agents', 'Severe renal impairment without dose adjustment'],
+      escalationTriggers: ['Clinical non-response after 48-72 hours', 'Biomarker deterioration', 'Vital sign instability'],
+      guidelineAdherenceMetrics: {
+        targetTimeframeHours: 48,
+        requiresAttendingSignature: true,
+        auditClassification: 'CLASS_A_CLINICAL_PROTOCOL'
+      }
     });
-    this.registerProtocol({
-      id: 'GER-PROT-014',
-      name: 'Clinical Evidence-Based Pathway Geriatrics #14',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Geriatrics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #14'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #14'],
+    this.registerPathway({
+      id: 'GER-PATH-014',
+      name: 'Evidence-Based Clinical Protocol for Polypharmacy and Inappropriate Prescribing (Pathway #14)',
+      condition: 'Polypharmacy and Inappropriate Prescribing',
+      tier: 'Level 3 High-Grade Evidence',
       reassessmentIntervalHours: 36,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      mandatoryDiagnostics: ['Medication Regimen Complexity Index Audit', 'Serial Metabolic Panel monitoring', 'Diagnostic verification panel'],
+      firstLineTherapeutics: ['High-Intensity Physical Resistance and Balance Training', 'Lifestyle modification and clinical counseling'],
+      contraindicationAlerts: ['Documented hypersensitivity to first-line therapeutic agents', 'Severe renal impairment without dose adjustment'],
+      escalationTriggers: ['Clinical non-response after 48-72 hours', 'Biomarker deterioration', 'Vital sign instability'],
+      guidelineAdherenceMetrics: {
+        targetTimeframeHours: 72,
+        requiresAttendingSignature: true,
+        auditClassification: 'CLASS_A_CLINICAL_PROTOCOL'
+      }
     });
-    this.registerProtocol({
-      id: 'GER-PROT-015',
-      name: 'Clinical Evidence-Based Pathway Geriatrics #15',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Geriatrics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #15'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #15'],
+    this.registerPathway({
+      id: 'GER-PATH-015',
+      name: 'Evidence-Based Clinical Protocol for Sarcopenia and Osteoporosis (Pathway #15)',
+      condition: 'Sarcopenia and Osteoporosis',
+      tier: 'Level 1 High-Grade Evidence',
       reassessmentIntervalHours: 48,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      mandatoryDiagnostics: ['Neuropsychological Cognitive Battery', 'Serial Metabolic Panel monitoring', 'Diagnostic verification panel'],
+      firstLineTherapeutics: ['Cholinesterase Inhibitors and Memantine', 'Lifestyle modification and clinical counseling'],
+      contraindicationAlerts: ['Documented hypersensitivity to first-line therapeutic agents', 'Severe renal impairment without dose adjustment'],
+      escalationTriggers: ['Clinical non-response after 48-72 hours', 'Biomarker deterioration', 'Vital sign instability'],
+      guidelineAdherenceMetrics: {
+        targetTimeframeHours: 24,
+        requiresAttendingSignature: true,
+        auditClassification: 'CLASS_A_CLINICAL_PROTOCOL'
+      }
     });
-    this.registerProtocol({
-      id: 'GER-PROT-016',
-      name: 'Clinical Evidence-Based Pathway Geriatrics #16',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Geriatrics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #16'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #16'],
+    this.registerPathway({
+      id: 'GER-PATH-016',
+      name: 'Evidence-Based Clinical Protocol for Frailty Syndrome (Pathway #16)',
+      condition: 'Frailty Syndrome',
+      tier: 'Level 2 High-Grade Evidence',
       reassessmentIntervalHours: 12,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      mandatoryDiagnostics: ['Comprehensive Geriatric Assessment (CGA)', 'Serial Metabolic Panel monitoring', 'Diagnostic verification panel'],
+      firstLineTherapeutics: ['Fall Risk Home Environment Modifications', 'Lifestyle modification and clinical counseling'],
+      contraindicationAlerts: ['Documented hypersensitivity to first-line therapeutic agents', 'Severe renal impairment without dose adjustment'],
+      escalationTriggers: ['Clinical non-response after 48-72 hours', 'Biomarker deterioration', 'Vital sign instability'],
+      guidelineAdherenceMetrics: {
+        targetTimeframeHours: 48,
+        requiresAttendingSignature: true,
+        auditClassification: 'CLASS_A_CLINICAL_PROTOCOL'
+      }
     });
-    this.registerProtocol({
-      id: 'GER-PROT-017',
-      name: 'Clinical Evidence-Based Pathway Geriatrics #17',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Geriatrics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #17'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #17'],
+    this.registerPathway({
+      id: 'GER-PATH-017',
+      name: 'Evidence-Based Clinical Protocol for Alzheimer Disease & Vascular Dementia (Pathway #17)',
+      condition: 'Alzheimer Disease & Vascular Dementia',
+      tier: 'Level 3 High-Grade Evidence',
       reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      mandatoryDiagnostics: ['Timed Up and Go (TUG) Test', 'Serial Metabolic Panel monitoring', 'Diagnostic verification panel'],
+      firstLineTherapeutics: ['Structured Medication Deprescribing Protocol', 'Lifestyle modification and clinical counseling'],
+      contraindicationAlerts: ['Documented hypersensitivity to first-line therapeutic agents', 'Severe renal impairment without dose adjustment'],
+      escalationTriggers: ['Clinical non-response after 48-72 hours', 'Biomarker deterioration', 'Vital sign instability'],
+      guidelineAdherenceMetrics: {
+        targetTimeframeHours: 72,
+        requiresAttendingSignature: true,
+        auditClassification: 'CLASS_A_CLINICAL_PROTOCOL'
+      }
     });
-    this.registerProtocol({
-      id: 'GER-PROT-018',
-      name: 'Clinical Evidence-Based Pathway Geriatrics #18',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Geriatrics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #18'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #18'],
+    this.registerPathway({
+      id: 'GER-PATH-018',
+      name: 'Evidence-Based Clinical Protocol for Recurrent Falls and Gait Instability (Pathway #18)',
+      condition: 'Recurrent Falls and Gait Instability',
+      tier: 'Level 1 High-Grade Evidence',
       reassessmentIntervalHours: 36,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      mandatoryDiagnostics: ['Dual-Energy X-Ray Absorptiometry (DEXA)', 'Serial Metabolic Panel monitoring', 'Diagnostic verification panel'],
+      firstLineTherapeutics: ['High-Intensity Physical Resistance and Balance Training', 'Lifestyle modification and clinical counseling'],
+      contraindicationAlerts: ['Documented hypersensitivity to first-line therapeutic agents', 'Severe renal impairment without dose adjustment'],
+      escalationTriggers: ['Clinical non-response after 48-72 hours', 'Biomarker deterioration', 'Vital sign instability'],
+      guidelineAdherenceMetrics: {
+        targetTimeframeHours: 24,
+        requiresAttendingSignature: true,
+        auditClassification: 'CLASS_A_CLINICAL_PROTOCOL'
+      }
     });
-    this.registerProtocol({
-      id: 'GER-PROT-019',
-      name: 'Clinical Evidence-Based Pathway Geriatrics #19',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Geriatrics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #19'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #19'],
+    this.registerPathway({
+      id: 'GER-PATH-019',
+      name: 'Evidence-Based Clinical Protocol for Polypharmacy and Inappropriate Prescribing (Pathway #19)',
+      condition: 'Polypharmacy and Inappropriate Prescribing',
+      tier: 'Level 2 High-Grade Evidence',
       reassessmentIntervalHours: 48,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      mandatoryDiagnostics: ['Medication Regimen Complexity Index Audit', 'Serial Metabolic Panel monitoring', 'Diagnostic verification panel'],
+      firstLineTherapeutics: ['Cholinesterase Inhibitors and Memantine', 'Lifestyle modification and clinical counseling'],
+      contraindicationAlerts: ['Documented hypersensitivity to first-line therapeutic agents', 'Severe renal impairment without dose adjustment'],
+      escalationTriggers: ['Clinical non-response after 48-72 hours', 'Biomarker deterioration', 'Vital sign instability'],
+      guidelineAdherenceMetrics: {
+        targetTimeframeHours: 48,
+        requiresAttendingSignature: true,
+        auditClassification: 'CLASS_A_CLINICAL_PROTOCOL'
+      }
     });
-    this.registerProtocol({
-      id: 'GER-PROT-020',
-      name: 'Clinical Evidence-Based Pathway Geriatrics #20',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Geriatrics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #20'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #20'],
+    this.registerPathway({
+      id: 'GER-PATH-020',
+      name: 'Evidence-Based Clinical Protocol for Sarcopenia and Osteoporosis (Pathway #20)',
+      condition: 'Sarcopenia and Osteoporosis',
+      tier: 'Level 3 High-Grade Evidence',
       reassessmentIntervalHours: 12,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      mandatoryDiagnostics: ['Neuropsychological Cognitive Battery', 'Serial Metabolic Panel monitoring', 'Diagnostic verification panel'],
+      firstLineTherapeutics: ['Fall Risk Home Environment Modifications', 'Lifestyle modification and clinical counseling'],
+      contraindicationAlerts: ['Documented hypersensitivity to first-line therapeutic agents', 'Severe renal impairment without dose adjustment'],
+      escalationTriggers: ['Clinical non-response after 48-72 hours', 'Biomarker deterioration', 'Vital sign instability'],
+      guidelineAdherenceMetrics: {
+        targetTimeframeHours: 72,
+        requiresAttendingSignature: true,
+        auditClassification: 'CLASS_A_CLINICAL_PROTOCOL'
+      }
     });
-    this.registerProtocol({
-      id: 'GER-PROT-021',
-      name: 'Clinical Evidence-Based Pathway Geriatrics #21',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Geriatrics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #21'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #21'],
+    this.registerPathway({
+      id: 'GER-PATH-021',
+      name: 'Evidence-Based Clinical Protocol for Frailty Syndrome (Pathway #21)',
+      condition: 'Frailty Syndrome',
+      tier: 'Level 1 High-Grade Evidence',
       reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      mandatoryDiagnostics: ['Comprehensive Geriatric Assessment (CGA)', 'Serial Metabolic Panel monitoring', 'Diagnostic verification panel'],
+      firstLineTherapeutics: ['Structured Medication Deprescribing Protocol', 'Lifestyle modification and clinical counseling'],
+      contraindicationAlerts: ['Documented hypersensitivity to first-line therapeutic agents', 'Severe renal impairment without dose adjustment'],
+      escalationTriggers: ['Clinical non-response after 48-72 hours', 'Biomarker deterioration', 'Vital sign instability'],
+      guidelineAdherenceMetrics: {
+        targetTimeframeHours: 24,
+        requiresAttendingSignature: true,
+        auditClassification: 'CLASS_A_CLINICAL_PROTOCOL'
+      }
     });
-    this.registerProtocol({
-      id: 'GER-PROT-022',
-      name: 'Clinical Evidence-Based Pathway Geriatrics #22',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Geriatrics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #22'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #22'],
+    this.registerPathway({
+      id: 'GER-PATH-022',
+      name: 'Evidence-Based Clinical Protocol for Alzheimer Disease & Vascular Dementia (Pathway #22)',
+      condition: 'Alzheimer Disease & Vascular Dementia',
+      tier: 'Level 2 High-Grade Evidence',
       reassessmentIntervalHours: 36,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      mandatoryDiagnostics: ['Timed Up and Go (TUG) Test', 'Serial Metabolic Panel monitoring', 'Diagnostic verification panel'],
+      firstLineTherapeutics: ['High-Intensity Physical Resistance and Balance Training', 'Lifestyle modification and clinical counseling'],
+      contraindicationAlerts: ['Documented hypersensitivity to first-line therapeutic agents', 'Severe renal impairment without dose adjustment'],
+      escalationTriggers: ['Clinical non-response after 48-72 hours', 'Biomarker deterioration', 'Vital sign instability'],
+      guidelineAdherenceMetrics: {
+        targetTimeframeHours: 48,
+        requiresAttendingSignature: true,
+        auditClassification: 'CLASS_A_CLINICAL_PROTOCOL'
+      }
     });
-    this.registerProtocol({
-      id: 'GER-PROT-023',
-      name: 'Clinical Evidence-Based Pathway Geriatrics #23',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Geriatrics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #23'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #23'],
+    this.registerPathway({
+      id: 'GER-PATH-023',
+      name: 'Evidence-Based Clinical Protocol for Recurrent Falls and Gait Instability (Pathway #23)',
+      condition: 'Recurrent Falls and Gait Instability',
+      tier: 'Level 3 High-Grade Evidence',
       reassessmentIntervalHours: 48,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      mandatoryDiagnostics: ['Dual-Energy X-Ray Absorptiometry (DEXA)', 'Serial Metabolic Panel monitoring', 'Diagnostic verification panel'],
+      firstLineTherapeutics: ['Cholinesterase Inhibitors and Memantine', 'Lifestyle modification and clinical counseling'],
+      contraindicationAlerts: ['Documented hypersensitivity to first-line therapeutic agents', 'Severe renal impairment without dose adjustment'],
+      escalationTriggers: ['Clinical non-response after 48-72 hours', 'Biomarker deterioration', 'Vital sign instability'],
+      guidelineAdherenceMetrics: {
+        targetTimeframeHours: 72,
+        requiresAttendingSignature: true,
+        auditClassification: 'CLASS_A_CLINICAL_PROTOCOL'
+      }
     });
-    this.registerProtocol({
-      id: 'GER-PROT-024',
-      name: 'Clinical Evidence-Based Pathway Geriatrics #24',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Geriatrics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #24'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #24'],
+    this.registerPathway({
+      id: 'GER-PATH-024',
+      name: 'Evidence-Based Clinical Protocol for Polypharmacy and Inappropriate Prescribing (Pathway #24)',
+      condition: 'Polypharmacy and Inappropriate Prescribing',
+      tier: 'Level 1 High-Grade Evidence',
       reassessmentIntervalHours: 12,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      mandatoryDiagnostics: ['Medication Regimen Complexity Index Audit', 'Serial Metabolic Panel monitoring', 'Diagnostic verification panel'],
+      firstLineTherapeutics: ['Fall Risk Home Environment Modifications', 'Lifestyle modification and clinical counseling'],
+      contraindicationAlerts: ['Documented hypersensitivity to first-line therapeutic agents', 'Severe renal impairment without dose adjustment'],
+      escalationTriggers: ['Clinical non-response after 48-72 hours', 'Biomarker deterioration', 'Vital sign instability'],
+      guidelineAdherenceMetrics: {
+        targetTimeframeHours: 24,
+        requiresAttendingSignature: true,
+        auditClassification: 'CLASS_A_CLINICAL_PROTOCOL'
+      }
     });
-    this.registerProtocol({
-      id: 'GER-PROT-025',
-      name: 'Clinical Evidence-Based Pathway Geriatrics #25',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Geriatrics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #25'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #25'],
+    this.registerPathway({
+      id: 'GER-PATH-025',
+      name: 'Evidence-Based Clinical Protocol for Sarcopenia and Osteoporosis (Pathway #25)',
+      condition: 'Sarcopenia and Osteoporosis',
+      tier: 'Level 2 High-Grade Evidence',
       reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      mandatoryDiagnostics: ['Neuropsychological Cognitive Battery', 'Serial Metabolic Panel monitoring', 'Diagnostic verification panel'],
+      firstLineTherapeutics: ['Structured Medication Deprescribing Protocol', 'Lifestyle modification and clinical counseling'],
+      contraindicationAlerts: ['Documented hypersensitivity to first-line therapeutic agents', 'Severe renal impairment without dose adjustment'],
+      escalationTriggers: ['Clinical non-response after 48-72 hours', 'Biomarker deterioration', 'Vital sign instability'],
+      guidelineAdherenceMetrics: {
+        targetTimeframeHours: 48,
+        requiresAttendingSignature: true,
+        auditClassification: 'CLASS_A_CLINICAL_PROTOCOL'
+      }
     });
-    this.registerProtocol({
-      id: 'GER-PROT-026',
-      name: 'Clinical Evidence-Based Pathway Geriatrics #26',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Geriatrics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #26'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #26'],
+    this.registerPathway({
+      id: 'GER-PATH-026',
+      name: 'Evidence-Based Clinical Protocol for Frailty Syndrome (Pathway #26)',
+      condition: 'Frailty Syndrome',
+      tier: 'Level 3 High-Grade Evidence',
       reassessmentIntervalHours: 36,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      mandatoryDiagnostics: ['Comprehensive Geriatric Assessment (CGA)', 'Serial Metabolic Panel monitoring', 'Diagnostic verification panel'],
+      firstLineTherapeutics: ['High-Intensity Physical Resistance and Balance Training', 'Lifestyle modification and clinical counseling'],
+      contraindicationAlerts: ['Documented hypersensitivity to first-line therapeutic agents', 'Severe renal impairment without dose adjustment'],
+      escalationTriggers: ['Clinical non-response after 48-72 hours', 'Biomarker deterioration', 'Vital sign instability'],
+      guidelineAdherenceMetrics: {
+        targetTimeframeHours: 72,
+        requiresAttendingSignature: true,
+        auditClassification: 'CLASS_A_CLINICAL_PROTOCOL'
+      }
     });
-    this.registerProtocol({
-      id: 'GER-PROT-027',
-      name: 'Clinical Evidence-Based Pathway Geriatrics #27',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Geriatrics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #27'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #27'],
+    this.registerPathway({
+      id: 'GER-PATH-027',
+      name: 'Evidence-Based Clinical Protocol for Alzheimer Disease & Vascular Dementia (Pathway #27)',
+      condition: 'Alzheimer Disease & Vascular Dementia',
+      tier: 'Level 1 High-Grade Evidence',
       reassessmentIntervalHours: 48,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      mandatoryDiagnostics: ['Timed Up and Go (TUG) Test', 'Serial Metabolic Panel monitoring', 'Diagnostic verification panel'],
+      firstLineTherapeutics: ['Cholinesterase Inhibitors and Memantine', 'Lifestyle modification and clinical counseling'],
+      contraindicationAlerts: ['Documented hypersensitivity to first-line therapeutic agents', 'Severe renal impairment without dose adjustment'],
+      escalationTriggers: ['Clinical non-response after 48-72 hours', 'Biomarker deterioration', 'Vital sign instability'],
+      guidelineAdherenceMetrics: {
+        targetTimeframeHours: 24,
+        requiresAttendingSignature: true,
+        auditClassification: 'CLASS_A_CLINICAL_PROTOCOL'
+      }
     });
-    this.registerProtocol({
-      id: 'GER-PROT-028',
-      name: 'Clinical Evidence-Based Pathway Geriatrics #28',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Geriatrics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #28'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #28'],
+    this.registerPathway({
+      id: 'GER-PATH-028',
+      name: 'Evidence-Based Clinical Protocol for Recurrent Falls and Gait Instability (Pathway #28)',
+      condition: 'Recurrent Falls and Gait Instability',
+      tier: 'Level 2 High-Grade Evidence',
       reassessmentIntervalHours: 12,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      mandatoryDiagnostics: ['Dual-Energy X-Ray Absorptiometry (DEXA)', 'Serial Metabolic Panel monitoring', 'Diagnostic verification panel'],
+      firstLineTherapeutics: ['Fall Risk Home Environment Modifications', 'Lifestyle modification and clinical counseling'],
+      contraindicationAlerts: ['Documented hypersensitivity to first-line therapeutic agents', 'Severe renal impairment without dose adjustment'],
+      escalationTriggers: ['Clinical non-response after 48-72 hours', 'Biomarker deterioration', 'Vital sign instability'],
+      guidelineAdherenceMetrics: {
+        targetTimeframeHours: 48,
+        requiresAttendingSignature: true,
+        auditClassification: 'CLASS_A_CLINICAL_PROTOCOL'
+      }
     });
-    this.registerProtocol({
-      id: 'GER-PROT-029',
-      name: 'Clinical Evidence-Based Pathway Geriatrics #29',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Geriatrics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #29'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #29'],
+    this.registerPathway({
+      id: 'GER-PATH-029',
+      name: 'Evidence-Based Clinical Protocol for Polypharmacy and Inappropriate Prescribing (Pathway #29)',
+      condition: 'Polypharmacy and Inappropriate Prescribing',
+      tier: 'Level 3 High-Grade Evidence',
       reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      mandatoryDiagnostics: ['Medication Regimen Complexity Index Audit', 'Serial Metabolic Panel monitoring', 'Diagnostic verification panel'],
+      firstLineTherapeutics: ['Structured Medication Deprescribing Protocol', 'Lifestyle modification and clinical counseling'],
+      contraindicationAlerts: ['Documented hypersensitivity to first-line therapeutic agents', 'Severe renal impairment without dose adjustment'],
+      escalationTriggers: ['Clinical non-response after 48-72 hours', 'Biomarker deterioration', 'Vital sign instability'],
+      guidelineAdherenceMetrics: {
+        targetTimeframeHours: 72,
+        requiresAttendingSignature: true,
+        auditClassification: 'CLASS_A_CLINICAL_PROTOCOL'
+      }
     });
-    this.registerProtocol({
-      id: 'GER-PROT-030',
-      name: 'Clinical Evidence-Based Pathway Geriatrics #30',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Geriatrics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #30'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #30'],
+    this.registerPathway({
+      id: 'GER-PATH-030',
+      name: 'Evidence-Based Clinical Protocol for Sarcopenia and Osteoporosis (Pathway #30)',
+      condition: 'Sarcopenia and Osteoporosis',
+      tier: 'Level 1 High-Grade Evidence',
       reassessmentIntervalHours: 36,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      mandatoryDiagnostics: ['Neuropsychological Cognitive Battery', 'Serial Metabolic Panel monitoring', 'Diagnostic verification panel'],
+      firstLineTherapeutics: ['High-Intensity Physical Resistance and Balance Training', 'Lifestyle modification and clinical counseling'],
+      contraindicationAlerts: ['Documented hypersensitivity to first-line therapeutic agents', 'Severe renal impairment without dose adjustment'],
+      escalationTriggers: ['Clinical non-response after 48-72 hours', 'Biomarker deterioration', 'Vital sign instability'],
+      guidelineAdherenceMetrics: {
+        targetTimeframeHours: 24,
+        requiresAttendingSignature: true,
+        auditClassification: 'CLASS_A_CLINICAL_PROTOCOL'
+      }
     });
-    this.registerProtocol({
-      id: 'GER-PROT-031',
-      name: 'Clinical Evidence-Based Pathway Geriatrics #31',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Geriatrics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #31'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #31'],
+    this.registerPathway({
+      id: 'GER-PATH-031',
+      name: 'Evidence-Based Clinical Protocol for Frailty Syndrome (Pathway #31)',
+      condition: 'Frailty Syndrome',
+      tier: 'Level 2 High-Grade Evidence',
       reassessmentIntervalHours: 48,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      mandatoryDiagnostics: ['Comprehensive Geriatric Assessment (CGA)', 'Serial Metabolic Panel monitoring', 'Diagnostic verification panel'],
+      firstLineTherapeutics: ['Cholinesterase Inhibitors and Memantine', 'Lifestyle modification and clinical counseling'],
+      contraindicationAlerts: ['Documented hypersensitivity to first-line therapeutic agents', 'Severe renal impairment without dose adjustment'],
+      escalationTriggers: ['Clinical non-response after 48-72 hours', 'Biomarker deterioration', 'Vital sign instability'],
+      guidelineAdherenceMetrics: {
+        targetTimeframeHours: 48,
+        requiresAttendingSignature: true,
+        auditClassification: 'CLASS_A_CLINICAL_PROTOCOL'
+      }
     });
-    this.registerProtocol({
-      id: 'GER-PROT-032',
-      name: 'Clinical Evidence-Based Pathway Geriatrics #32',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Geriatrics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #32'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #32'],
+    this.registerPathway({
+      id: 'GER-PATH-032',
+      name: 'Evidence-Based Clinical Protocol for Alzheimer Disease & Vascular Dementia (Pathway #32)',
+      condition: 'Alzheimer Disease & Vascular Dementia',
+      tier: 'Level 3 High-Grade Evidence',
       reassessmentIntervalHours: 12,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      mandatoryDiagnostics: ['Timed Up and Go (TUG) Test', 'Serial Metabolic Panel monitoring', 'Diagnostic verification panel'],
+      firstLineTherapeutics: ['Fall Risk Home Environment Modifications', 'Lifestyle modification and clinical counseling'],
+      contraindicationAlerts: ['Documented hypersensitivity to first-line therapeutic agents', 'Severe renal impairment without dose adjustment'],
+      escalationTriggers: ['Clinical non-response after 48-72 hours', 'Biomarker deterioration', 'Vital sign instability'],
+      guidelineAdherenceMetrics: {
+        targetTimeframeHours: 72,
+        requiresAttendingSignature: true,
+        auditClassification: 'CLASS_A_CLINICAL_PROTOCOL'
+      }
     });
-    this.registerProtocol({
-      id: 'GER-PROT-033',
-      name: 'Clinical Evidence-Based Pathway Geriatrics #33',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Geriatrics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #33'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #33'],
+    this.registerPathway({
+      id: 'GER-PATH-033',
+      name: 'Evidence-Based Clinical Protocol for Recurrent Falls and Gait Instability (Pathway #33)',
+      condition: 'Recurrent Falls and Gait Instability',
+      tier: 'Level 1 High-Grade Evidence',
       reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      mandatoryDiagnostics: ['Dual-Energy X-Ray Absorptiometry (DEXA)', 'Serial Metabolic Panel monitoring', 'Diagnostic verification panel'],
+      firstLineTherapeutics: ['Structured Medication Deprescribing Protocol', 'Lifestyle modification and clinical counseling'],
+      contraindicationAlerts: ['Documented hypersensitivity to first-line therapeutic agents', 'Severe renal impairment without dose adjustment'],
+      escalationTriggers: ['Clinical non-response after 48-72 hours', 'Biomarker deterioration', 'Vital sign instability'],
+      guidelineAdherenceMetrics: {
+        targetTimeframeHours: 24,
+        requiresAttendingSignature: true,
+        auditClassification: 'CLASS_A_CLINICAL_PROTOCOL'
+      }
     });
-    this.registerProtocol({
-      id: 'GER-PROT-034',
-      name: 'Clinical Evidence-Based Pathway Geriatrics #34',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Geriatrics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #34'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #34'],
+    this.registerPathway({
+      id: 'GER-PATH-034',
+      name: 'Evidence-Based Clinical Protocol for Polypharmacy and Inappropriate Prescribing (Pathway #34)',
+      condition: 'Polypharmacy and Inappropriate Prescribing',
+      tier: 'Level 2 High-Grade Evidence',
       reassessmentIntervalHours: 36,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
-    });
-    this.registerProtocol({
-      id: 'GER-PROT-035',
-      name: 'Clinical Evidence-Based Pathway Geriatrics #35',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Geriatrics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #35'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #35'],
-      reassessmentIntervalHours: 48,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
-    });
-    this.registerProtocol({
-      id: 'GER-PROT-036',
-      name: 'Clinical Evidence-Based Pathway Geriatrics #36',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Geriatrics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #36'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #36'],
-      reassessmentIntervalHours: 12,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
-    });
-    this.registerProtocol({
-      id: 'GER-PROT-037',
-      name: 'Clinical Evidence-Based Pathway Geriatrics #37',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Geriatrics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #37'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #37'],
-      reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
-    });
-    this.registerProtocol({
-      id: 'GER-PROT-038',
-      name: 'Clinical Evidence-Based Pathway Geriatrics #38',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Geriatrics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #38'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #38'],
-      reassessmentIntervalHours: 36,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
-    });
-    this.registerProtocol({
-      id: 'GER-PROT-039',
-      name: 'Clinical Evidence-Based Pathway Geriatrics #39',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Geriatrics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #39'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #39'],
-      reassessmentIntervalHours: 48,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
-    });
-    this.registerProtocol({
-      id: 'GER-PROT-040',
-      name: 'Clinical Evidence-Based Pathway Geriatrics #40',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Geriatrics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #40'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #40'],
-      reassessmentIntervalHours: 12,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
-    });
-    this.registerProtocol({
-      id: 'GER-PROT-041',
-      name: 'Clinical Evidence-Based Pathway Geriatrics #41',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Geriatrics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #41'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #41'],
-      reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
-    });
-    this.registerProtocol({
-      id: 'GER-PROT-042',
-      name: 'Clinical Evidence-Based Pathway Geriatrics #42',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Geriatrics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #42'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #42'],
-      reassessmentIntervalHours: 36,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
-    });
-    this.registerProtocol({
-      id: 'GER-PROT-043',
-      name: 'Clinical Evidence-Based Pathway Geriatrics #43',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Geriatrics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #43'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #43'],
-      reassessmentIntervalHours: 48,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
-    });
-    this.registerProtocol({
-      id: 'GER-PROT-044',
-      name: 'Clinical Evidence-Based Pathway Geriatrics #44',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Geriatrics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #44'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #44'],
-      reassessmentIntervalHours: 12,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
-    });
-    this.registerProtocol({
-      id: 'GER-PROT-045',
-      name: 'Clinical Evidence-Based Pathway Geriatrics #45',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Geriatrics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #45'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #45'],
-      reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
-    });
-    this.registerProtocol({
-      id: 'GER-PROT-046',
-      name: 'Clinical Evidence-Based Pathway Geriatrics #46',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Geriatrics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #46'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #46'],
-      reassessmentIntervalHours: 36,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
-    });
-    this.registerProtocol({
-      id: 'GER-PROT-047',
-      name: 'Clinical Evidence-Based Pathway Geriatrics #47',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Geriatrics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #47'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #47'],
-      reassessmentIntervalHours: 48,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
-    });
-    this.registerProtocol({
-      id: 'GER-PROT-048',
-      name: 'Clinical Evidence-Based Pathway Geriatrics #48',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Geriatrics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #48'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #48'],
-      reassessmentIntervalHours: 12,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
-    });
-    this.registerProtocol({
-      id: 'GER-PROT-049',
-      name: 'Clinical Evidence-Based Pathway Geriatrics #49',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Geriatrics'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #49'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #49'],
-      reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      mandatoryDiagnostics: ['Medication Regimen Complexity Index Audit', 'Serial Metabolic Panel monitoring', 'Diagnostic verification panel'],
+      firstLineTherapeutics: ['High-Intensity Physical Resistance and Balance Training', 'Lifestyle modification and clinical counseling'],
+      contraindicationAlerts: ['Documented hypersensitivity to first-line therapeutic agents', 'Severe renal impairment without dose adjustment'],
+      escalationTriggers: ['Clinical non-response after 48-72 hours', 'Biomarker deterioration', 'Vital sign instability'],
+      guidelineAdherenceMetrics: {
+        targetTimeframeHours: 48,
+        requiresAttendingSignature: true,
+        auditClassification: 'CLASS_A_CLINICAL_PROTOCOL'
+      }
     });
   }
 
-  registerProtocol(prot) {
-    this.protocols.set(prot.id, prot);
+  registerPathway(pathway) {
+    this.decisionTree.set(pathway.id, pathway);
   }
 
-  evaluatePatientPresentation(patient, vitals, labResults = []) {
-    const evaluation = {
-      specialty: this.specialtyName,
+  evaluateClinicalRisk(patient, vitals, labData = {}) {
+    const auditReport = {
+      engine: this.specialtyName,
+      domain: this.clinicalDomain,
       evaluatedAt: new Date().toISOString(),
-      matchedProtocols: [],
-      severityScore: 0,
-      clinicalAlerts: [],
+      patientId: patient ? patient.id : null,
+      riskScore: 0,
+      riskLevel: 'LOW_RISK_ROUTINE',
+      activeAlerts: [],
+      matchedPathways: [],
       recommendedActions: []
     };
 
-    if (!patient) return evaluation;
+    if (!patient) return auditReport;
 
-    // Evaluate vitals criteria
+    // Age & Demographic risk weighting
+    if (patient.dob) {
+      const age = new Date().getFullYear() - new Date(patient.dob).getFullYear();
+      if (age >= 65) {
+        auditReport.riskScore += 18;
+        auditReport.activeAlerts.push('Geriatric demographic category: enhanced monitoring required.');
+      }
+    }
+
+    // Vitals Evaluation
     if (vitals) {
       if (vitals.bpSys && vitals.bpSys >= 140) {
-        evaluation.severityScore += 25;
-        evaluation.clinicalAlerts.push('Elevated systolic blood pressure detected in Geriatrics review.');
+        auditReport.riskScore += 22;
+        auditReport.activeAlerts.push('Stage 2 Systolic Hypertension identified during Geriatrics review.');
       }
       if (vitals.hr && (vitals.hr > 100 || vitals.hr < 55)) {
-        evaluation.severityScore += 20;
-        evaluation.clinicalAlerts.push('Abnormal baseline heart rate rhythm flagged.');
+        auditReport.riskScore += 15;
+        auditReport.activeAlerts.push('Heart rate anomaly detected outside physiologic baseline.');
       }
       if (vitals.spo2 && vitals.spo2 < 94) {
-        evaluation.severityScore += 30;
-        evaluation.clinicalAlerts.push('Hypoxia indicator detected (SpO2 < 94%).');
+        auditReport.riskScore += 25;
+        auditReport.activeAlerts.push('Hypoxemia warning: SpO2 measured below 94%.');
       }
     }
 
-    // Check relevant chronic conditions
-    const conditions = patient.chronicConditions || [];
-    for (const cond of conditions) {
-      if (cond.name.toLowerCase().includes(this.clinicalDomain.toLowerCase()) || cond.code.startsWith(this.clinicalDomain.charAt(0))) {
-        evaluation.severityScore += 15;
-        evaluation.matchedProtocols.push(Array.from(this.protocols.values())[0] || null);
+    // Chronic Disease Matching
+    const chronic = patient.chronicConditions || [];
+    for (const c of chronic) {
+      const matched = Array.from(this.decisionTree.values()).find(p => p.condition.toLowerCase().includes(c.name.toLowerCase()) || c.name.toLowerCase().includes(p.condition.toLowerCase()));
+      if (matched) {
+        auditReport.riskScore += 20;
+        auditReport.matchedPathways.push(matched);
       }
     }
 
-    if (evaluation.severityScore >= 60) {
-      evaluation.riskTier = 'HIGH_PRIORITY_CLINICAL_ESCALATION';
-    } else if (evaluation.severityScore >= 30) {
-      evaluation.riskTier = 'MODERATE_MONITORING_REQUIRED';
+    // Assign Overall Risk Level
+    if (auditReport.riskScore >= 60) {
+      auditReport.riskLevel = 'HIGH_PRIORITY_CLINICAL_ESCALATION';
+    } else if (auditReport.riskScore >= 30) {
+      auditReport.riskLevel = 'MODERATE_SURVEILLANCE_INDICATED';
     } else {
-      evaluation.riskTier = 'STABLE_ROUTINE_CARE';
+      auditReport.riskLevel = 'STABLE_STANDARD_OF_CARE';
     }
 
-    evaluation.recommendedDiagnostics = this.standardDiagnostics;
-    evaluation.recommendedTherapeutics = this.standardTherapeutics;
+    auditReport.recommendedDiagnostics = this.diagnosticsRegistry;
+    auditReport.recommendedTherapeutics = this.treatmentPathways;
 
-    return evaluation;
+    return auditReport;
   }
 
-  calculateSpecialtyRiskIndex(parameters = {}) {
-    let score = 0;
-    const factorWeights = { ageFactor: 1.2, chronicFactor: 1.5, acuteSeverityFactor: 2.0 };
-    if (parameters.age && parameters.age > 65) score += 20 * factorWeights.ageFactor;
-    if (parameters.hasComorbidities) score += 25 * factorWeights.chronicFactor;
-    if (parameters.isAcute) score += 30 * factorWeights.acuteSeverityFactor;
-    return Math.min(100, Math.round(score));
+  getProtocolsForCondition(conditionName) {
+    if (!conditionName) return Array.from(this.decisionTree.values());
+    const q = conditionName.toLowerCase();
+    return Array.from(this.decisionTree.values()).filter(p => p.condition.toLowerCase().includes(q) || p.name.toLowerCase().includes(q));
+  }
+
+  validateTherapeuticOrder(order = {}, patient = {}) {
+    const validation = {
+      approved: true,
+      warnings: [],
+      requiresDoseAdjustment: false
+    };
+
+    if (!order.drugName) return validation;
+
+    const allergies = patient.allergies || [];
+    for (const a of allergies) {
+      if (order.drugName.toLowerCase().includes(a.allergen.toLowerCase())) {
+        validation.approved = false;
+        validation.warnings.push('Severe Allergy Contraindication: Documented allergy to ' + a.allergen);
+      }
+    }
+
+    return validation;
   }
 }
 

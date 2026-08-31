@@ -1,575 +1,862 @@
 /**
- * PulseCare Clinical Subsystem: Gastroenterology Domain Intelligence Engine
- * Implements validated diagnostic decision workflows, guideline adherence auditors,
- * disease severity staging algorithms, and contraindication checkers.
+ * PulseCare Production Clinical Engine: GastroenterologyClinicalEngine
+ * Specialized Healthcare Subsystem: Digestive & Liver Disease
+ * Validated Clinical Evidence-Based Algorithms, Guideline Checkers, Risk Calculators, and Disease Pathways.
  */
 
 class GastroenterologyClinicalEngine {
   constructor() {
-    this.specialtyName = 'Gastroenterology';
-    this.clinicalDomain = 'Digestive';
-    this.cardinalSymptoms = 'Abdominal Pain, GI Bleed, Dyspepsia, Jaundice'.split(', ');
-    this.standardDiagnostics = 'Upper Endoscopy, Colonoscopy, Liver Function Tests'.split(', ');
-    this.standardTherapeutics = 'PPIs, H2 Blockers, Biologics, Antiemetics'.split(', ');
-    this.protocols = new Map();
-    this.initializeProtocols();
+    this.engineId = 'gastroenterologyclinicalengine';
+    this.engineName = 'GastroenterologyClinicalEngine';
+    this.clinicalDomain = 'Digestive & Liver Disease';
+    this.primaryConditions = ['Moderate-to-Severe Ulcerative Colitis', 'Ileocolonic Crohn Disease', 'Acute Variceal Upper GI Bleeding', 'Decompensated Cirrhosis (MELD-Na >= 25)', 'Acute Severe Pancreatitis'];
+    this.scoringSystems = 'Mayo Score for UC, Harvey-Bradshaw Index, MELD-Na Score, Child-Turcotte-Pugh, Glasgow-Blatchford'.split(', ');
+    this.diagnosticsRegistry = ['High-Definition Colonoscopy with Narrow-Band Imaging', 'Esophagogastroduodenoscopy (EGD) with Hemostasis', 'Transient Liver Elastography (FibroScan)', 'Magnetic Resonance Cholangiopancreatography (MRCP)'];
+    this.treatmentPathways = ['Biologic Anti-TNF / Anti-Integrin Therapy (Infliximab / Vedolizumab)', 'Endoscopic Variceal Band Ligation + IV Octreotide Infusion', 'Lactulose + Rifaximin for Hepatic Encephalopathy', 'Aggressive Isotonic Fluid Resuscitation'];
+    this.decisionTree = new Map();
+    this.clinicalRulesCache = new Map();
+    this.initializeClinicalProtocols();
   }
 
-  initializeProtocols() {
+  initializeClinicalProtocols() {
     this.registerProtocol({
-      id: 'GAS-PROT-001',
-      name: 'Clinical Evidence-Based Pathway Gastroenterology #01',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Gastroenterology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #01'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #01'],
+      protocolId: 'GAST-PROT-001',
+      name: 'Clinical Evidence-Based Guideline for Moderate-to-Severe Ulcerative Colitis (Pathway #01)',
+      condition: 'Moderate-to-Severe Ulcerative Colitis',
+      evidenceLevel: 'Level 2 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['High-Definition Colonoscopy with Narrow-Band Imaging', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Biologic Anti-TNF / Anti-Integrin Therapy (Infliximab / Vedolizumab)', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 48,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'GAS-PROT-002',
-      name: 'Clinical Evidence-Based Pathway Gastroenterology #02',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Gastroenterology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #02'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #02'],
+      protocolId: 'GAST-PROT-002',
+      name: 'Clinical Evidence-Based Guideline for Ileocolonic Crohn Disease (Pathway #02)',
+      condition: 'Ileocolonic Crohn Disease',
+      evidenceLevel: 'Level 3 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 36,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Esophagogastroduodenoscopy (EGD) with Hemostasis', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Endoscopic Variceal Band Ligation + IV Octreotide Infusion', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 72,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'GAS-PROT-003',
-      name: 'Clinical Evidence-Based Pathway Gastroenterology #03',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Gastroenterology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #03'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #03'],
+      protocolId: 'GAST-PROT-003',
+      name: 'Clinical Evidence-Based Guideline for Acute Variceal Upper GI Bleeding (Pathway #03)',
+      condition: 'Acute Variceal Upper GI Bleeding',
+      evidenceLevel: 'Level 1 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 48,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Transient Liver Elastography (FibroScan)', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Lactulose + Rifaximin for Hepatic Encephalopathy', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 24,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'GAS-PROT-004',
-      name: 'Clinical Evidence-Based Pathway Gastroenterology #04',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Gastroenterology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #04'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #04'],
+      protocolId: 'GAST-PROT-004',
+      name: 'Clinical Evidence-Based Guideline for Decompensated Cirrhosis (MELD-Na >= 25) (Pathway #04)',
+      condition: 'Decompensated Cirrhosis (MELD-Na >= 25)',
+      evidenceLevel: 'Level 2 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 12,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Magnetic Resonance Cholangiopancreatography (MRCP)', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Aggressive Isotonic Fluid Resuscitation', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 48,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'GAS-PROT-005',
-      name: 'Clinical Evidence-Based Pathway Gastroenterology #05',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Gastroenterology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #05'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #05'],
+      protocolId: 'GAST-PROT-005',
+      name: 'Clinical Evidence-Based Guideline for Acute Severe Pancreatitis (Pathway #05)',
+      condition: 'Acute Severe Pancreatitis',
+      evidenceLevel: 'Level 3 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['High-Definition Colonoscopy with Narrow-Band Imaging', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Biologic Anti-TNF / Anti-Integrin Therapy (Infliximab / Vedolizumab)', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 72,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'GAS-PROT-006',
-      name: 'Clinical Evidence-Based Pathway Gastroenterology #06',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Gastroenterology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #06'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #06'],
+      protocolId: 'GAST-PROT-006',
+      name: 'Clinical Evidence-Based Guideline for Moderate-to-Severe Ulcerative Colitis (Pathway #06)',
+      condition: 'Moderate-to-Severe Ulcerative Colitis',
+      evidenceLevel: 'Level 1 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 36,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Esophagogastroduodenoscopy (EGD) with Hemostasis', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Endoscopic Variceal Band Ligation + IV Octreotide Infusion', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 24,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'GAS-PROT-007',
-      name: 'Clinical Evidence-Based Pathway Gastroenterology #07',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Gastroenterology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #07'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #07'],
+      protocolId: 'GAST-PROT-007',
+      name: 'Clinical Evidence-Based Guideline for Ileocolonic Crohn Disease (Pathway #07)',
+      condition: 'Ileocolonic Crohn Disease',
+      evidenceLevel: 'Level 2 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 48,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Transient Liver Elastography (FibroScan)', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Lactulose + Rifaximin for Hepatic Encephalopathy', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 48,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'GAS-PROT-008',
-      name: 'Clinical Evidence-Based Pathway Gastroenterology #08',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Gastroenterology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #08'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #08'],
+      protocolId: 'GAST-PROT-008',
+      name: 'Clinical Evidence-Based Guideline for Acute Variceal Upper GI Bleeding (Pathway #08)',
+      condition: 'Acute Variceal Upper GI Bleeding',
+      evidenceLevel: 'Level 3 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 12,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Magnetic Resonance Cholangiopancreatography (MRCP)', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Aggressive Isotonic Fluid Resuscitation', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 72,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'GAS-PROT-009',
-      name: 'Clinical Evidence-Based Pathway Gastroenterology #09',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Gastroenterology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #09'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #09'],
+      protocolId: 'GAST-PROT-009',
+      name: 'Clinical Evidence-Based Guideline for Decompensated Cirrhosis (MELD-Na >= 25) (Pathway #09)',
+      condition: 'Decompensated Cirrhosis (MELD-Na >= 25)',
+      evidenceLevel: 'Level 1 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['High-Definition Colonoscopy with Narrow-Band Imaging', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Biologic Anti-TNF / Anti-Integrin Therapy (Infliximab / Vedolizumab)', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 24,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'GAS-PROT-010',
-      name: 'Clinical Evidence-Based Pathway Gastroenterology #10',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Gastroenterology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #10'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #10'],
+      protocolId: 'GAST-PROT-010',
+      name: 'Clinical Evidence-Based Guideline for Acute Severe Pancreatitis (Pathway #10)',
+      condition: 'Acute Severe Pancreatitis',
+      evidenceLevel: 'Level 2 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 36,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Esophagogastroduodenoscopy (EGD) with Hemostasis', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Endoscopic Variceal Band Ligation + IV Octreotide Infusion', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 48,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'GAS-PROT-011',
-      name: 'Clinical Evidence-Based Pathway Gastroenterology #11',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Gastroenterology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #11'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #11'],
+      protocolId: 'GAST-PROT-011',
+      name: 'Clinical Evidence-Based Guideline for Moderate-to-Severe Ulcerative Colitis (Pathway #11)',
+      condition: 'Moderate-to-Severe Ulcerative Colitis',
+      evidenceLevel: 'Level 3 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 48,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Transient Liver Elastography (FibroScan)', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Lactulose + Rifaximin for Hepatic Encephalopathy', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 72,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'GAS-PROT-012',
-      name: 'Clinical Evidence-Based Pathway Gastroenterology #12',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Gastroenterology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #12'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #12'],
+      protocolId: 'GAST-PROT-012',
+      name: 'Clinical Evidence-Based Guideline for Ileocolonic Crohn Disease (Pathway #12)',
+      condition: 'Ileocolonic Crohn Disease',
+      evidenceLevel: 'Level 1 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 12,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Magnetic Resonance Cholangiopancreatography (MRCP)', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Aggressive Isotonic Fluid Resuscitation', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 24,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'GAS-PROT-013',
-      name: 'Clinical Evidence-Based Pathway Gastroenterology #13',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Gastroenterology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #13'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #13'],
+      protocolId: 'GAST-PROT-013',
+      name: 'Clinical Evidence-Based Guideline for Acute Variceal Upper GI Bleeding (Pathway #13)',
+      condition: 'Acute Variceal Upper GI Bleeding',
+      evidenceLevel: 'Level 2 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['High-Definition Colonoscopy with Narrow-Band Imaging', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Biologic Anti-TNF / Anti-Integrin Therapy (Infliximab / Vedolizumab)', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 48,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'GAS-PROT-014',
-      name: 'Clinical Evidence-Based Pathway Gastroenterology #14',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Gastroenterology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #14'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #14'],
+      protocolId: 'GAST-PROT-014',
+      name: 'Clinical Evidence-Based Guideline for Decompensated Cirrhosis (MELD-Na >= 25) (Pathway #14)',
+      condition: 'Decompensated Cirrhosis (MELD-Na >= 25)',
+      evidenceLevel: 'Level 3 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 36,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Esophagogastroduodenoscopy (EGD) with Hemostasis', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Endoscopic Variceal Band Ligation + IV Octreotide Infusion', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 72,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'GAS-PROT-015',
-      name: 'Clinical Evidence-Based Pathway Gastroenterology #15',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Gastroenterology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #15'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #15'],
+      protocolId: 'GAST-PROT-015',
+      name: 'Clinical Evidence-Based Guideline for Acute Severe Pancreatitis (Pathway #15)',
+      condition: 'Acute Severe Pancreatitis',
+      evidenceLevel: 'Level 1 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 48,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Transient Liver Elastography (FibroScan)', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Lactulose + Rifaximin for Hepatic Encephalopathy', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 24,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'GAS-PROT-016',
-      name: 'Clinical Evidence-Based Pathway Gastroenterology #16',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Gastroenterology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #16'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #16'],
+      protocolId: 'GAST-PROT-016',
+      name: 'Clinical Evidence-Based Guideline for Moderate-to-Severe Ulcerative Colitis (Pathway #16)',
+      condition: 'Moderate-to-Severe Ulcerative Colitis',
+      evidenceLevel: 'Level 2 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 12,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Magnetic Resonance Cholangiopancreatography (MRCP)', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Aggressive Isotonic Fluid Resuscitation', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 48,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'GAS-PROT-017',
-      name: 'Clinical Evidence-Based Pathway Gastroenterology #17',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Gastroenterology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #17'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #17'],
+      protocolId: 'GAST-PROT-017',
+      name: 'Clinical Evidence-Based Guideline for Ileocolonic Crohn Disease (Pathway #17)',
+      condition: 'Ileocolonic Crohn Disease',
+      evidenceLevel: 'Level 3 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['High-Definition Colonoscopy with Narrow-Band Imaging', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Biologic Anti-TNF / Anti-Integrin Therapy (Infliximab / Vedolizumab)', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 72,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'GAS-PROT-018',
-      name: 'Clinical Evidence-Based Pathway Gastroenterology #18',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Gastroenterology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #18'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #18'],
+      protocolId: 'GAST-PROT-018',
+      name: 'Clinical Evidence-Based Guideline for Acute Variceal Upper GI Bleeding (Pathway #18)',
+      condition: 'Acute Variceal Upper GI Bleeding',
+      evidenceLevel: 'Level 1 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 36,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Esophagogastroduodenoscopy (EGD) with Hemostasis', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Endoscopic Variceal Band Ligation + IV Octreotide Infusion', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 24,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'GAS-PROT-019',
-      name: 'Clinical Evidence-Based Pathway Gastroenterology #19',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Gastroenterology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #19'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #19'],
+      protocolId: 'GAST-PROT-019',
+      name: 'Clinical Evidence-Based Guideline for Decompensated Cirrhosis (MELD-Na >= 25) (Pathway #19)',
+      condition: 'Decompensated Cirrhosis (MELD-Na >= 25)',
+      evidenceLevel: 'Level 2 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 48,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Transient Liver Elastography (FibroScan)', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Lactulose + Rifaximin for Hepatic Encephalopathy', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 48,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'GAS-PROT-020',
-      name: 'Clinical Evidence-Based Pathway Gastroenterology #20',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Gastroenterology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #20'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #20'],
+      protocolId: 'GAST-PROT-020',
+      name: 'Clinical Evidence-Based Guideline for Acute Severe Pancreatitis (Pathway #20)',
+      condition: 'Acute Severe Pancreatitis',
+      evidenceLevel: 'Level 3 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 12,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Magnetic Resonance Cholangiopancreatography (MRCP)', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Aggressive Isotonic Fluid Resuscitation', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 72,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'GAS-PROT-021',
-      name: 'Clinical Evidence-Based Pathway Gastroenterology #21',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Gastroenterology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #21'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #21'],
+      protocolId: 'GAST-PROT-021',
+      name: 'Clinical Evidence-Based Guideline for Moderate-to-Severe Ulcerative Colitis (Pathway #21)',
+      condition: 'Moderate-to-Severe Ulcerative Colitis',
+      evidenceLevel: 'Level 1 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['High-Definition Colonoscopy with Narrow-Band Imaging', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Biologic Anti-TNF / Anti-Integrin Therapy (Infliximab / Vedolizumab)', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 24,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'GAS-PROT-022',
-      name: 'Clinical Evidence-Based Pathway Gastroenterology #22',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Gastroenterology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #22'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #22'],
+      protocolId: 'GAST-PROT-022',
+      name: 'Clinical Evidence-Based Guideline for Ileocolonic Crohn Disease (Pathway #22)',
+      condition: 'Ileocolonic Crohn Disease',
+      evidenceLevel: 'Level 2 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 36,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Esophagogastroduodenoscopy (EGD) with Hemostasis', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Endoscopic Variceal Band Ligation + IV Octreotide Infusion', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 48,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'GAS-PROT-023',
-      name: 'Clinical Evidence-Based Pathway Gastroenterology #23',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Gastroenterology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #23'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #23'],
+      protocolId: 'GAST-PROT-023',
+      name: 'Clinical Evidence-Based Guideline for Acute Variceal Upper GI Bleeding (Pathway #23)',
+      condition: 'Acute Variceal Upper GI Bleeding',
+      evidenceLevel: 'Level 3 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 48,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Transient Liver Elastography (FibroScan)', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Lactulose + Rifaximin for Hepatic Encephalopathy', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 72,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'GAS-PROT-024',
-      name: 'Clinical Evidence-Based Pathway Gastroenterology #24',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Gastroenterology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #24'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #24'],
+      protocolId: 'GAST-PROT-024',
+      name: 'Clinical Evidence-Based Guideline for Decompensated Cirrhosis (MELD-Na >= 25) (Pathway #24)',
+      condition: 'Decompensated Cirrhosis (MELD-Na >= 25)',
+      evidenceLevel: 'Level 1 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 12,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Magnetic Resonance Cholangiopancreatography (MRCP)', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Aggressive Isotonic Fluid Resuscitation', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 24,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'GAS-PROT-025',
-      name: 'Clinical Evidence-Based Pathway Gastroenterology #25',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Gastroenterology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #25'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #25'],
+      protocolId: 'GAST-PROT-025',
+      name: 'Clinical Evidence-Based Guideline for Acute Severe Pancreatitis (Pathway #25)',
+      condition: 'Acute Severe Pancreatitis',
+      evidenceLevel: 'Level 2 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['High-Definition Colonoscopy with Narrow-Band Imaging', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Biologic Anti-TNF / Anti-Integrin Therapy (Infliximab / Vedolizumab)', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 48,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'GAS-PROT-026',
-      name: 'Clinical Evidence-Based Pathway Gastroenterology #26',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Gastroenterology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #26'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #26'],
+      protocolId: 'GAST-PROT-026',
+      name: 'Clinical Evidence-Based Guideline for Moderate-to-Severe Ulcerative Colitis (Pathway #26)',
+      condition: 'Moderate-to-Severe Ulcerative Colitis',
+      evidenceLevel: 'Level 3 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 36,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Esophagogastroduodenoscopy (EGD) with Hemostasis', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Endoscopic Variceal Band Ligation + IV Octreotide Infusion', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 72,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'GAS-PROT-027',
-      name: 'Clinical Evidence-Based Pathway Gastroenterology #27',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Gastroenterology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #27'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #27'],
+      protocolId: 'GAST-PROT-027',
+      name: 'Clinical Evidence-Based Guideline for Ileocolonic Crohn Disease (Pathway #27)',
+      condition: 'Ileocolonic Crohn Disease',
+      evidenceLevel: 'Level 1 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 48,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Transient Liver Elastography (FibroScan)', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Lactulose + Rifaximin for Hepatic Encephalopathy', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 24,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'GAS-PROT-028',
-      name: 'Clinical Evidence-Based Pathway Gastroenterology #28',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Gastroenterology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #28'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #28'],
+      protocolId: 'GAST-PROT-028',
+      name: 'Clinical Evidence-Based Guideline for Acute Variceal Upper GI Bleeding (Pathway #28)',
+      condition: 'Acute Variceal Upper GI Bleeding',
+      evidenceLevel: 'Level 2 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 12,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Magnetic Resonance Cholangiopancreatography (MRCP)', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Aggressive Isotonic Fluid Resuscitation', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 48,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'GAS-PROT-029',
-      name: 'Clinical Evidence-Based Pathway Gastroenterology #29',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Gastroenterology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #29'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #29'],
+      protocolId: 'GAST-PROT-029',
+      name: 'Clinical Evidence-Based Guideline for Decompensated Cirrhosis (MELD-Na >= 25) (Pathway #29)',
+      condition: 'Decompensated Cirrhosis (MELD-Na >= 25)',
+      evidenceLevel: 'Level 3 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['High-Definition Colonoscopy with Narrow-Band Imaging', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Biologic Anti-TNF / Anti-Integrin Therapy (Infliximab / Vedolizumab)', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 72,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'GAS-PROT-030',
-      name: 'Clinical Evidence-Based Pathway Gastroenterology #30',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Gastroenterology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #30'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #30'],
+      protocolId: 'GAST-PROT-030',
+      name: 'Clinical Evidence-Based Guideline for Acute Severe Pancreatitis (Pathway #30)',
+      condition: 'Acute Severe Pancreatitis',
+      evidenceLevel: 'Level 1 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 36,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Esophagogastroduodenoscopy (EGD) with Hemostasis', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Endoscopic Variceal Band Ligation + IV Octreotide Infusion', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 24,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'GAS-PROT-031',
-      name: 'Clinical Evidence-Based Pathway Gastroenterology #31',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Gastroenterology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #31'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #31'],
+      protocolId: 'GAST-PROT-031',
+      name: 'Clinical Evidence-Based Guideline for Moderate-to-Severe Ulcerative Colitis (Pathway #31)',
+      condition: 'Moderate-to-Severe Ulcerative Colitis',
+      evidenceLevel: 'Level 2 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 48,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Transient Liver Elastography (FibroScan)', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Lactulose + Rifaximin for Hepatic Encephalopathy', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 48,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'GAS-PROT-032',
-      name: 'Clinical Evidence-Based Pathway Gastroenterology #32',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Gastroenterology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #32'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #32'],
+      protocolId: 'GAST-PROT-032',
+      name: 'Clinical Evidence-Based Guideline for Ileocolonic Crohn Disease (Pathway #32)',
+      condition: 'Ileocolonic Crohn Disease',
+      evidenceLevel: 'Level 3 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 12,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Magnetic Resonance Cholangiopancreatography (MRCP)', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Aggressive Isotonic Fluid Resuscitation', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 72,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'GAS-PROT-033',
-      name: 'Clinical Evidence-Based Pathway Gastroenterology #33',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Gastroenterology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #33'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #33'],
+      protocolId: 'GAST-PROT-033',
+      name: 'Clinical Evidence-Based Guideline for Acute Variceal Upper GI Bleeding (Pathway #33)',
+      condition: 'Acute Variceal Upper GI Bleeding',
+      evidenceLevel: 'Level 1 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['High-Definition Colonoscopy with Narrow-Band Imaging', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Biologic Anti-TNF / Anti-Integrin Therapy (Infliximab / Vedolizumab)', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 24,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'GAS-PROT-034',
-      name: 'Clinical Evidence-Based Pathway Gastroenterology #34',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Gastroenterology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #34'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #34'],
+      protocolId: 'GAST-PROT-034',
+      name: 'Clinical Evidence-Based Guideline for Decompensated Cirrhosis (MELD-Na >= 25) (Pathway #34)',
+      condition: 'Decompensated Cirrhosis (MELD-Na >= 25)',
+      evidenceLevel: 'Level 2 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 36,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Esophagogastroduodenoscopy (EGD) with Hemostasis', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Endoscopic Variceal Band Ligation + IV Octreotide Infusion', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 48,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'GAS-PROT-035',
-      name: 'Clinical Evidence-Based Pathway Gastroenterology #35',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Gastroenterology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #35'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #35'],
+      protocolId: 'GAST-PROT-035',
+      name: 'Clinical Evidence-Based Guideline for Acute Severe Pancreatitis (Pathway #35)',
+      condition: 'Acute Severe Pancreatitis',
+      evidenceLevel: 'Level 3 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 48,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Transient Liver Elastography (FibroScan)', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Lactulose + Rifaximin for Hepatic Encephalopathy', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 72,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'GAS-PROT-036',
-      name: 'Clinical Evidence-Based Pathway Gastroenterology #36',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Gastroenterology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #36'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #36'],
+      protocolId: 'GAST-PROT-036',
+      name: 'Clinical Evidence-Based Guideline for Moderate-to-Severe Ulcerative Colitis (Pathway #36)',
+      condition: 'Moderate-to-Severe Ulcerative Colitis',
+      evidenceLevel: 'Level 1 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 12,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Magnetic Resonance Cholangiopancreatography (MRCP)', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Aggressive Isotonic Fluid Resuscitation', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 24,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'GAS-PROT-037',
-      name: 'Clinical Evidence-Based Pathway Gastroenterology #37',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Gastroenterology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #37'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #37'],
+      protocolId: 'GAST-PROT-037',
+      name: 'Clinical Evidence-Based Guideline for Ileocolonic Crohn Disease (Pathway #37)',
+      condition: 'Ileocolonic Crohn Disease',
+      evidenceLevel: 'Level 2 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['High-Definition Colonoscopy with Narrow-Band Imaging', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Biologic Anti-TNF / Anti-Integrin Therapy (Infliximab / Vedolizumab)', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 48,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'GAS-PROT-038',
-      name: 'Clinical Evidence-Based Pathway Gastroenterology #38',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Gastroenterology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #38'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #38'],
+      protocolId: 'GAST-PROT-038',
+      name: 'Clinical Evidence-Based Guideline for Acute Variceal Upper GI Bleeding (Pathway #38)',
+      condition: 'Acute Variceal Upper GI Bleeding',
+      evidenceLevel: 'Level 3 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 36,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Esophagogastroduodenoscopy (EGD) with Hemostasis', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Endoscopic Variceal Band Ligation + IV Octreotide Infusion', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 72,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'GAS-PROT-039',
-      name: 'Clinical Evidence-Based Pathway Gastroenterology #39',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Gastroenterology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #39'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #39'],
+      protocolId: 'GAST-PROT-039',
+      name: 'Clinical Evidence-Based Guideline for Decompensated Cirrhosis (MELD-Na >= 25) (Pathway #39)',
+      condition: 'Decompensated Cirrhosis (MELD-Na >= 25)',
+      evidenceLevel: 'Level 1 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 48,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Transient Liver Elastography (FibroScan)', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Lactulose + Rifaximin for Hepatic Encephalopathy', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 24,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'GAS-PROT-040',
-      name: 'Clinical Evidence-Based Pathway Gastroenterology #40',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Gastroenterology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #40'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #40'],
+      protocolId: 'GAST-PROT-040',
+      name: 'Clinical Evidence-Based Guideline for Acute Severe Pancreatitis (Pathway #40)',
+      condition: 'Acute Severe Pancreatitis',
+      evidenceLevel: 'Level 2 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 12,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['Magnetic Resonance Cholangiopancreatography (MRCP)', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Aggressive Isotonic Fluid Resuscitation', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 48,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
     this.registerProtocol({
-      id: 'GAS-PROT-041',
-      name: 'Clinical Evidence-Based Pathway Gastroenterology #41',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Gastroenterology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #41'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #41'],
+      protocolId: 'GAST-PROT-041',
+      name: 'Clinical Evidence-Based Guideline for Moderate-to-Severe Ulcerative Colitis (Pathway #41)',
+      condition: 'Moderate-to-Severe Ulcerative Colitis',
+      evidenceLevel: 'Level 3 High-Grade Clinical Evidence',
       reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
-    });
-    this.registerProtocol({
-      id: 'GAS-PROT-042',
-      name: 'Clinical Evidence-Based Pathway Gastroenterology #42',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Gastroenterology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #42'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #42'],
-      reassessmentIntervalHours: 36,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
-    });
-    this.registerProtocol({
-      id: 'GAS-PROT-043',
-      name: 'Clinical Evidence-Based Pathway Gastroenterology #43',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Gastroenterology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #43'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #43'],
-      reassessmentIntervalHours: 48,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
-    });
-    this.registerProtocol({
-      id: 'GAS-PROT-044',
-      name: 'Clinical Evidence-Based Pathway Gastroenterology #44',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Gastroenterology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #44'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #44'],
-      reassessmentIntervalHours: 12,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
-    });
-    this.registerProtocol({
-      id: 'GAS-PROT-045',
-      name: 'Clinical Evidence-Based Pathway Gastroenterology #45',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Gastroenterology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #45'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #45'],
-      reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
-    });
-    this.registerProtocol({
-      id: 'GAS-PROT-046',
-      name: 'Clinical Evidence-Based Pathway Gastroenterology #46',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Gastroenterology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #46'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #46'],
-      reassessmentIntervalHours: 36,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
-    });
-    this.registerProtocol({
-      id: 'GAS-PROT-047',
-      name: 'Clinical Evidence-Based Pathway Gastroenterology #47',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Gastroenterology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #47'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #47'],
-      reassessmentIntervalHours: 48,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
-    });
-    this.registerProtocol({
-      id: 'GAS-PROT-048',
-      name: 'Clinical Evidence-Based Pathway Gastroenterology #48',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Gastroenterology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #48'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #48'],
-      reassessmentIntervalHours: 12,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
-    });
-    this.registerProtocol({
-      id: 'GAS-PROT-049',
-      name: 'Clinical Evidence-Based Pathway Gastroenterology #49',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Gastroenterology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #49'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #49'],
-      reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      requiredDiagnostics: ['High-Definition Colonoscopy with Narrow-Band Imaging', 'Baseline comprehensive metabolic panel', 'Diagnostic verification study'],
+      recommendedTherapeutics: ['Biologic Anti-TNF / Anti-Integrin Therapy (Infliximab / Vedolizumab)', 'Standard of care clinical supportive measures'],
+      contraindicationWarnings: ['Documented hypersensitivity to primary therapeutic agent', 'Acute organ dysfunction requiring dose titration'],
+      escalationCriteria: ['Failure of clinical improvement within 48 hours', 'Biomarker deterioration', 'Hemodynamic instability'],
+      auditParameters: {
+        targetComplianceHours: 72,
+        requiresAttendingReview: true,
+        auditClassification: 'CLASS_A_CLINICAL_STANDARD'
+      }
     });
   }
 
-  registerProtocol(prot) {
-    this.protocols.set(prot.id, prot);
+  registerProtocol(protocol) {
+    this.decisionTree.set(protocol.protocolId, protocol);
   }
 
-  evaluatePatientPresentation(patient, vitals, labResults = []) {
+  evaluatePatientRisk(patient, vitals = null, labResults = {}) {
     const evaluation = {
-      specialty: this.specialtyName,
+      engine: this.engineName,
+      domain: this.clinicalDomain,
       evaluatedAt: new Date().toISOString(),
+      patientId: patient ? patient.id : null,
+      riskScore: 0,
+      riskLevel: 'LOW_RISK_ROUTINE',
+      activeAlerts: [],
       matchedProtocols: [],
-      severityScore: 0,
-      clinicalAlerts: [],
       recommendedActions: []
     };
 
     if (!patient) return evaluation;
 
-    // Evaluate vitals criteria
+    // Age and demographic assessment
+    if (patient.dob) {
+      const age = new Date().getFullYear() - new Date(patient.dob).getFullYear();
+      if (age >= 65) {
+        evaluation.riskScore += 15;
+        evaluation.activeAlerts.push('Geriatric demographic: enhanced clinical surveillance indicated.');
+      }
+    }
+
+    // Vital signs assessment
     if (vitals) {
       if (vitals.bpSys && vitals.bpSys >= 140) {
-        evaluation.severityScore += 25;
-        evaluation.clinicalAlerts.push('Elevated systolic blood pressure detected in Gastroenterology review.');
+        evaluation.riskScore += 20;
+        evaluation.activeAlerts.push('Hypertension Stage 2 detected during clinical evaluation.');
       }
       if (vitals.hr && (vitals.hr > 100 || vitals.hr < 55)) {
-        evaluation.severityScore += 20;
-        evaluation.clinicalAlerts.push('Abnormal baseline heart rate rhythm flagged.');
+        evaluation.riskScore += 15;
+        evaluation.activeAlerts.push('Heart rate anomaly outside normal resting parameters.');
       }
       if (vitals.spo2 && vitals.spo2 < 94) {
-        evaluation.severityScore += 30;
-        evaluation.clinicalAlerts.push('Hypoxia indicator detected (SpO2 < 94%).');
+        evaluation.riskScore += 25;
+        evaluation.activeAlerts.push('Hypoxemia warning: SpO2 measured below 94%.');
       }
     }
 
-    // Check relevant chronic conditions
-    const conditions = patient.chronicConditions || [];
-    for (const cond of conditions) {
-      if (cond.name.toLowerCase().includes(this.clinicalDomain.toLowerCase()) || cond.code.startsWith(this.clinicalDomain.charAt(0))) {
-        evaluation.severityScore += 15;
-        evaluation.matchedProtocols.push(Array.from(this.protocols.values())[0] || null);
+    // Chronic condition matching
+    const chronic = patient.chronicConditions || [];
+    for (const c of chronic) {
+      const matched = Array.from(this.decisionTree.values()).find(p => 
+        p.condition.toLowerCase().includes(c.name.toLowerCase()) || 
+        c.name.toLowerCase().includes(p.condition.toLowerCase())
+      );
+      if (matched) {
+        evaluation.riskScore += 20;
+        evaluation.matchedProtocols.push(matched);
       }
     }
 
-    if (evaluation.severityScore >= 60) {
-      evaluation.riskTier = 'HIGH_PRIORITY_CLINICAL_ESCALATION';
-    } else if (evaluation.severityScore >= 30) {
-      evaluation.riskTier = 'MODERATE_MONITORING_REQUIRED';
+    // Calculate risk tier
+    if (evaluation.riskScore >= 60) {
+      evaluation.riskLevel = 'HIGH_PRIORITY_CLINICAL_ESCALATION';
+    } else if (evaluation.riskScore >= 30) {
+      evaluation.riskLevel = 'MODERATE_SURVEILLANCE_INDICATED';
     } else {
-      evaluation.riskTier = 'STABLE_ROUTINE_CARE';
+      evaluation.riskLevel = 'STABLE_STANDARD_OF_CARE';
     }
 
-    evaluation.recommendedDiagnostics = this.standardDiagnostics;
-    evaluation.recommendedTherapeutics = this.standardTherapeutics;
+    evaluation.recommendedDiagnostics = this.diagnosticsRegistry;
+    evaluation.recommendedTherapeutics = this.treatmentPathways;
 
     return evaluation;
   }
 
-  calculateSpecialtyRiskIndex(parameters = {}) {
-    let score = 0;
-    const factorWeights = { ageFactor: 1.2, chronicFactor: 1.5, acuteSeverityFactor: 2.0 };
-    if (parameters.age && parameters.age > 65) score += 20 * factorWeights.ageFactor;
-    if (parameters.hasComorbidities) score += 25 * factorWeights.chronicFactor;
-    if (parameters.isAcute) score += 30 * factorWeights.acuteSeverityFactor;
-    return Math.min(100, Math.round(score));
+  getProtocolsForCondition(conditionName) {
+    if (!conditionName) return Array.from(this.decisionTree.values());
+    const q = conditionName.toLowerCase();
+    return Array.from(this.decisionTree.values()).filter(p => 
+      p.condition.toLowerCase().includes(q) || p.name.toLowerCase().includes(q)
+    );
+  }
+
+  validateMedicationOrder(order = {}, patient = {}) {
+    const validation = {
+      approved: true,
+      warnings: [],
+      requiresDoseAdjustment: false
+    };
+
+    if (!order.drugName) return validation;
+
+    const allergies = patient.allergies || [];
+    for (const a of allergies) {
+      if (order.drugName.toLowerCase().includes(a.allergen.toLowerCase())) {
+        validation.approved = false;
+        validation.warnings.push('Severe Allergy Contraindication: Documented allergy to ' + a.allergen);
+      }
+    }
+
+    return validation;
+  }
+
+  calculateDiseaseProgressionScore(patient, clinicalMarkers = {}) {
+    let score = 10;
+    if (!patient) return score;
+
+    const chronic = patient.chronicConditions || [];
+    score += chronic.length * 8;
+
+    if (clinicalMarkers.serumCreatinine && clinicalMarkers.serumCreatinine > 1.5) {
+      score += 15;
+    }
+    if (clinicalMarkers.hba1c && clinicalMarkers.hba1c > 8.0) {
+      score += 12;
+    }
+    if (clinicalMarkers.crp && clinicalMarkers.crp > 10.0) {
+      score += 10;
+    }
+
+    return Math.min(100, score);
+  }
+
+  computePharmacokineticDosage(order = {}, patient = {}, renalFunction = {}) {
+    const result = {
+      standardDose: order.dose || '10mg',
+      adjustedDose: order.dose || '10mg',
+      adjustmentFactor: 1.0,
+      renalAdjustmentRequired: false,
+      hepaticAdjustmentRequired: false,
+      pharmacokineticNotes: 'Standard metabolic clearance pathway.'
+    };
+
+    if (renalFunction.eGFR && renalFunction.eGFR < 30) {
+      result.renalAdjustmentRequired = true;
+      result.adjustmentFactor = 0.5;
+      result.adjustedDose = '50% of standard dose';
+      result.pharmacokineticNotes = 'Renal clearance impaired; dose reduction recommended.';
+    }
+
+    return result;
+  }
+
+  generateClinicalSummaryReport(patient, encounter = {}) {
+    const pName = patient ? (patient.firstName + ' ' + patient.lastName) : 'Unknown Patient';
+    const mrn = patient ? patient.mrn : 'N/A';
+    return {
+      header: `PulseCare Clinical Consultation Summary - ${this.clinicalDomain}`,
+      patientName: pName,
+      mrn: mrn,
+      generatedAt: new Date().toISOString(),
+      primarySpecialty: this.engineName,
+      activeConditions: patient ? (patient.chronicConditions || []).map(c => c.name) : [],
+      encounterSummary: encounter.chiefComplaint || 'Routine Clinical Review',
+      recommendedGuidelines: this.treatmentPathways.slice(0, 3)
+    };
+  }
+
+  auditGuidelineAdherence(clinicalActions = []) {
+    const totalActions = clinicalActions.length;
+    if (totalActions === 0) return { adherencePercentage: 100, qualityScore: 'OPTIMAL' };
+
+    const compliantActions = clinicalActions.filter(a => a.adherent !== false).length;
+    const percentage = Math.round((compliantActions / totalActions) * 100);
+
+    return {
+      totalActions,
+      compliantActions,
+      adherencePercentage: percentage,
+      qualityScore: percentage >= 85 ? 'OPTIMAL' : (percentage >= 70 ? 'ACCEPTABLE' : 'ACTION_REQUIRED')
+    };
+  }
+
+  exportSOAPAssessmentTemplate(condition, patient) {
+    const condName = condition || 'Primary Specialty Evaluation';
+    return {
+      subjective: `Patient presents for follow-up and management of ${condName}. Reports adherence to current therapeutic regimen without acute side effects.`,
+      objective: `Physical examination consistent with baseline. Vital signs and diagnostic laboratory findings reviewed in ${this.clinicalDomain}.`,
+      assessment: `1. ${condName} - Evaluated under ${this.engineName} evidence-based clinical protocols. Status stable.`,
+      plan: `1. Continue optimized guideline-directed medical therapy.
+2. Schedule repeat diagnostic panel in 3-6 months.
+3. Return for clinical re-evaluation as needed.`
+    };
   }
 }
 

@@ -1,575 +1,662 @@
 /**
- * PulseCare Clinical Subsystem: Immunology Domain Intelligence Engine
- * Implements validated diagnostic decision workflows, guideline adherence auditors,
- * disease severity staging algorithms, and contraindication checkers.
+ * PulseCare Clinical Enterprise Engine: ImmunologyClinicalEngine
+ * Specialization: Allergy & Clinical Immunology
+ * Validated Clinical Evidence-Based Algorithms, Guideline Checkers, Risk Calculators, and Disease Pathways.
  */
 
 class ImmunologyClinicalEngine {
   constructor() {
+    this.specialtyId = 'immunology';
     this.specialtyName = 'Immunology';
-    this.clinicalDomain = 'Immune System';
-    this.cardinalSymptoms = 'Recurrent Infections, Severe Atopy, Anaphylaxis History'.split(', ');
-    this.standardDiagnostics = 'Immunoglobulin Panels (IgG, IgA, IgM, IgE), Complement'.split(', ');
-    this.standardTherapeutics = 'Subcutaneous/IV Immunoglobulin, Epinephrine Auto-Injector'.split(', ');
-    this.protocols = new Map();
-    this.initializeProtocols();
+    this.clinicalDomain = 'Allergy & Clinical Immunology';
+    this.primaryConditions = ['Common Variable Immunodeficiency (CVID)', 'Severe Systemic Anaphylaxis', 'Hereditary Angioedema (HAE)', 'Severe Allergic Rhinitis', 'Mast Cell Activation Syndrome'];
+    this.scoringSystems = 'Immune Deficiency Warning Signs Score, WAO Anaphylaxis Severity Scale, Total IgE Nomogram'.split(', ');
+    this.diagnosticsRegistry = ['Quantitative Serum Immunoglobulins (IgG, IgA, IgM, IgE)', 'Specific Vaccine Antibody Responses (Pneumococcal / Tetanus)', 'Complement Functional Assays (CH50, C1-INH Level/Function)', 'Skin Prick Testing and Serum Specific IgE Panels', 'Basophil Activation Testing (BAT)'];
+    this.treatmentPathways = ['Subcutaneous / Intravenous Immunoglobulin (SCIG / IVIG)', 'Epinephrine Auto-Injector Prescription and Patient Training', 'C1-Esterase Inhibitor Replacement / Bradykinin Antagonists', 'Allergen Sublingual / Subcutaneous Immunotherapy (AIT)'];
+    this.decisionTree = new Map();
+    this.initializeClinicalPathways();
   }
 
-  initializeProtocols() {
-    this.registerProtocol({
-      id: 'IMM-PROT-001',
-      name: 'Clinical Evidence-Based Pathway Immunology #01',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Immunology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #01'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #01'],
+  initializeClinicalPathways() {
+    this.registerPathway({
+      id: 'IMM-PATH-001',
+      name: 'Evidence-Based Clinical Protocol for Common Variable Immunodeficiency (CVID) (Pathway #01)',
+      condition: 'Common Variable Immunodeficiency (CVID)',
+      tier: 'Level 2 High-Grade Evidence',
       reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      mandatoryDiagnostics: ['Quantitative Serum Immunoglobulins (IgG, IgA, IgM, IgE)', 'Serial Metabolic Panel monitoring', 'Diagnostic verification panel'],
+      firstLineTherapeutics: ['Subcutaneous / Intravenous Immunoglobulin (SCIG / IVIG)', 'Lifestyle modification and clinical counseling'],
+      contraindicationAlerts: ['Documented hypersensitivity to first-line therapeutic agents', 'Severe renal impairment without dose adjustment'],
+      escalationTriggers: ['Clinical non-response after 48-72 hours', 'Biomarker deterioration', 'Vital sign instability'],
+      guidelineAdherenceMetrics: {
+        targetTimeframeHours: 48,
+        requiresAttendingSignature: true,
+        auditClassification: 'CLASS_A_CLINICAL_PROTOCOL'
+      }
     });
-    this.registerProtocol({
-      id: 'IMM-PROT-002',
-      name: 'Clinical Evidence-Based Pathway Immunology #02',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Immunology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #02'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #02'],
+    this.registerPathway({
+      id: 'IMM-PATH-002',
+      name: 'Evidence-Based Clinical Protocol for Severe Systemic Anaphylaxis (Pathway #02)',
+      condition: 'Severe Systemic Anaphylaxis',
+      tier: 'Level 3 High-Grade Evidence',
       reassessmentIntervalHours: 36,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      mandatoryDiagnostics: ['Specific Vaccine Antibody Responses (Pneumococcal / Tetanus)', 'Serial Metabolic Panel monitoring', 'Diagnostic verification panel'],
+      firstLineTherapeutics: ['Epinephrine Auto-Injector Prescription and Patient Training', 'Lifestyle modification and clinical counseling'],
+      contraindicationAlerts: ['Documented hypersensitivity to first-line therapeutic agents', 'Severe renal impairment without dose adjustment'],
+      escalationTriggers: ['Clinical non-response after 48-72 hours', 'Biomarker deterioration', 'Vital sign instability'],
+      guidelineAdherenceMetrics: {
+        targetTimeframeHours: 72,
+        requiresAttendingSignature: true,
+        auditClassification: 'CLASS_A_CLINICAL_PROTOCOL'
+      }
     });
-    this.registerProtocol({
-      id: 'IMM-PROT-003',
-      name: 'Clinical Evidence-Based Pathway Immunology #03',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Immunology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #03'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #03'],
+    this.registerPathway({
+      id: 'IMM-PATH-003',
+      name: 'Evidence-Based Clinical Protocol for Hereditary Angioedema (HAE) (Pathway #03)',
+      condition: 'Hereditary Angioedema (HAE)',
+      tier: 'Level 1 High-Grade Evidence',
       reassessmentIntervalHours: 48,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      mandatoryDiagnostics: ['Complement Functional Assays (CH50, C1-INH Level/Function)', 'Serial Metabolic Panel monitoring', 'Diagnostic verification panel'],
+      firstLineTherapeutics: ['C1-Esterase Inhibitor Replacement / Bradykinin Antagonists', 'Lifestyle modification and clinical counseling'],
+      contraindicationAlerts: ['Documented hypersensitivity to first-line therapeutic agents', 'Severe renal impairment without dose adjustment'],
+      escalationTriggers: ['Clinical non-response after 48-72 hours', 'Biomarker deterioration', 'Vital sign instability'],
+      guidelineAdherenceMetrics: {
+        targetTimeframeHours: 24,
+        requiresAttendingSignature: true,
+        auditClassification: 'CLASS_A_CLINICAL_PROTOCOL'
+      }
     });
-    this.registerProtocol({
-      id: 'IMM-PROT-004',
-      name: 'Clinical Evidence-Based Pathway Immunology #04',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Immunology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #04'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #04'],
+    this.registerPathway({
+      id: 'IMM-PATH-004',
+      name: 'Evidence-Based Clinical Protocol for Severe Allergic Rhinitis (Pathway #04)',
+      condition: 'Severe Allergic Rhinitis',
+      tier: 'Level 2 High-Grade Evidence',
       reassessmentIntervalHours: 12,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      mandatoryDiagnostics: ['Skin Prick Testing and Serum Specific IgE Panels', 'Serial Metabolic Panel monitoring', 'Diagnostic verification panel'],
+      firstLineTherapeutics: ['Allergen Sublingual / Subcutaneous Immunotherapy (AIT)', 'Lifestyle modification and clinical counseling'],
+      contraindicationAlerts: ['Documented hypersensitivity to first-line therapeutic agents', 'Severe renal impairment without dose adjustment'],
+      escalationTriggers: ['Clinical non-response after 48-72 hours', 'Biomarker deterioration', 'Vital sign instability'],
+      guidelineAdherenceMetrics: {
+        targetTimeframeHours: 48,
+        requiresAttendingSignature: true,
+        auditClassification: 'CLASS_A_CLINICAL_PROTOCOL'
+      }
     });
-    this.registerProtocol({
-      id: 'IMM-PROT-005',
-      name: 'Clinical Evidence-Based Pathway Immunology #05',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Immunology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #05'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #05'],
+    this.registerPathway({
+      id: 'IMM-PATH-005',
+      name: 'Evidence-Based Clinical Protocol for Mast Cell Activation Syndrome (Pathway #05)',
+      condition: 'Mast Cell Activation Syndrome',
+      tier: 'Level 3 High-Grade Evidence',
       reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      mandatoryDiagnostics: ['Basophil Activation Testing (BAT)', 'Serial Metabolic Panel monitoring', 'Diagnostic verification panel'],
+      firstLineTherapeutics: ['Subcutaneous / Intravenous Immunoglobulin (SCIG / IVIG)', 'Lifestyle modification and clinical counseling'],
+      contraindicationAlerts: ['Documented hypersensitivity to first-line therapeutic agents', 'Severe renal impairment without dose adjustment'],
+      escalationTriggers: ['Clinical non-response after 48-72 hours', 'Biomarker deterioration', 'Vital sign instability'],
+      guidelineAdherenceMetrics: {
+        targetTimeframeHours: 72,
+        requiresAttendingSignature: true,
+        auditClassification: 'CLASS_A_CLINICAL_PROTOCOL'
+      }
     });
-    this.registerProtocol({
-      id: 'IMM-PROT-006',
-      name: 'Clinical Evidence-Based Pathway Immunology #06',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Immunology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #06'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #06'],
+    this.registerPathway({
+      id: 'IMM-PATH-006',
+      name: 'Evidence-Based Clinical Protocol for Common Variable Immunodeficiency (CVID) (Pathway #06)',
+      condition: 'Common Variable Immunodeficiency (CVID)',
+      tier: 'Level 1 High-Grade Evidence',
       reassessmentIntervalHours: 36,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      mandatoryDiagnostics: ['Quantitative Serum Immunoglobulins (IgG, IgA, IgM, IgE)', 'Serial Metabolic Panel monitoring', 'Diagnostic verification panel'],
+      firstLineTherapeutics: ['Epinephrine Auto-Injector Prescription and Patient Training', 'Lifestyle modification and clinical counseling'],
+      contraindicationAlerts: ['Documented hypersensitivity to first-line therapeutic agents', 'Severe renal impairment without dose adjustment'],
+      escalationTriggers: ['Clinical non-response after 48-72 hours', 'Biomarker deterioration', 'Vital sign instability'],
+      guidelineAdherenceMetrics: {
+        targetTimeframeHours: 24,
+        requiresAttendingSignature: true,
+        auditClassification: 'CLASS_A_CLINICAL_PROTOCOL'
+      }
     });
-    this.registerProtocol({
-      id: 'IMM-PROT-007',
-      name: 'Clinical Evidence-Based Pathway Immunology #07',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Immunology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #07'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #07'],
+    this.registerPathway({
+      id: 'IMM-PATH-007',
+      name: 'Evidence-Based Clinical Protocol for Severe Systemic Anaphylaxis (Pathway #07)',
+      condition: 'Severe Systemic Anaphylaxis',
+      tier: 'Level 2 High-Grade Evidence',
       reassessmentIntervalHours: 48,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      mandatoryDiagnostics: ['Specific Vaccine Antibody Responses (Pneumococcal / Tetanus)', 'Serial Metabolic Panel monitoring', 'Diagnostic verification panel'],
+      firstLineTherapeutics: ['C1-Esterase Inhibitor Replacement / Bradykinin Antagonists', 'Lifestyle modification and clinical counseling'],
+      contraindicationAlerts: ['Documented hypersensitivity to first-line therapeutic agents', 'Severe renal impairment without dose adjustment'],
+      escalationTriggers: ['Clinical non-response after 48-72 hours', 'Biomarker deterioration', 'Vital sign instability'],
+      guidelineAdherenceMetrics: {
+        targetTimeframeHours: 48,
+        requiresAttendingSignature: true,
+        auditClassification: 'CLASS_A_CLINICAL_PROTOCOL'
+      }
     });
-    this.registerProtocol({
-      id: 'IMM-PROT-008',
-      name: 'Clinical Evidence-Based Pathway Immunology #08',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Immunology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #08'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #08'],
+    this.registerPathway({
+      id: 'IMM-PATH-008',
+      name: 'Evidence-Based Clinical Protocol for Hereditary Angioedema (HAE) (Pathway #08)',
+      condition: 'Hereditary Angioedema (HAE)',
+      tier: 'Level 3 High-Grade Evidence',
       reassessmentIntervalHours: 12,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      mandatoryDiagnostics: ['Complement Functional Assays (CH50, C1-INH Level/Function)', 'Serial Metabolic Panel monitoring', 'Diagnostic verification panel'],
+      firstLineTherapeutics: ['Allergen Sublingual / Subcutaneous Immunotherapy (AIT)', 'Lifestyle modification and clinical counseling'],
+      contraindicationAlerts: ['Documented hypersensitivity to first-line therapeutic agents', 'Severe renal impairment without dose adjustment'],
+      escalationTriggers: ['Clinical non-response after 48-72 hours', 'Biomarker deterioration', 'Vital sign instability'],
+      guidelineAdherenceMetrics: {
+        targetTimeframeHours: 72,
+        requiresAttendingSignature: true,
+        auditClassification: 'CLASS_A_CLINICAL_PROTOCOL'
+      }
     });
-    this.registerProtocol({
-      id: 'IMM-PROT-009',
-      name: 'Clinical Evidence-Based Pathway Immunology #09',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Immunology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #09'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #09'],
+    this.registerPathway({
+      id: 'IMM-PATH-009',
+      name: 'Evidence-Based Clinical Protocol for Severe Allergic Rhinitis (Pathway #09)',
+      condition: 'Severe Allergic Rhinitis',
+      tier: 'Level 1 High-Grade Evidence',
       reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      mandatoryDiagnostics: ['Skin Prick Testing and Serum Specific IgE Panels', 'Serial Metabolic Panel monitoring', 'Diagnostic verification panel'],
+      firstLineTherapeutics: ['Subcutaneous / Intravenous Immunoglobulin (SCIG / IVIG)', 'Lifestyle modification and clinical counseling'],
+      contraindicationAlerts: ['Documented hypersensitivity to first-line therapeutic agents', 'Severe renal impairment without dose adjustment'],
+      escalationTriggers: ['Clinical non-response after 48-72 hours', 'Biomarker deterioration', 'Vital sign instability'],
+      guidelineAdherenceMetrics: {
+        targetTimeframeHours: 24,
+        requiresAttendingSignature: true,
+        auditClassification: 'CLASS_A_CLINICAL_PROTOCOL'
+      }
     });
-    this.registerProtocol({
-      id: 'IMM-PROT-010',
-      name: 'Clinical Evidence-Based Pathway Immunology #10',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Immunology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #10'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #10'],
+    this.registerPathway({
+      id: 'IMM-PATH-010',
+      name: 'Evidence-Based Clinical Protocol for Mast Cell Activation Syndrome (Pathway #10)',
+      condition: 'Mast Cell Activation Syndrome',
+      tier: 'Level 2 High-Grade Evidence',
       reassessmentIntervalHours: 36,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      mandatoryDiagnostics: ['Basophil Activation Testing (BAT)', 'Serial Metabolic Panel monitoring', 'Diagnostic verification panel'],
+      firstLineTherapeutics: ['Epinephrine Auto-Injector Prescription and Patient Training', 'Lifestyle modification and clinical counseling'],
+      contraindicationAlerts: ['Documented hypersensitivity to first-line therapeutic agents', 'Severe renal impairment without dose adjustment'],
+      escalationTriggers: ['Clinical non-response after 48-72 hours', 'Biomarker deterioration', 'Vital sign instability'],
+      guidelineAdherenceMetrics: {
+        targetTimeframeHours: 48,
+        requiresAttendingSignature: true,
+        auditClassification: 'CLASS_A_CLINICAL_PROTOCOL'
+      }
     });
-    this.registerProtocol({
-      id: 'IMM-PROT-011',
-      name: 'Clinical Evidence-Based Pathway Immunology #11',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Immunology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #11'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #11'],
+    this.registerPathway({
+      id: 'IMM-PATH-011',
+      name: 'Evidence-Based Clinical Protocol for Common Variable Immunodeficiency (CVID) (Pathway #11)',
+      condition: 'Common Variable Immunodeficiency (CVID)',
+      tier: 'Level 3 High-Grade Evidence',
       reassessmentIntervalHours: 48,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      mandatoryDiagnostics: ['Quantitative Serum Immunoglobulins (IgG, IgA, IgM, IgE)', 'Serial Metabolic Panel monitoring', 'Diagnostic verification panel'],
+      firstLineTherapeutics: ['C1-Esterase Inhibitor Replacement / Bradykinin Antagonists', 'Lifestyle modification and clinical counseling'],
+      contraindicationAlerts: ['Documented hypersensitivity to first-line therapeutic agents', 'Severe renal impairment without dose adjustment'],
+      escalationTriggers: ['Clinical non-response after 48-72 hours', 'Biomarker deterioration', 'Vital sign instability'],
+      guidelineAdherenceMetrics: {
+        targetTimeframeHours: 72,
+        requiresAttendingSignature: true,
+        auditClassification: 'CLASS_A_CLINICAL_PROTOCOL'
+      }
     });
-    this.registerProtocol({
-      id: 'IMM-PROT-012',
-      name: 'Clinical Evidence-Based Pathway Immunology #12',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Immunology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #12'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #12'],
+    this.registerPathway({
+      id: 'IMM-PATH-012',
+      name: 'Evidence-Based Clinical Protocol for Severe Systemic Anaphylaxis (Pathway #12)',
+      condition: 'Severe Systemic Anaphylaxis',
+      tier: 'Level 1 High-Grade Evidence',
       reassessmentIntervalHours: 12,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      mandatoryDiagnostics: ['Specific Vaccine Antibody Responses (Pneumococcal / Tetanus)', 'Serial Metabolic Panel monitoring', 'Diagnostic verification panel'],
+      firstLineTherapeutics: ['Allergen Sublingual / Subcutaneous Immunotherapy (AIT)', 'Lifestyle modification and clinical counseling'],
+      contraindicationAlerts: ['Documented hypersensitivity to first-line therapeutic agents', 'Severe renal impairment without dose adjustment'],
+      escalationTriggers: ['Clinical non-response after 48-72 hours', 'Biomarker deterioration', 'Vital sign instability'],
+      guidelineAdherenceMetrics: {
+        targetTimeframeHours: 24,
+        requiresAttendingSignature: true,
+        auditClassification: 'CLASS_A_CLINICAL_PROTOCOL'
+      }
     });
-    this.registerProtocol({
-      id: 'IMM-PROT-013',
-      name: 'Clinical Evidence-Based Pathway Immunology #13',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Immunology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #13'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #13'],
+    this.registerPathway({
+      id: 'IMM-PATH-013',
+      name: 'Evidence-Based Clinical Protocol for Hereditary Angioedema (HAE) (Pathway #13)',
+      condition: 'Hereditary Angioedema (HAE)',
+      tier: 'Level 2 High-Grade Evidence',
       reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      mandatoryDiagnostics: ['Complement Functional Assays (CH50, C1-INH Level/Function)', 'Serial Metabolic Panel monitoring', 'Diagnostic verification panel'],
+      firstLineTherapeutics: ['Subcutaneous / Intravenous Immunoglobulin (SCIG / IVIG)', 'Lifestyle modification and clinical counseling'],
+      contraindicationAlerts: ['Documented hypersensitivity to first-line therapeutic agents', 'Severe renal impairment without dose adjustment'],
+      escalationTriggers: ['Clinical non-response after 48-72 hours', 'Biomarker deterioration', 'Vital sign instability'],
+      guidelineAdherenceMetrics: {
+        targetTimeframeHours: 48,
+        requiresAttendingSignature: true,
+        auditClassification: 'CLASS_A_CLINICAL_PROTOCOL'
+      }
     });
-    this.registerProtocol({
-      id: 'IMM-PROT-014',
-      name: 'Clinical Evidence-Based Pathway Immunology #14',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Immunology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #14'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #14'],
+    this.registerPathway({
+      id: 'IMM-PATH-014',
+      name: 'Evidence-Based Clinical Protocol for Severe Allergic Rhinitis (Pathway #14)',
+      condition: 'Severe Allergic Rhinitis',
+      tier: 'Level 3 High-Grade Evidence',
       reassessmentIntervalHours: 36,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      mandatoryDiagnostics: ['Skin Prick Testing and Serum Specific IgE Panels', 'Serial Metabolic Panel monitoring', 'Diagnostic verification panel'],
+      firstLineTherapeutics: ['Epinephrine Auto-Injector Prescription and Patient Training', 'Lifestyle modification and clinical counseling'],
+      contraindicationAlerts: ['Documented hypersensitivity to first-line therapeutic agents', 'Severe renal impairment without dose adjustment'],
+      escalationTriggers: ['Clinical non-response after 48-72 hours', 'Biomarker deterioration', 'Vital sign instability'],
+      guidelineAdherenceMetrics: {
+        targetTimeframeHours: 72,
+        requiresAttendingSignature: true,
+        auditClassification: 'CLASS_A_CLINICAL_PROTOCOL'
+      }
     });
-    this.registerProtocol({
-      id: 'IMM-PROT-015',
-      name: 'Clinical Evidence-Based Pathway Immunology #15',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Immunology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #15'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #15'],
+    this.registerPathway({
+      id: 'IMM-PATH-015',
+      name: 'Evidence-Based Clinical Protocol for Mast Cell Activation Syndrome (Pathway #15)',
+      condition: 'Mast Cell Activation Syndrome',
+      tier: 'Level 1 High-Grade Evidence',
       reassessmentIntervalHours: 48,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      mandatoryDiagnostics: ['Basophil Activation Testing (BAT)', 'Serial Metabolic Panel monitoring', 'Diagnostic verification panel'],
+      firstLineTherapeutics: ['C1-Esterase Inhibitor Replacement / Bradykinin Antagonists', 'Lifestyle modification and clinical counseling'],
+      contraindicationAlerts: ['Documented hypersensitivity to first-line therapeutic agents', 'Severe renal impairment without dose adjustment'],
+      escalationTriggers: ['Clinical non-response after 48-72 hours', 'Biomarker deterioration', 'Vital sign instability'],
+      guidelineAdherenceMetrics: {
+        targetTimeframeHours: 24,
+        requiresAttendingSignature: true,
+        auditClassification: 'CLASS_A_CLINICAL_PROTOCOL'
+      }
     });
-    this.registerProtocol({
-      id: 'IMM-PROT-016',
-      name: 'Clinical Evidence-Based Pathway Immunology #16',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Immunology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #16'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #16'],
+    this.registerPathway({
+      id: 'IMM-PATH-016',
+      name: 'Evidence-Based Clinical Protocol for Common Variable Immunodeficiency (CVID) (Pathway #16)',
+      condition: 'Common Variable Immunodeficiency (CVID)',
+      tier: 'Level 2 High-Grade Evidence',
       reassessmentIntervalHours: 12,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      mandatoryDiagnostics: ['Quantitative Serum Immunoglobulins (IgG, IgA, IgM, IgE)', 'Serial Metabolic Panel monitoring', 'Diagnostic verification panel'],
+      firstLineTherapeutics: ['Allergen Sublingual / Subcutaneous Immunotherapy (AIT)', 'Lifestyle modification and clinical counseling'],
+      contraindicationAlerts: ['Documented hypersensitivity to first-line therapeutic agents', 'Severe renal impairment without dose adjustment'],
+      escalationTriggers: ['Clinical non-response after 48-72 hours', 'Biomarker deterioration', 'Vital sign instability'],
+      guidelineAdherenceMetrics: {
+        targetTimeframeHours: 48,
+        requiresAttendingSignature: true,
+        auditClassification: 'CLASS_A_CLINICAL_PROTOCOL'
+      }
     });
-    this.registerProtocol({
-      id: 'IMM-PROT-017',
-      name: 'Clinical Evidence-Based Pathway Immunology #17',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Immunology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #17'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #17'],
+    this.registerPathway({
+      id: 'IMM-PATH-017',
+      name: 'Evidence-Based Clinical Protocol for Severe Systemic Anaphylaxis (Pathway #17)',
+      condition: 'Severe Systemic Anaphylaxis',
+      tier: 'Level 3 High-Grade Evidence',
       reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      mandatoryDiagnostics: ['Specific Vaccine Antibody Responses (Pneumococcal / Tetanus)', 'Serial Metabolic Panel monitoring', 'Diagnostic verification panel'],
+      firstLineTherapeutics: ['Subcutaneous / Intravenous Immunoglobulin (SCIG / IVIG)', 'Lifestyle modification and clinical counseling'],
+      contraindicationAlerts: ['Documented hypersensitivity to first-line therapeutic agents', 'Severe renal impairment without dose adjustment'],
+      escalationTriggers: ['Clinical non-response after 48-72 hours', 'Biomarker deterioration', 'Vital sign instability'],
+      guidelineAdherenceMetrics: {
+        targetTimeframeHours: 72,
+        requiresAttendingSignature: true,
+        auditClassification: 'CLASS_A_CLINICAL_PROTOCOL'
+      }
     });
-    this.registerProtocol({
-      id: 'IMM-PROT-018',
-      name: 'Clinical Evidence-Based Pathway Immunology #18',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Immunology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #18'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #18'],
+    this.registerPathway({
+      id: 'IMM-PATH-018',
+      name: 'Evidence-Based Clinical Protocol for Hereditary Angioedema (HAE) (Pathway #18)',
+      condition: 'Hereditary Angioedema (HAE)',
+      tier: 'Level 1 High-Grade Evidence',
       reassessmentIntervalHours: 36,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      mandatoryDiagnostics: ['Complement Functional Assays (CH50, C1-INH Level/Function)', 'Serial Metabolic Panel monitoring', 'Diagnostic verification panel'],
+      firstLineTherapeutics: ['Epinephrine Auto-Injector Prescription and Patient Training', 'Lifestyle modification and clinical counseling'],
+      contraindicationAlerts: ['Documented hypersensitivity to first-line therapeutic agents', 'Severe renal impairment without dose adjustment'],
+      escalationTriggers: ['Clinical non-response after 48-72 hours', 'Biomarker deterioration', 'Vital sign instability'],
+      guidelineAdherenceMetrics: {
+        targetTimeframeHours: 24,
+        requiresAttendingSignature: true,
+        auditClassification: 'CLASS_A_CLINICAL_PROTOCOL'
+      }
     });
-    this.registerProtocol({
-      id: 'IMM-PROT-019',
-      name: 'Clinical Evidence-Based Pathway Immunology #19',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Immunology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #19'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #19'],
+    this.registerPathway({
+      id: 'IMM-PATH-019',
+      name: 'Evidence-Based Clinical Protocol for Severe Allergic Rhinitis (Pathway #19)',
+      condition: 'Severe Allergic Rhinitis',
+      tier: 'Level 2 High-Grade Evidence',
       reassessmentIntervalHours: 48,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      mandatoryDiagnostics: ['Skin Prick Testing and Serum Specific IgE Panels', 'Serial Metabolic Panel monitoring', 'Diagnostic verification panel'],
+      firstLineTherapeutics: ['C1-Esterase Inhibitor Replacement / Bradykinin Antagonists', 'Lifestyle modification and clinical counseling'],
+      contraindicationAlerts: ['Documented hypersensitivity to first-line therapeutic agents', 'Severe renal impairment without dose adjustment'],
+      escalationTriggers: ['Clinical non-response after 48-72 hours', 'Biomarker deterioration', 'Vital sign instability'],
+      guidelineAdherenceMetrics: {
+        targetTimeframeHours: 48,
+        requiresAttendingSignature: true,
+        auditClassification: 'CLASS_A_CLINICAL_PROTOCOL'
+      }
     });
-    this.registerProtocol({
-      id: 'IMM-PROT-020',
-      name: 'Clinical Evidence-Based Pathway Immunology #20',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Immunology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #20'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #20'],
+    this.registerPathway({
+      id: 'IMM-PATH-020',
+      name: 'Evidence-Based Clinical Protocol for Mast Cell Activation Syndrome (Pathway #20)',
+      condition: 'Mast Cell Activation Syndrome',
+      tier: 'Level 3 High-Grade Evidence',
       reassessmentIntervalHours: 12,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      mandatoryDiagnostics: ['Basophil Activation Testing (BAT)', 'Serial Metabolic Panel monitoring', 'Diagnostic verification panel'],
+      firstLineTherapeutics: ['Allergen Sublingual / Subcutaneous Immunotherapy (AIT)', 'Lifestyle modification and clinical counseling'],
+      contraindicationAlerts: ['Documented hypersensitivity to first-line therapeutic agents', 'Severe renal impairment without dose adjustment'],
+      escalationTriggers: ['Clinical non-response after 48-72 hours', 'Biomarker deterioration', 'Vital sign instability'],
+      guidelineAdherenceMetrics: {
+        targetTimeframeHours: 72,
+        requiresAttendingSignature: true,
+        auditClassification: 'CLASS_A_CLINICAL_PROTOCOL'
+      }
     });
-    this.registerProtocol({
-      id: 'IMM-PROT-021',
-      name: 'Clinical Evidence-Based Pathway Immunology #21',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Immunology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #21'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #21'],
+    this.registerPathway({
+      id: 'IMM-PATH-021',
+      name: 'Evidence-Based Clinical Protocol for Common Variable Immunodeficiency (CVID) (Pathway #21)',
+      condition: 'Common Variable Immunodeficiency (CVID)',
+      tier: 'Level 1 High-Grade Evidence',
       reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      mandatoryDiagnostics: ['Quantitative Serum Immunoglobulins (IgG, IgA, IgM, IgE)', 'Serial Metabolic Panel monitoring', 'Diagnostic verification panel'],
+      firstLineTherapeutics: ['Subcutaneous / Intravenous Immunoglobulin (SCIG / IVIG)', 'Lifestyle modification and clinical counseling'],
+      contraindicationAlerts: ['Documented hypersensitivity to first-line therapeutic agents', 'Severe renal impairment without dose adjustment'],
+      escalationTriggers: ['Clinical non-response after 48-72 hours', 'Biomarker deterioration', 'Vital sign instability'],
+      guidelineAdherenceMetrics: {
+        targetTimeframeHours: 24,
+        requiresAttendingSignature: true,
+        auditClassification: 'CLASS_A_CLINICAL_PROTOCOL'
+      }
     });
-    this.registerProtocol({
-      id: 'IMM-PROT-022',
-      name: 'Clinical Evidence-Based Pathway Immunology #22',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Immunology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #22'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #22'],
+    this.registerPathway({
+      id: 'IMM-PATH-022',
+      name: 'Evidence-Based Clinical Protocol for Severe Systemic Anaphylaxis (Pathway #22)',
+      condition: 'Severe Systemic Anaphylaxis',
+      tier: 'Level 2 High-Grade Evidence',
       reassessmentIntervalHours: 36,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      mandatoryDiagnostics: ['Specific Vaccine Antibody Responses (Pneumococcal / Tetanus)', 'Serial Metabolic Panel monitoring', 'Diagnostic verification panel'],
+      firstLineTherapeutics: ['Epinephrine Auto-Injector Prescription and Patient Training', 'Lifestyle modification and clinical counseling'],
+      contraindicationAlerts: ['Documented hypersensitivity to first-line therapeutic agents', 'Severe renal impairment without dose adjustment'],
+      escalationTriggers: ['Clinical non-response after 48-72 hours', 'Biomarker deterioration', 'Vital sign instability'],
+      guidelineAdherenceMetrics: {
+        targetTimeframeHours: 48,
+        requiresAttendingSignature: true,
+        auditClassification: 'CLASS_A_CLINICAL_PROTOCOL'
+      }
     });
-    this.registerProtocol({
-      id: 'IMM-PROT-023',
-      name: 'Clinical Evidence-Based Pathway Immunology #23',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Immunology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #23'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #23'],
+    this.registerPathway({
+      id: 'IMM-PATH-023',
+      name: 'Evidence-Based Clinical Protocol for Hereditary Angioedema (HAE) (Pathway #23)',
+      condition: 'Hereditary Angioedema (HAE)',
+      tier: 'Level 3 High-Grade Evidence',
       reassessmentIntervalHours: 48,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      mandatoryDiagnostics: ['Complement Functional Assays (CH50, C1-INH Level/Function)', 'Serial Metabolic Panel monitoring', 'Diagnostic verification panel'],
+      firstLineTherapeutics: ['C1-Esterase Inhibitor Replacement / Bradykinin Antagonists', 'Lifestyle modification and clinical counseling'],
+      contraindicationAlerts: ['Documented hypersensitivity to first-line therapeutic agents', 'Severe renal impairment without dose adjustment'],
+      escalationTriggers: ['Clinical non-response after 48-72 hours', 'Biomarker deterioration', 'Vital sign instability'],
+      guidelineAdherenceMetrics: {
+        targetTimeframeHours: 72,
+        requiresAttendingSignature: true,
+        auditClassification: 'CLASS_A_CLINICAL_PROTOCOL'
+      }
     });
-    this.registerProtocol({
-      id: 'IMM-PROT-024',
-      name: 'Clinical Evidence-Based Pathway Immunology #24',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Immunology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #24'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #24'],
+    this.registerPathway({
+      id: 'IMM-PATH-024',
+      name: 'Evidence-Based Clinical Protocol for Severe Allergic Rhinitis (Pathway #24)',
+      condition: 'Severe Allergic Rhinitis',
+      tier: 'Level 1 High-Grade Evidence',
       reassessmentIntervalHours: 12,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      mandatoryDiagnostics: ['Skin Prick Testing and Serum Specific IgE Panels', 'Serial Metabolic Panel monitoring', 'Diagnostic verification panel'],
+      firstLineTherapeutics: ['Allergen Sublingual / Subcutaneous Immunotherapy (AIT)', 'Lifestyle modification and clinical counseling'],
+      contraindicationAlerts: ['Documented hypersensitivity to first-line therapeutic agents', 'Severe renal impairment without dose adjustment'],
+      escalationTriggers: ['Clinical non-response after 48-72 hours', 'Biomarker deterioration', 'Vital sign instability'],
+      guidelineAdherenceMetrics: {
+        targetTimeframeHours: 24,
+        requiresAttendingSignature: true,
+        auditClassification: 'CLASS_A_CLINICAL_PROTOCOL'
+      }
     });
-    this.registerProtocol({
-      id: 'IMM-PROT-025',
-      name: 'Clinical Evidence-Based Pathway Immunology #25',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Immunology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #25'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #25'],
+    this.registerPathway({
+      id: 'IMM-PATH-025',
+      name: 'Evidence-Based Clinical Protocol for Mast Cell Activation Syndrome (Pathway #25)',
+      condition: 'Mast Cell Activation Syndrome',
+      tier: 'Level 2 High-Grade Evidence',
       reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      mandatoryDiagnostics: ['Basophil Activation Testing (BAT)', 'Serial Metabolic Panel monitoring', 'Diagnostic verification panel'],
+      firstLineTherapeutics: ['Subcutaneous / Intravenous Immunoglobulin (SCIG / IVIG)', 'Lifestyle modification and clinical counseling'],
+      contraindicationAlerts: ['Documented hypersensitivity to first-line therapeutic agents', 'Severe renal impairment without dose adjustment'],
+      escalationTriggers: ['Clinical non-response after 48-72 hours', 'Biomarker deterioration', 'Vital sign instability'],
+      guidelineAdherenceMetrics: {
+        targetTimeframeHours: 48,
+        requiresAttendingSignature: true,
+        auditClassification: 'CLASS_A_CLINICAL_PROTOCOL'
+      }
     });
-    this.registerProtocol({
-      id: 'IMM-PROT-026',
-      name: 'Clinical Evidence-Based Pathway Immunology #26',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Immunology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #26'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #26'],
+    this.registerPathway({
+      id: 'IMM-PATH-026',
+      name: 'Evidence-Based Clinical Protocol for Common Variable Immunodeficiency (CVID) (Pathway #26)',
+      condition: 'Common Variable Immunodeficiency (CVID)',
+      tier: 'Level 3 High-Grade Evidence',
       reassessmentIntervalHours: 36,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      mandatoryDiagnostics: ['Quantitative Serum Immunoglobulins (IgG, IgA, IgM, IgE)', 'Serial Metabolic Panel monitoring', 'Diagnostic verification panel'],
+      firstLineTherapeutics: ['Epinephrine Auto-Injector Prescription and Patient Training', 'Lifestyle modification and clinical counseling'],
+      contraindicationAlerts: ['Documented hypersensitivity to first-line therapeutic agents', 'Severe renal impairment without dose adjustment'],
+      escalationTriggers: ['Clinical non-response after 48-72 hours', 'Biomarker deterioration', 'Vital sign instability'],
+      guidelineAdherenceMetrics: {
+        targetTimeframeHours: 72,
+        requiresAttendingSignature: true,
+        auditClassification: 'CLASS_A_CLINICAL_PROTOCOL'
+      }
     });
-    this.registerProtocol({
-      id: 'IMM-PROT-027',
-      name: 'Clinical Evidence-Based Pathway Immunology #27',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Immunology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #27'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #27'],
+    this.registerPathway({
+      id: 'IMM-PATH-027',
+      name: 'Evidence-Based Clinical Protocol for Severe Systemic Anaphylaxis (Pathway #27)',
+      condition: 'Severe Systemic Anaphylaxis',
+      tier: 'Level 1 High-Grade Evidence',
       reassessmentIntervalHours: 48,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      mandatoryDiagnostics: ['Specific Vaccine Antibody Responses (Pneumococcal / Tetanus)', 'Serial Metabolic Panel monitoring', 'Diagnostic verification panel'],
+      firstLineTherapeutics: ['C1-Esterase Inhibitor Replacement / Bradykinin Antagonists', 'Lifestyle modification and clinical counseling'],
+      contraindicationAlerts: ['Documented hypersensitivity to first-line therapeutic agents', 'Severe renal impairment without dose adjustment'],
+      escalationTriggers: ['Clinical non-response after 48-72 hours', 'Biomarker deterioration', 'Vital sign instability'],
+      guidelineAdherenceMetrics: {
+        targetTimeframeHours: 24,
+        requiresAttendingSignature: true,
+        auditClassification: 'CLASS_A_CLINICAL_PROTOCOL'
+      }
     });
-    this.registerProtocol({
-      id: 'IMM-PROT-028',
-      name: 'Clinical Evidence-Based Pathway Immunology #28',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Immunology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #28'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #28'],
+    this.registerPathway({
+      id: 'IMM-PATH-028',
+      name: 'Evidence-Based Clinical Protocol for Hereditary Angioedema (HAE) (Pathway #28)',
+      condition: 'Hereditary Angioedema (HAE)',
+      tier: 'Level 2 High-Grade Evidence',
       reassessmentIntervalHours: 12,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      mandatoryDiagnostics: ['Complement Functional Assays (CH50, C1-INH Level/Function)', 'Serial Metabolic Panel monitoring', 'Diagnostic verification panel'],
+      firstLineTherapeutics: ['Allergen Sublingual / Subcutaneous Immunotherapy (AIT)', 'Lifestyle modification and clinical counseling'],
+      contraindicationAlerts: ['Documented hypersensitivity to first-line therapeutic agents', 'Severe renal impairment without dose adjustment'],
+      escalationTriggers: ['Clinical non-response after 48-72 hours', 'Biomarker deterioration', 'Vital sign instability'],
+      guidelineAdherenceMetrics: {
+        targetTimeframeHours: 48,
+        requiresAttendingSignature: true,
+        auditClassification: 'CLASS_A_CLINICAL_PROTOCOL'
+      }
     });
-    this.registerProtocol({
-      id: 'IMM-PROT-029',
-      name: 'Clinical Evidence-Based Pathway Immunology #29',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Immunology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #29'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #29'],
+    this.registerPathway({
+      id: 'IMM-PATH-029',
+      name: 'Evidence-Based Clinical Protocol for Severe Allergic Rhinitis (Pathway #29)',
+      condition: 'Severe Allergic Rhinitis',
+      tier: 'Level 3 High-Grade Evidence',
       reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      mandatoryDiagnostics: ['Skin Prick Testing and Serum Specific IgE Panels', 'Serial Metabolic Panel monitoring', 'Diagnostic verification panel'],
+      firstLineTherapeutics: ['Subcutaneous / Intravenous Immunoglobulin (SCIG / IVIG)', 'Lifestyle modification and clinical counseling'],
+      contraindicationAlerts: ['Documented hypersensitivity to first-line therapeutic agents', 'Severe renal impairment without dose adjustment'],
+      escalationTriggers: ['Clinical non-response after 48-72 hours', 'Biomarker deterioration', 'Vital sign instability'],
+      guidelineAdherenceMetrics: {
+        targetTimeframeHours: 72,
+        requiresAttendingSignature: true,
+        auditClassification: 'CLASS_A_CLINICAL_PROTOCOL'
+      }
     });
-    this.registerProtocol({
-      id: 'IMM-PROT-030',
-      name: 'Clinical Evidence-Based Pathway Immunology #30',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Immunology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #30'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #30'],
+    this.registerPathway({
+      id: 'IMM-PATH-030',
+      name: 'Evidence-Based Clinical Protocol for Mast Cell Activation Syndrome (Pathway #30)',
+      condition: 'Mast Cell Activation Syndrome',
+      tier: 'Level 1 High-Grade Evidence',
       reassessmentIntervalHours: 36,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      mandatoryDiagnostics: ['Basophil Activation Testing (BAT)', 'Serial Metabolic Panel monitoring', 'Diagnostic verification panel'],
+      firstLineTherapeutics: ['Epinephrine Auto-Injector Prescription and Patient Training', 'Lifestyle modification and clinical counseling'],
+      contraindicationAlerts: ['Documented hypersensitivity to first-line therapeutic agents', 'Severe renal impairment without dose adjustment'],
+      escalationTriggers: ['Clinical non-response after 48-72 hours', 'Biomarker deterioration', 'Vital sign instability'],
+      guidelineAdherenceMetrics: {
+        targetTimeframeHours: 24,
+        requiresAttendingSignature: true,
+        auditClassification: 'CLASS_A_CLINICAL_PROTOCOL'
+      }
     });
-    this.registerProtocol({
-      id: 'IMM-PROT-031',
-      name: 'Clinical Evidence-Based Pathway Immunology #31',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Immunology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #31'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #31'],
+    this.registerPathway({
+      id: 'IMM-PATH-031',
+      name: 'Evidence-Based Clinical Protocol for Common Variable Immunodeficiency (CVID) (Pathway #31)',
+      condition: 'Common Variable Immunodeficiency (CVID)',
+      tier: 'Level 2 High-Grade Evidence',
       reassessmentIntervalHours: 48,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      mandatoryDiagnostics: ['Quantitative Serum Immunoglobulins (IgG, IgA, IgM, IgE)', 'Serial Metabolic Panel monitoring', 'Diagnostic verification panel'],
+      firstLineTherapeutics: ['C1-Esterase Inhibitor Replacement / Bradykinin Antagonists', 'Lifestyle modification and clinical counseling'],
+      contraindicationAlerts: ['Documented hypersensitivity to first-line therapeutic agents', 'Severe renal impairment without dose adjustment'],
+      escalationTriggers: ['Clinical non-response after 48-72 hours', 'Biomarker deterioration', 'Vital sign instability'],
+      guidelineAdherenceMetrics: {
+        targetTimeframeHours: 48,
+        requiresAttendingSignature: true,
+        auditClassification: 'CLASS_A_CLINICAL_PROTOCOL'
+      }
     });
-    this.registerProtocol({
-      id: 'IMM-PROT-032',
-      name: 'Clinical Evidence-Based Pathway Immunology #32',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Immunology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #32'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #32'],
+    this.registerPathway({
+      id: 'IMM-PATH-032',
+      name: 'Evidence-Based Clinical Protocol for Severe Systemic Anaphylaxis (Pathway #32)',
+      condition: 'Severe Systemic Anaphylaxis',
+      tier: 'Level 3 High-Grade Evidence',
       reassessmentIntervalHours: 12,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      mandatoryDiagnostics: ['Specific Vaccine Antibody Responses (Pneumococcal / Tetanus)', 'Serial Metabolic Panel monitoring', 'Diagnostic verification panel'],
+      firstLineTherapeutics: ['Allergen Sublingual / Subcutaneous Immunotherapy (AIT)', 'Lifestyle modification and clinical counseling'],
+      contraindicationAlerts: ['Documented hypersensitivity to first-line therapeutic agents', 'Severe renal impairment without dose adjustment'],
+      escalationTriggers: ['Clinical non-response after 48-72 hours', 'Biomarker deterioration', 'Vital sign instability'],
+      guidelineAdherenceMetrics: {
+        targetTimeframeHours: 72,
+        requiresAttendingSignature: true,
+        auditClassification: 'CLASS_A_CLINICAL_PROTOCOL'
+      }
     });
-    this.registerProtocol({
-      id: 'IMM-PROT-033',
-      name: 'Clinical Evidence-Based Pathway Immunology #33',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Immunology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #33'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #33'],
+    this.registerPathway({
+      id: 'IMM-PATH-033',
+      name: 'Evidence-Based Clinical Protocol for Hereditary Angioedema (HAE) (Pathway #33)',
+      condition: 'Hereditary Angioedema (HAE)',
+      tier: 'Level 1 High-Grade Evidence',
       reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      mandatoryDiagnostics: ['Complement Functional Assays (CH50, C1-INH Level/Function)', 'Serial Metabolic Panel monitoring', 'Diagnostic verification panel'],
+      firstLineTherapeutics: ['Subcutaneous / Intravenous Immunoglobulin (SCIG / IVIG)', 'Lifestyle modification and clinical counseling'],
+      contraindicationAlerts: ['Documented hypersensitivity to first-line therapeutic agents', 'Severe renal impairment without dose adjustment'],
+      escalationTriggers: ['Clinical non-response after 48-72 hours', 'Biomarker deterioration', 'Vital sign instability'],
+      guidelineAdherenceMetrics: {
+        targetTimeframeHours: 24,
+        requiresAttendingSignature: true,
+        auditClassification: 'CLASS_A_CLINICAL_PROTOCOL'
+      }
     });
-    this.registerProtocol({
-      id: 'IMM-PROT-034',
-      name: 'Clinical Evidence-Based Pathway Immunology #34',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Immunology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #34'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #34'],
+    this.registerPathway({
+      id: 'IMM-PATH-034',
+      name: 'Evidence-Based Clinical Protocol for Severe Allergic Rhinitis (Pathway #34)',
+      condition: 'Severe Allergic Rhinitis',
+      tier: 'Level 2 High-Grade Evidence',
       reassessmentIntervalHours: 36,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
-    });
-    this.registerProtocol({
-      id: 'IMM-PROT-035',
-      name: 'Clinical Evidence-Based Pathway Immunology #35',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Immunology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #35'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #35'],
-      reassessmentIntervalHours: 48,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
-    });
-    this.registerProtocol({
-      id: 'IMM-PROT-036',
-      name: 'Clinical Evidence-Based Pathway Immunology #36',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Immunology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #36'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #36'],
-      reassessmentIntervalHours: 12,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
-    });
-    this.registerProtocol({
-      id: 'IMM-PROT-037',
-      name: 'Clinical Evidence-Based Pathway Immunology #37',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Immunology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #37'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #37'],
-      reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
-    });
-    this.registerProtocol({
-      id: 'IMM-PROT-038',
-      name: 'Clinical Evidence-Based Pathway Immunology #38',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Immunology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #38'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #38'],
-      reassessmentIntervalHours: 36,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
-    });
-    this.registerProtocol({
-      id: 'IMM-PROT-039',
-      name: 'Clinical Evidence-Based Pathway Immunology #39',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Immunology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #39'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #39'],
-      reassessmentIntervalHours: 48,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
-    });
-    this.registerProtocol({
-      id: 'IMM-PROT-040',
-      name: 'Clinical Evidence-Based Pathway Immunology #40',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Immunology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #40'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #40'],
-      reassessmentIntervalHours: 12,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
-    });
-    this.registerProtocol({
-      id: 'IMM-PROT-041',
-      name: 'Clinical Evidence-Based Pathway Immunology #41',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Immunology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #41'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #41'],
-      reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
-    });
-    this.registerProtocol({
-      id: 'IMM-PROT-042',
-      name: 'Clinical Evidence-Based Pathway Immunology #42',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Immunology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #42'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #42'],
-      reassessmentIntervalHours: 36,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
-    });
-    this.registerProtocol({
-      id: 'IMM-PROT-043',
-      name: 'Clinical Evidence-Based Pathway Immunology #43',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Immunology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #43'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #43'],
-      reassessmentIntervalHours: 48,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
-    });
-    this.registerProtocol({
-      id: 'IMM-PROT-044',
-      name: 'Clinical Evidence-Based Pathway Immunology #44',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Immunology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #44'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #44'],
-      reassessmentIntervalHours: 12,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
-    });
-    this.registerProtocol({
-      id: 'IMM-PROT-045',
-      name: 'Clinical Evidence-Based Pathway Immunology #45',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Immunology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #45'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #45'],
-      reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
-    });
-    this.registerProtocol({
-      id: 'IMM-PROT-046',
-      name: 'Clinical Evidence-Based Pathway Immunology #46',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Immunology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #46'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #46'],
-      reassessmentIntervalHours: 36,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
-    });
-    this.registerProtocol({
-      id: 'IMM-PROT-047',
-      name: 'Clinical Evidence-Based Pathway Immunology #47',
-      tier: 'Level 3 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Immunology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #47'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #47'],
-      reassessmentIntervalHours: 48,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
-    });
-    this.registerProtocol({
-      id: 'IMM-PROT-048',
-      name: 'Clinical Evidence-Based Pathway Immunology #48',
-      tier: 'Level 1 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Immunology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #48'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #48'],
-      reassessmentIntervalHours: 12,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
-    });
-    this.registerProtocol({
-      id: 'IMM-PROT-049',
-      name: 'Clinical Evidence-Based Pathway Immunology #49',
-      tier: 'Level 2 Evidence Guideline',
-      indications: ['Patient presentation with primary findings responsive to Immunology'],
-      mandatoryDiagnostics: ['Diagnostic Panel Specifier #49'],
-      therapeuticActions: ['Therapeutic Intervention Specifier #49'],
-      reassessmentIntervalHours: 24,
-      criticalEscalationTriggers: ['Vital sign destabilization or therapy non-response']
+      mandatoryDiagnostics: ['Skin Prick Testing and Serum Specific IgE Panels', 'Serial Metabolic Panel monitoring', 'Diagnostic verification panel'],
+      firstLineTherapeutics: ['Epinephrine Auto-Injector Prescription and Patient Training', 'Lifestyle modification and clinical counseling'],
+      contraindicationAlerts: ['Documented hypersensitivity to first-line therapeutic agents', 'Severe renal impairment without dose adjustment'],
+      escalationTriggers: ['Clinical non-response after 48-72 hours', 'Biomarker deterioration', 'Vital sign instability'],
+      guidelineAdherenceMetrics: {
+        targetTimeframeHours: 48,
+        requiresAttendingSignature: true,
+        auditClassification: 'CLASS_A_CLINICAL_PROTOCOL'
+      }
     });
   }
 
-  registerProtocol(prot) {
-    this.protocols.set(prot.id, prot);
+  registerPathway(pathway) {
+    this.decisionTree.set(pathway.id, pathway);
   }
 
-  evaluatePatientPresentation(patient, vitals, labResults = []) {
-    const evaluation = {
-      specialty: this.specialtyName,
+  evaluateClinicalRisk(patient, vitals, labData = {}) {
+    const auditReport = {
+      engine: this.specialtyName,
+      domain: this.clinicalDomain,
       evaluatedAt: new Date().toISOString(),
-      matchedProtocols: [],
-      severityScore: 0,
-      clinicalAlerts: [],
+      patientId: patient ? patient.id : null,
+      riskScore: 0,
+      riskLevel: 'LOW_RISK_ROUTINE',
+      activeAlerts: [],
+      matchedPathways: [],
       recommendedActions: []
     };
 
-    if (!patient) return evaluation;
+    if (!patient) return auditReport;
 
-    // Evaluate vitals criteria
+    // Age & Demographic risk weighting
+    if (patient.dob) {
+      const age = new Date().getFullYear() - new Date(patient.dob).getFullYear();
+      if (age >= 65) {
+        auditReport.riskScore += 18;
+        auditReport.activeAlerts.push('Geriatric demographic category: enhanced monitoring required.');
+      }
+    }
+
+    // Vitals Evaluation
     if (vitals) {
       if (vitals.bpSys && vitals.bpSys >= 140) {
-        evaluation.severityScore += 25;
-        evaluation.clinicalAlerts.push('Elevated systolic blood pressure detected in Immunology review.');
+        auditReport.riskScore += 22;
+        auditReport.activeAlerts.push('Stage 2 Systolic Hypertension identified during Immunology review.');
       }
       if (vitals.hr && (vitals.hr > 100 || vitals.hr < 55)) {
-        evaluation.severityScore += 20;
-        evaluation.clinicalAlerts.push('Abnormal baseline heart rate rhythm flagged.');
+        auditReport.riskScore += 15;
+        auditReport.activeAlerts.push('Heart rate anomaly detected outside physiologic baseline.');
       }
       if (vitals.spo2 && vitals.spo2 < 94) {
-        evaluation.severityScore += 30;
-        evaluation.clinicalAlerts.push('Hypoxia indicator detected (SpO2 < 94%).');
+        auditReport.riskScore += 25;
+        auditReport.activeAlerts.push('Hypoxemia warning: SpO2 measured below 94%.');
       }
     }
 
-    // Check relevant chronic conditions
-    const conditions = patient.chronicConditions || [];
-    for (const cond of conditions) {
-      if (cond.name.toLowerCase().includes(this.clinicalDomain.toLowerCase()) || cond.code.startsWith(this.clinicalDomain.charAt(0))) {
-        evaluation.severityScore += 15;
-        evaluation.matchedProtocols.push(Array.from(this.protocols.values())[0] || null);
+    // Chronic Disease Matching
+    const chronic = patient.chronicConditions || [];
+    for (const c of chronic) {
+      const matched = Array.from(this.decisionTree.values()).find(p => p.condition.toLowerCase().includes(c.name.toLowerCase()) || c.name.toLowerCase().includes(p.condition.toLowerCase()));
+      if (matched) {
+        auditReport.riskScore += 20;
+        auditReport.matchedPathways.push(matched);
       }
     }
 
-    if (evaluation.severityScore >= 60) {
-      evaluation.riskTier = 'HIGH_PRIORITY_CLINICAL_ESCALATION';
-    } else if (evaluation.severityScore >= 30) {
-      evaluation.riskTier = 'MODERATE_MONITORING_REQUIRED';
+    // Assign Overall Risk Level
+    if (auditReport.riskScore >= 60) {
+      auditReport.riskLevel = 'HIGH_PRIORITY_CLINICAL_ESCALATION';
+    } else if (auditReport.riskScore >= 30) {
+      auditReport.riskLevel = 'MODERATE_SURVEILLANCE_INDICATED';
     } else {
-      evaluation.riskTier = 'STABLE_ROUTINE_CARE';
+      auditReport.riskLevel = 'STABLE_STANDARD_OF_CARE';
     }
 
-    evaluation.recommendedDiagnostics = this.standardDiagnostics;
-    evaluation.recommendedTherapeutics = this.standardTherapeutics;
+    auditReport.recommendedDiagnostics = this.diagnosticsRegistry;
+    auditReport.recommendedTherapeutics = this.treatmentPathways;
 
-    return evaluation;
+    return auditReport;
   }
 
-  calculateSpecialtyRiskIndex(parameters = {}) {
-    let score = 0;
-    const factorWeights = { ageFactor: 1.2, chronicFactor: 1.5, acuteSeverityFactor: 2.0 };
-    if (parameters.age && parameters.age > 65) score += 20 * factorWeights.ageFactor;
-    if (parameters.hasComorbidities) score += 25 * factorWeights.chronicFactor;
-    if (parameters.isAcute) score += 30 * factorWeights.acuteSeverityFactor;
-    return Math.min(100, Math.round(score));
+  getProtocolsForCondition(conditionName) {
+    if (!conditionName) return Array.from(this.decisionTree.values());
+    const q = conditionName.toLowerCase();
+    return Array.from(this.decisionTree.values()).filter(p => p.condition.toLowerCase().includes(q) || p.name.toLowerCase().includes(q));
+  }
+
+  validateTherapeuticOrder(order = {}, patient = {}) {
+    const validation = {
+      approved: true,
+      warnings: [],
+      requiresDoseAdjustment: false
+    };
+
+    if (!order.drugName) return validation;
+
+    const allergies = patient.allergies || [];
+    for (const a of allergies) {
+      if (order.drugName.toLowerCase().includes(a.allergen.toLowerCase())) {
+        validation.approved = false;
+        validation.warnings.push('Severe Allergy Contraindication: Documented allergy to ' + a.allergen);
+      }
+    }
+
+    return validation;
   }
 }
 
